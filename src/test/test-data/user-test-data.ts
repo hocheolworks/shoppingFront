@@ -49,12 +49,11 @@ export const userEditErrorsData: UserEditErrors = {
 
 export const authErrorsData: AuthErrors = {
   captchaError: "Fill captcha.",
-  emailError: "First name cannot be empty",
-  nameError: "The password must be between 6 and 16 characters long",
-  phoneNumberError: "올바른 형식의 휴대폰 번호를 입력하세요.",
-  passwordError:
-    "The password confirmation must be between 6 and 16 characters long",
-  password2Error: "Email cannot be empty",
+  emailError: "입력하신 이메일을 확인해주세요",
+  nameError: "입력하신 이름을 확인해주세요",
+  phoneNumberError: "입력하신 휴대폰 번호를 확인해주세요.",
+  passwordError: "입력하신 비밀번호를 확인해주세요",
+  password2Error: "입력하신 비밀번호를 확인해주세요",
 };
 
 export const reviewData: ReviewData = {

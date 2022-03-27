@@ -22,6 +22,10 @@ import {
 } from "../../types/types";
 import { Dispatch } from "redux";
 import RequestService from "../../utils/request-service";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 export const login =
   (userData: UserData, history: any) => async (dispatch: Dispatch) => {
@@ -33,7 +37,7 @@ export const login =
       localStorage.setItem("isLoggedIn", "true");
       dispatch(loginSuccess(response.data.userRole));
       history.push("/account");
-    } catch (error) {
+    } catch (error: any) {
       dispatch(loginFailure(error.response.data));
     }
   };
@@ -44,8 +48,21 @@ export const registration =
       dispatch(showLoader());
       await RequestService.post("/registration", userRegistrationData);
       dispatch(registerSuccess());
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = error.response.data.message;
       dispatch(registerFailure(error.response.data));
+      if (Array.isArray(error.response.data.message)) {
+        if (/[a-zA-Z]/.test(error.response.data.message[0])) {
+          errorMessage = "입력하신 정보를 확인해주세요";
+        } else {
+          errorMessage = error.response.data.message[0];
+        }
+      }
+      await MySwal.fire({
+        title: `<strong>회원가입 실패</strong>`,
+        html: `<i>${errorMessage}</i>`,
+        icon: "error",
+      });
     }
   };
 
@@ -61,7 +78,7 @@ export const activateAccount = (code: string) => async (dispatch: Dispatch) => {
   try {
     const response = await RequestService.get("/registration/activate/" + code);
     dispatch(activateAccountSuccess(response.data));
-  } catch (error) {
+  } catch (error: any) {
     dispatch(activateAccountFailure(error.response.data));
   }
 };
@@ -72,7 +89,7 @@ export const forgotPassword =
       dispatch(showLoader());
       const response = await RequestService.post("/auth/forgot", email);
       dispatch(forgotPasswordSuccess(response.data));
-    } catch (error) {
+    } catch (error: any) {
       dispatch(forgotPasswordFailure(error.response.data));
     }
   };
@@ -82,7 +99,7 @@ export const fetchResetPasswordCode =
     try {
       const response = await RequestService.get("/auth/reset/" + code);
       dispatch(resetPasswordCodeSuccess(response.data));
-    } catch (error) {
+    } catch (error: any) {
       dispatch(resetPasswordCodeFailure(error.response.data));
     }
   };
@@ -93,7 +110,7 @@ export const resetPassword =
       const response = await RequestService.post("/auth/reset", data);
       dispatch(resetPasswordSuccess(response.data));
       history.push("/login");
-    } catch (error) {
+    } catch (error: any) {
       dispatch(resetPasswordFailure(error.response.data));
     }
   };
