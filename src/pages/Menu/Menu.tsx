@@ -1,45 +1,49 @@
-import React, {FC, useEffect, useState} from "react";
-import {Route, useLocation} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { FC, useEffect, useState } from 'react';
+import { Route, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Checkbox from "../../component/CheckBox/Checkbox";
-import CheckboxRadio from "../../component/CheckboxRadio/CheckboxRadio";
-import MenuCards from "../../component/MenuCards/MenuCards";
-import {gender, perfumer, price} from "./MenuData";
+import Checkbox from '../../component/CheckBox/Checkbox';
+import CheckboxRadio from '../../component/CheckboxRadio/CheckboxRadio';
+import MenuCards from '../../component/MenuCards/MenuCards';
+import { gender, perfumer, price } from './MenuData';
 import {
     fetchPerfumes,
     fetchPerfumesByFilterParams,
     fetchPerfumesByGender,
-    fetchPerfumesByPerfumer
-} from "../../redux/thunks/perfume-thunks";
-import "./MenuStyle.css";
-import {AppStateType} from "../../redux/reducers/root-reducer";
-import {FilterParamsType, Perfume} from "../../types/types";
-import ScrollButton from "../../component/ScrollButton/ScrollButton";
+    fetchPerfumesByPerfumer,
+} from '../../redux/thunks/perfume-thunks';
+import './MenuStyle.css';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import { FilterParamsType, Perfume } from '../../types/types';
+import ScrollButton from '../../component/ScrollButton/ScrollButton';
 
 const Menu: FC = () => {
     const dispatch = useDispatch();
-    const perfumes: Array<Perfume> = useSelector((state: AppStateType) => state.perfume.perfumes);
-    const loading: boolean = useSelector((state: AppStateType) => state.perfume.isPerfumeLoading);
+    const perfumes: Array<Perfume> = useSelector(
+        (state: AppStateType) => state.perfume.perfumes
+    );
+    const loading: boolean = useSelector(
+        (state: AppStateType) => state.perfume.isPerfumeLoading
+    );
     const [filterParams, setFilterParams] = useState<FilterParamsType>({
         perfumers: [],
         genders: [],
-        prices: []
+        prices: [],
     });
     const [sortByPrice, setSortByPrice] = useState<boolean>();
-    const {state} = useLocation<{ id: string }>();
+    const { state } = useLocation<{ id: string }>();
 
     useEffect(() => {
         const perfumeData: string = state.id;
 
-        if (perfumeData === "female" || perfumeData === "male") {
-            dispatch(fetchPerfumesByGender({perfumeGender: perfumeData}));
+        if (perfumeData === 'female' || perfumeData === 'male') {
+            dispatch(fetchPerfumesByGender({ perfumeGender: perfumeData }));
             window.scrollTo(0, 0);
-        } else if (perfumeData === "all") {
+        } else if (perfumeData === 'all') {
             dispatch(fetchPerfumes());
             window.scrollTo(0, 0);
         } else {
-            dispatch(fetchPerfumesByPerfumer({perfumer: perfumeData}));
+            dispatch(fetchPerfumesByPerfumer({ perfumer: perfumeData }));
             window.scrollTo(0, 0);
         }
     }, []);
@@ -53,29 +57,35 @@ const Menu: FC = () => {
         return find!.array;
     };
 
-    const handleFilters = (filters: Array<string> | number, category: string): void => {
+    const handleFilters = (
+        filters: Array<string> | number,
+        category: string
+    ): void => {
         const newFilters: any = filterParams;
         newFilters[category] = filters;
 
-        if (category === "prices") {
+        if (category === 'prices') {
             let priceValues = handlePrice(filters as number);
             newFilters[category] = priceValues;
         }
-        getProducts({...newFilters, sortByPrice})
+        getProducts({ ...newFilters, sortByPrice });
         setFilterParams(newFilters);
     };
 
-    const handleSortByPrice = (sortedBy: boolean, event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
+    const handleSortByPrice = (
+        sortedBy: boolean,
+        event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    ): void => {
         event.preventDefault();
 
         setSortByPrice(sortedBy);
-        getProducts({...filterParams, sortByPrice: sortedBy});
+        getProducts({ ...filterParams, sortByPrice: sortedBy });
     };
 
     return (
         <div className="container d-flex">
-            <ScrollButton/>
-            <nav id="sidebar">
+            <ScrollButton />
+            {/* <nav id="sidebar">
                 <div className="sidebar-header">
                     <h3>Perfumes</h3>
                 </div>
@@ -96,18 +106,24 @@ const Menu: FC = () => {
                                        handleFilters={(filters) => handleFilters(filters, "prices")}/>
                     </li>
                 </ul>
-            </nav>
-            <Route exact component={() =>
-                <MenuCards
-                    data={perfumes}
-                    loading={loading}
-                    itemsPerPage={16}
-                    searchByData={[
-                        {label: 'Brand', value: 'perfumer'},
-                        {label: 'Perfume title', value: 'perfumeTitle'},
-                        {label: 'Manufacturer country', value: 'country'}]}
-                    sortByPrice={sortByPrice}
-                    handleSortByPrice={handleSortByPrice}/>}/>
+            </nav> */}
+            <Route
+                exact
+                component={() => (
+                    <MenuCards
+                        data={perfumes}
+                        loading={loading}
+                        itemsPerPage={16}
+                        searchByData={[
+                            { label: 'Brand', value: 'perfumer' },
+                            { label: 'Perfume title', value: 'perfumeTitle' },
+                            { label: 'Manufacturer country', value: 'country' },
+                        ]}
+                        sortByPrice={sortByPrice}
+                        handleSortByPrice={handleSortByPrice}
+                    />
+                )}
+            />
         </div>
     );
 };
