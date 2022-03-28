@@ -38,14 +38,14 @@ const Account: FC = () => {
                 <div className="col-md-2">
                     <h4>
                         <FontAwesomeIcon className="mr-2" icon={faUser} />
-                        My Account
+                        마이 페이지
                     </h4>
                     <NavLink
                         to={'/account/user/info'}
                         className="account-sidebar-link nav-link"
                         activeClassName="is-active"
                     >
-                        Personal data
+                        내 정보
                     </NavLink>
                     {localStorage.getItem('userRole') === 'ADMIN' ? (
                         <>
@@ -54,28 +54,28 @@ const Account: FC = () => {
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                Add perfume
+                                상품 추가
                             </NavLink>
                             <NavLink
                                 to={'/account/admin/perfumes'}
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                List of perfumes
+                                상품 목록
                             </NavLink>
                             <NavLink
                                 to={'/account/admin/orders'}
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                List of all orders
+                                전체 주문 목록
                             </NavLink>
                             <NavLink
                                 to={'/account/admin/users'}
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                List of all users
+                                전체 고객 목록
                             </NavLink>
                         </>
                     ) : (
@@ -85,14 +85,14 @@ const Account: FC = () => {
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                Change password
+                                비밀번호 변경
                             </NavLink>
                             <NavLink
                                 to={'/account/user/orders'}
                                 className="account-sidebar-link nav-link"
                                 activeClassName="is-active"
                             >
-                                List of orders
+                                주문 목록
                             </NavLink>
                         </>
                     )}
