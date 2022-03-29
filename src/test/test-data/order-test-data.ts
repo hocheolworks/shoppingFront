@@ -1,7 +1,7 @@
 import { Order, OrderError } from '../../types/types';
 
 export const orderRequestData = {
-    name: 'John Doe',
+    orderCustomerName: 'John Doe',
     address: 'Wall Street1',
     postIndex: 1234567890,
     phoneNumber: '1234567890',
@@ -12,14 +12,14 @@ export const orderRequestData = {
 
 export const orderData: Order = {
     id: 1,
-    totalPrice: 840,
-    date: '2021-04-07',
-    name: 'John Doe',
-    address: 'Wall Street1',
-    addressDetail: '',
-    email: 'test123@test.com',
-    phoneNumber: '1234567890',
-    postIndex: 1234567890,
+    orderTotalPrice: 840,
+    createdAt: '2021-04-07',
+    orderCustomerName: 'John Doe',
+    orderAddress: 'Wall Street1',
+    orderAddressDetail: '',
+    orderEmail: 'test123@test.com',
+    orderPhoneNumber: '1234567890',
+    orderPostIndex: 1234567890,
     orderItems: [
         {
             id: 1,
@@ -76,14 +76,14 @@ export const orderData: Order = {
 export const ordersData: Array<Order> = [
     {
         id: 1,
-        totalPrice: 840,
-        date: '2021-04-07',
-        name: 'John Doe',
-        address: 'Wall Street1',
-        addressDetail: '',
-        email: 'test123@test.com',
-        phoneNumber: '1234567890',
-        postIndex: 1234567890,
+        orderTotalPrice: 840,
+        createdAt: '2021-04-07',
+        orderCustomerName: 'John Doe',
+        orderAddress: 'Wall Street1',
+        orderAddressDetail: '',
+        orderEmail: 'test123@test.com',
+        orderPhoneNumber: '1234567890',
+        orderPostIndex: 1234567890,
         orderItems: [
             {
                 id: 1,
@@ -140,14 +140,14 @@ export const ordersData: Array<Order> = [
     },
     {
         id: 2,
-        totalPrice: 240,
-        date: '2021-04-07',
-        name: 'John Doe',
-        address: 'Wall Street1',
-        addressDetail: '',
-        email: 'test123@test.com',
-        phoneNumber: '1234567890',
-        postIndex: 1234567890,
+        orderTotalPrice: 240,
+        createdAt: '2021-04-07',
+        orderCustomerName: 'John Doe',
+        orderAddress: 'Wall Street1',
+        orderAddressDetail: '',
+        orderEmail: 'test123@test.com',
+        orderPhoneNumber: '1234567890',
+        orderPostIndex: 1234567890,
         orderItems: [
             {
                 id: 3,
@@ -203,14 +203,14 @@ export const ordersData: Array<Order> = [
     },
     {
         id: 3,
-        totalPrice: 163,
-        date: '2021-04-07',
-        name: 'Ivan Ivanov',
-        address: 'Tverskaya street 1',
-        addressDetail: '',
-        email: 'ivan123@test.com',
-        phoneNumber: '1234567890',
-        postIndex: 1234567890,
+        orderTotalPrice: 163,
+        createdAt: '2021-04-07',
+        orderCustomerName: 'Ivan Ivanov',
+        orderAddress: 'Tverskaya street 1',
+        orderAddressDetail: '',
+        orderEmail: 'ivan123@test.com',
+        orderPhoneNumber: '1234567890',
+        orderPostIndex: 1234567890,
         orderItems: [
             {
                 id: 5,
@@ -293,14 +293,14 @@ export const ordersData: Array<Order> = [
     },
     {
         id: 4,
-        totalPrice: 780,
-        date: '2021-04-07',
-        name: 'Ivan Ivanov',
-        address: 'Tverskaya street 1',
-        addressDetail: '',
-        email: 'ivan123@test.com',
-        phoneNumber: '1234567890',
-        postIndex: 1234567890,
+        orderTotalPrice: 780,
+        createdAt: '2021-04-07',
+        orderCustomerName: 'Ivan Ivanov',
+        orderAddress: 'Tverskaya street 1',
+        orderAddressDetail: '',
+        orderEmail: 'ivan123@test.com',
+        orderPhoneNumber: '1234567890',
+        orderPostIndex: 1234567890,
         orderItems: [
             {
                 id: 8,
@@ -358,14 +358,14 @@ export const ordersData: Array<Order> = [
     },
     {
         id: 5,
-        totalPrice: 196,
-        name: 'Ivan Ivanov',
-        date: '2021-04-07',
-        address: 'Tverskaya street 1',
-        addressDetail: '',
-        email: 'ivan123@test.com',
-        phoneNumber: '1234567890',
-        postIndex: 1234567890,
+        orderTotalPrice: 196,
+        orderCustomerName: 'Ivan Ivanov',
+        createdAt: '2021-04-07',
+        orderAddress: 'Tverskaya street 1',
+        orderAddressDetail: '',
+        orderEmail: 'ivan123@test.com',
+        orderPhoneNumber: '1234567890',
+        orderPostIndex: 1234567890,
         orderItems: [
             {
                 id: 10,

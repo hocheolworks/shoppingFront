@@ -147,11 +147,16 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                                             return (
                                                 <tr key={order.id}>
                                                     <th>{order.id}</th>
-                                                    <th>{order.date}</th>
-                                                    <th>{order.address}</th>
-                                                    <th>{order.postIndex}</th>
+                                                    <th>{order.createdAt}</th>
                                                     <th>
-                                                        {order.totalPrice}.0 $
+                                                        {order.orderAddress}
+                                                    </th>
+                                                    <th>
+                                                        {order.orderPostIndex}
+                                                    </th>
+                                                    <th>
+                                                        {order.orderTotalPrice}
+                                                        .0 $
                                                     </th>
                                                     <th>
                                                         <Link

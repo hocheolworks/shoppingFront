@@ -69,15 +69,15 @@ export type ReviewError = {
 
 export type Order = {
     id: number;
-    totalPrice: number;
-    date: string;
-    name: string;
-    address: string;
-    addressDetail: string;
-    email: string;
-    phoneNumber: string;
-    postIndex: number;
+    orderTotalPrice: number;
+    orderCustomerName: string;
+    orderAddress: string;
+    orderAddressDetail: string;
+    orderEmail: string;
+    orderPhoneNumber: string;
+    orderPostIndex: number;
     orderItems: Array<OrderItem>;
+    createdAt: string;
 };
 
 export type OrderItem = {

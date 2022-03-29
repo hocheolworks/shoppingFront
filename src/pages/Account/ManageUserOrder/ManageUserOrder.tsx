@@ -9,14 +9,14 @@ const ManageUserOrder: FC = () => {
     const location = useLocation<Order>();
     const {
         id,
-        email,
-        name,
-        totalPrice,
-        postIndex,
-        phoneNumber,
-        date,
-        address,
-        addressDetail,
+        orderEmail,
+        orderCustomerName,
+        orderTotalPrice,
+        orderPostIndex,
+        orderPhoneNumber,
+        createdAt,
+        orderAddress,
+        orderAddressDetail,
         orderItems,
     } = location.state;
 
@@ -32,30 +32,36 @@ const ManageUserOrder: FC = () => {
                     </h5>
                     <p className="personal_data_item">
                         이름:
-                        <span className="personal_data_text">{name}</span>
+                        <span className="personal_data_text">
+                            {orderCustomerName}
+                        </span>
                     </p>
                     <p className="personal_data_item">
                         이메일:
-                        <span className="personal_data_text">{email}</span>
+                        <span className="personal_data_text">{orderEmail}</span>
                     </p>
                     <p className="personal_data_item">
                         휴대폰 번호:
                         <span className="personal_data_text">
-                            {phoneNumber}
+                            {orderPhoneNumber}
                         </span>
                     </p>
                     <p className="personal_data_item">
                         우편변호:
-                        <span className="personal_data_text">{postIndex}</span>
+                        <span className="personal_data_text">
+                            {orderPostIndex}
+                        </span>
                     </p>
                     <p className="personal_data_item">
                         배송주소:
-                        <span className="personal_data_text">{address}</span>
+                        <span className="personal_data_text">
+                            {orderAddress}
+                        </span>
                     </p>
                     <p className="personal_data_item">
                         상세주소:
                         <span className="personal_data_text">
-                            {addressDetail}
+                            {orderAddressDetail}
                         </span>
                     </p>
                 </div>
@@ -69,13 +75,13 @@ const ManageUserOrder: FC = () => {
                     </p>
                     <p className="personal_data_item">
                         주문날짜:
-                        <span className="personal_data_text">{date}</span>
+                        <span className="personal_data_text">{createdAt}</span>
                     </p>
                     <h4 style={{ marginBottom: '30px', marginTop: '30px' }}>
                         주문금액:
                         <span style={{ color: 'green' }}>
                             {' '}
-                            {totalPrice}.0 $
+                            {orderTotalPrice}.0 $
                         </span>
                     </h4>
                 </div>

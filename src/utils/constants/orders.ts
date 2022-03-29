@@ -3,11 +3,11 @@ import { Order } from '../../types/types';
 const ConstantOrders: Array<Order> = [
     {
         id: 1234,
-        address: '서울특별시 관악구 뭐시래기',
-        addressDetail: '111번지',
-        date: '2022-03-27',
-        email: 'JohnDoe@gmail.com',
-        name: 'Doe',
+        orderAddress: '서울특별시 관악구 뭐시래기',
+        orderAddressDetail: '111번지',
+        createdAt: '2022-03-27',
+        orderEmail: 'JohnDoe@gmail.com',
+        orderCustomerName: 'Doe',
         orderItems: [
             {
                 id: 1,
@@ -82,9 +82,9 @@ const ConstantOrders: Array<Order> = [
                 },
             },
         ],
-        phoneNumber: '010-1234-5678',
-        postIndex: 90876,
-        totalPrice: 2000,
+        orderPhoneNumber: '010-1234-5678',
+        orderPostIndex: 90876,
+        orderTotalPrice: 2000,
     },
 ];
 

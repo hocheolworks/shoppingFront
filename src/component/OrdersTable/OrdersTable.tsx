@@ -41,10 +41,10 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                                 return (
                                     <tr key={order.id}>
                                         <th>{order.id}</th>
-                                        <th>{order.date}</th>
-                                        <th>{order.name}</th>
-                                        <th>{order.email}</th>
-                                        <th>{order.totalPrice}</th>
+                                        <th>{order.createdAt}</th>
+                                        <th>{order.orderCustomerName}</th>
+                                        <th>{order.orderEmail}</th>
+                                        <th>{order.orderTotalPrice}</th>
                                         <th>
                                             <Link
                                                 to={{

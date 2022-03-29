@@ -21,7 +21,7 @@ const AccountItem = () => {
                 <Spinner />
             ) : (
                 <h4 style={{ display: 'flex', justifyContent: 'center' }}>
-                    Hello {usersData.firstName} {usersData.lastName}!
+                    Hello!
                 </h4>
             )}
         </>

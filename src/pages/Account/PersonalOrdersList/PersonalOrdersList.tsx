@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Order } from '../../../types/types';
+import { Order, User } from '../../../types/types';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
 import { fetchUserOrders } from '../../../redux/thunks/order-thunks';
 import OrdersTable from '../../../component/OrdersTable/OrdersTable';
@@ -18,8 +18,12 @@ const PersonalOrdersList: FC = () => {
         (state: AppStateType) => state.order.loading
     );
 
+    const user: Partial<User> = useSelector(
+        (state: AppStateType) => state.user.user
+    );
+
     useEffect(() => {
-        dispatch(fetchUserOrders());
+        dispatch(fetchUserOrders(user.id));
     }, []);
 
     return (

@@ -11,7 +11,7 @@ import {
 import RequestService from '../../utils/request-service';
 import { ordersByEmailQuery } from '../../utils/graphql-query/orders-query';
 
-import ConstantOrders from '../../utils/constants/orders';
+// import ConstantOrders from '../../utils/constants/orders';
 
 export const fetchOrder = () => async (dispatch: Dispatch) => {
     dispatch(fetchOrderSuccess());
@@ -30,13 +30,19 @@ export const addOrder =
         }
     };
 
-export const fetchUserOrders = () => async (dispatch: Dispatch) => {
-    dispatch(showLoader());
-    // const response = await RequestService.get("/users/orders", true);
-    // dispatch(fetchUserOrdersSuccess(response.data));
+export const fetchUserOrders =
+    (customerId: number | undefined) => async (dispatch: Dispatch) => {
+        dispatch(showLoader());
+        // const response = await RequestService.get("/users/orders", true);
+        // dispatch(fetchUserOrdersSuccess(response.data));
 
-    dispatch(fetchUserOrdersSuccess(ConstantOrders));
-};
+        const response = await RequestService.get(
+            `/order/${customerId}`,
+            false
+        );
+        console.log(response.data);
+        dispatch(fetchUserOrdersSuccess(response.data));
+    };
 
 export const fetchUserOrdersByQuery =
     (email: string | undefined) => async (dispatch: Dispatch) => {
