@@ -64,7 +64,6 @@ const Registration: FC = () => {
     };
     dispatch(registration(userRegistrationData));
     // @ts-ignore
-    window.grecaptcha.reset();
   };
 
   const onChangeRecaptcha = (token: string | null): void => {
