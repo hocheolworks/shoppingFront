@@ -1,5 +1,4 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -86,7 +85,7 @@ const Registration: FC = () => {
       <hr />
       {isRegistered ? (
         <div className="alert alert-success col-6" role="alert">
-          인증 코드가 이메일로 전송되었습니다.
+          인증 코드가 이메일로 전송되었습니다. 이메일을 확인해주세요
         </div>
       ) : null}
       <form onSubmit={onClickSignUp}>
@@ -189,10 +188,6 @@ const Registration: FC = () => {
             회원가입
           </button>
         </div>
-        <ReCAPTCHA
-          onChange={onChangeRecaptcha}
-          sitekey="6Lc5cLkZAAAAAN8mFk85HQieB9toPcWFoW0RXCNR"
-        />
       </form>
     </div>
   );
