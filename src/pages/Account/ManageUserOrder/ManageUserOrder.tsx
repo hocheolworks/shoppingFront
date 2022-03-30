@@ -81,7 +81,7 @@ const ManageUserOrder: FC = () => {
                         주문금액:
                         <span style={{ color: 'green' }}>
                             {' '}
-                            {orderTotalPrice}.0 $
+                            {orderTotalPrice.toLocaleString('ko-KR')} 원
                         </span>
                     </h4>
                 </div>
@@ -102,15 +102,25 @@ const ManageUserOrder: FC = () => {
                             <tr key={orderItem.id}>
                                 <th>
                                     <Link
-                                        to={`/product/${orderItem.perfume.id}`}
+                                        to={`/product/${orderItem.product.id}`}
                                     >
-                                        {orderItem.perfume.id}
+                                        {orderItem.product.id}
                                     </Link>
                                 </th>
-                                <th>{orderItem.perfume.perfumeTitle}</th>
-                                <th>{orderItem.quantity}</th>
-                                <th>{orderItem.perfume.price}.0 $</th>
-                                <th>{orderItem.amount}.0 $</th>
+                                <th>{orderItem.product.productName}</th>
+                                <th>{orderItem.orderItemEA}</th>
+                                <th>
+                                    {orderItem.product.productPrice.toLocaleString(
+                                        'ko-KR'
+                                    )}
+                                    원
+                                </th>
+                                <th>
+                                    {orderItem.orderItemTotalPrice.toLocaleString(
+                                        'ko-KR'
+                                    )}
+                                    원
+                                </th>
                             </tr>
                         );
                     })}

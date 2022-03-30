@@ -18,6 +18,17 @@ export type Perfume = {
     reviews: Array<Review>;
 };
 
+export type Product = {
+    id: number;
+    productName: string;
+    productDescription: string;
+    productPrice: number;
+    productMinimumEA: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+};
+
 export type PerfumeErrors = {
     perfumeTitleError: string;
     perfumerError: string;
@@ -82,9 +93,12 @@ export type Order = {
 
 export type OrderItem = {
     id: number;
-    amount: number;
-    quantity: number;
-    perfume: Perfume;
+    product: Product;
+    orderItemEA: number;
+    orderItemTotalPrice: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
 };
 
 export type OrderError = {

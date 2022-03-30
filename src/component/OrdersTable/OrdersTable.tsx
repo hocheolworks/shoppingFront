@@ -44,7 +44,12 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                                         <th>{order.createdAt}</th>
                                         <th>{order.orderCustomerName}</th>
                                         <th>{order.orderEmail}</th>
-                                        <th>{order.orderTotalPrice}</th>
+                                        <th>
+                                            {order.orderTotalPrice.toLocaleString(
+                                                'ko-KR'
+                                            )}
+                                            원
+                                        </th>
                                         <th>
                                             <Link
                                                 to={{

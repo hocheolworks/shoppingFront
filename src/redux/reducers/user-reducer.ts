@@ -44,7 +44,7 @@ export type InitialStateType = {
 
 // hard coding
 const initialState: InitialStateType = {
-    user: { id: 2, lastName: '이정철' },
+    user: { id: 16, lastName: '이정철' },
     isLoggedIn: true,
     isLoaded: false,
     successMessage: '',
