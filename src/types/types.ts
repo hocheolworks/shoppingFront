@@ -156,6 +156,13 @@ export type UserRegistration = {
     captcha: string | null;
 };
 
+export type RegistrationEmailData = {
+  from: string;
+  to: string;
+  title: string;
+  customerName: string;
+};
+
 export type UserResetPasswordData = {
     email: string | undefined;
     password: string;
