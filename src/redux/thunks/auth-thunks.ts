@@ -47,19 +47,7 @@ export const registration =
   (userRegistrationData: UserRegistration) => async (dispatch: Dispatch) => {
     try {
       dispatch(showLoader());
-      const result = await RequestService.post(
-        "/registration",
-        userRegistrationData
-      );
-      if (result.status === 201) {
-        const registrationEmailData: RegistrationEmailData = {
-          from: "일진유통 slogupemailmoduletest@gmail.com", //TODO 하드코딩
-          to: userRegistrationData.customerEmail,
-          title: "일진유통 회원가입 확인 안내",
-          customerName: userRegistrationData.customerName,
-        };
-        await RequestService.post("/email", registrationEmailData);
-      }
+      await RequestService.post("/customer", userRegistrationData);
       dispatch(registerSuccess());
     } catch (error: any) {
       let errorMessage = error.response.data.message;
