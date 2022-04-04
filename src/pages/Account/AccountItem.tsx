@@ -13,8 +13,6 @@ const AccountItem = () => {
         (state: AppStateType) => state.user.isLoaded
     );
 
-    console.log(loading);
-
     return (
         <>
             {loading ? (

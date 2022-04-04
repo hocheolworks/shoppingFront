@@ -24,6 +24,9 @@ export type Product = {
     productDescription: string;
     productPrice: number;
     productMinimumEA: number;
+    productRating: number;
+    productRatingCount: number;
+    reviews: Array<Review>;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
