@@ -2,7 +2,7 @@ import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
-import { User, UserEdit, UserEditErrors } from '../../../types/types';
+import { Customer, User, UserEdit, UserEditErrors } from '../../../types/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
 import { resetForm, updateUserInfo } from '../../../redux/thunks/user-thunks';
@@ -10,15 +10,15 @@ import './EditPersonalData.css';
 
 const EditPersonalData: FC = () => {
     const dispatch = useDispatch();
-    const usersData: Partial<User> = useSelector(
-        (state: AppStateType) => state.user.user
+    const customersData: Partial<Customer> = useSelector(
+        (state: AppStateType) => state.user.customer
     );
     const errors: Partial<UserEditErrors> = useSelector(
         (state: AppStateType) => state.user.userEditErrors
     );
-    const [user, setUser] = useState<Partial<User>>(usersData);
-    const { id, firstName, lastName, city, address, phoneNumber, postIndex } =
-        user;
+    const [customer, setUser] = useState<Partial<Customer>>(customersData);
+    const { id, customerEmail, customerName, customerPassword, customerPhoneNumber, custormerAddress, userRole } =
+    customer;
     const { firstNameError, lastNameError } = errors;
 
     useEffect(() => {
@@ -29,19 +29,19 @@ const EditPersonalData: FC = () => {
         event.preventDefault();
         const userEdit: UserEdit = {
             id,
-            firstName,
-            lastName,
-            city,
-            address,
-            phoneNumber,
-            postIndex,
+            customerEmail,
+            customerName,
+            customerPassword,
+            customerPhoneNumber,
+            custormerAddress,
+            userRole,
         };
         dispatch(updateUserInfo(userEdit));
     };
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = event.target;
-        setUser({ ...user, [name]: value });
+        setUser({ ...customer, [name]: value });
     };
 
     return (
@@ -49,7 +49,7 @@ const EditPersonalData: FC = () => {
             <form className="edit_personal_data" onSubmit={onFormSubmit}>
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">
-                        First name:{' '}
+                        Email:{' '}
                     </label>
                     <div className="col-sm-6">
                         <input
@@ -59,8 +59,8 @@ const EditPersonalData: FC = () => {
                                     ? 'form-control is-invalid'
                                     : 'form-control'
                             }
-                            name="firstName"
-                            value={firstName}
+                            name="customerEmail"
+                            value={customerEmail}
                             onChange={handleInputChange}
                         />
                         <div className="invalid-feedback">{firstNameError}</div>
@@ -68,7 +68,7 @@ const EditPersonalData: FC = () => {
                 </div>
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">
-                        Last name:{' '}
+                        Name:{' '}
                     </label>
                     <div className="col-sm-6">
                         <input
@@ -78,61 +78,61 @@ const EditPersonalData: FC = () => {
                                     ? 'form-control is-invalid'
                                     : 'form-control'
                             }
-                            name="lastName"
-                            value={lastName}
+                            name="customerName"
+                            value={customerName}
                             onChange={handleInputChange}
                         />
                         <div className="invalid-feedback">{lastNameError}</div>
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label className="col-sm-3 col-form-label">City: </label>
+                    <label className="col-sm-3 col-form-label">Password: </label>
                     <div className="col-sm-6">
                         <input
                             type="text"
                             className={'form-control'}
-                            name="city"
-                            value={city}
+                            name="customerPassword"
+                            value={customerPassword}
                             onChange={handleInputChange}
                         />
                     </div>
                 </div>
                 <div className="form-group row">
-                    <label className="col-sm-3 col-form-label">Address: </label>
+                    <label className="col-sm-3 col-form-label">Phone Number: </label>
                     <div className="col-sm-6">
                         <input
                             type="text"
                             className={'form-control'}
-                            name="address"
-                            value={address}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-3 col-form-label">
-                        Phone number:{' '}
-                    </label>
-                    <div className="col-sm-6">
-                        <input
-                            type="text"
-                            className={'form-control'}
-                            name="phoneNumber"
-                            value={phoneNumber}
+                            name="customerPhoneNumber"
+                            value={customerPhoneNumber}
                             onChange={handleInputChange}
                         />
                     </div>
                 </div>
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">
-                        Post index:{' '}
+                        Address:{' '}
                     </label>
                     <div className="col-sm-6">
                         <input
                             type="text"
                             className={'form-control'}
-                            name="postIndex"
-                            value={postIndex}
+                            name="custormerAddress"
+                            value={custormerAddress}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">
+                        userRole:{' '}
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="text"
+                            className={'form-control'}
+                            name="userRole"
+                            value={userRole}
                             onChange={handleInputChange}
                         />
                     </div>

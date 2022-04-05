@@ -4,14 +4,14 @@ import {useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAddressCard, faEdit, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 
-import {User} from "../../../types/types";
+import {Customer, User} from "../../../types/types";
 import {AppStateType} from "../../../redux/reducers/root-reducer";
 import EditPersonalData from "../EditPersonalData/EditPersonalData";
 import "./PersonalData.css";
 
 const PersonalData: FC = () => {
-    const usersData: Partial<User> = useSelector((state: AppStateType) => state.user.user);
-    const {email, firstName, lastName, city, address, phoneNumber, postIndex} = usersData;
+    const customersData: Partial<Customer> = useSelector((state: AppStateType) => state.user.customer);
+    const  { id, customerEmail, customerName, customerPassword, customerPhoneNumber, custormerAddress, userRole } = customersData;
     const location = useLocation();
 
     return (
@@ -21,25 +21,22 @@ const PersonalData: FC = () => {
                     <FontAwesomeIcon className="ml-2 mr-2" icon={faAddressCard}/>Personal data
                 </h4>
                 <p className="personal_data_item">Email:
-                    <span className="personal_data_text">{email}</span>
+                    <span className="personal_data_text">{customerEmail}</span>
                 </p>
-                <p className="personal_data_item">First name:
-                    <span className="personal_data_text">{firstName}</span>
+                <p className="personal_data_item">Name:
+                    <span className="personal_data_text">{customerName}</span>
                 </p>
-                <p className="personal_data_item">Last name:
-                    <span className="personal_data_text">{lastName}</span>
+                <p className="personal_data_item">Password:
+                    <span className="personal_data_text">{customerPassword}</span>
                 </p>
-                <p className="personal_data_item">City:
-                    <span className="personal_data_text">{city}</span>
+                <p className="personal_data_item">Phone Number:
+                    <span className="personal_data_text">{customerPhoneNumber}</span>
                 </p>
                 <p className="personal_data_item">Address:
-                    <span className="personal_data_text">{address}</span>
+                    <span className="personal_data_text">{custormerAddress}</span>
                 </p>
-                <p className="personal_data_item">Phone number:
-                    <span className="personal_data_text">{phoneNumber}</span>
-                </p>
-                <p className="personal_data_item">Post index:
-                    <span className="personal_data_text">{postIndex}</span>
+                <p className="personal_data_item">Role:
+                    <span className="personal_data_text">{userRole}</span>
                 </p>
                 {location.pathname === "/account/user/info" ?
                     <Link to={"/account/user/info/edit"} className="btn btn-dark personal_data_btn">

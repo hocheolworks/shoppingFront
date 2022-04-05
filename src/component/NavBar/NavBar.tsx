@@ -36,7 +36,7 @@ const NavBar: FC = () => {
                 <Link to={'/account'}>
                     <span className="nav-link pl-5 pr-5">
                         <FontAwesomeIcon className="mr-2" icon={faUser} />
-                        MY ACCOUNT
+                        내 계정
                     </span>
                 </Link>
             </li>
@@ -44,7 +44,7 @@ const NavBar: FC = () => {
         signOut = (
             <Link to={'/'} onClick={handleLogout}>
                 <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-                EXIT
+                로그아웃
             </Link>
         );
     } else {

@@ -130,15 +130,40 @@ export type User = {
     roles: Array<string>;
 };
 
+export type Customer = {
+    id: number;
+    customerEmail: string;
+    customerName: string;
+    customerPassword: string;
+    customerPhoneNumber: string;
+    custormerAddress: string;
+    signupVerifyToken: string | null;
+    userRole: string;
+    orders: Array<string>;
+    reviews: Array<string>;
+};
+
+
+// export type UserEdit = {
+//     id: number | undefined;
+//     firstName: string | undefined;
+//     lastName: string | undefined;
+//     city: string | undefined;
+//     address: string | undefined;
+//     phoneNumber: string | undefined;
+//     postIndex: string | undefined;
+// };
+
 export type UserEdit = {
     id: number | undefined;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    city: string | undefined;
-    address: string | undefined;
-    phoneNumber: string | undefined;
-    postIndex: string | undefined;
+    customerEmail: string | undefined;
+    customerName: string | undefined;
+    customerPassword: string | undefined;
+    customerPhoneNumber: string | undefined;
+    custormerAddress: string | undefined;
+    userRole: string | undefined;
 };
+
 
 export type UserEditErrors = {
     firstNameError: string;

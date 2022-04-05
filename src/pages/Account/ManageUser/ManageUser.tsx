@@ -9,12 +9,12 @@ import {
 } from '../../../redux/thunks/admin-thunks';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
-import { Order, User } from '../../../types/types';
+import { Customer, Order, User } from '../../../types/types';
 import Spinner from '../../../component/Spinner/Spinner';
 
 const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     const dispatch = useDispatch();
-    const userData: Partial<User> = useSelector(
+    const customerData: Partial<Customer> = useSelector(
         (state: AppStateType) => state.admin.user
     );
     const userOrders: Array<Order> = useSelector(
@@ -25,24 +25,24 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     );
     const {
         id,
-        email,
-        firstName,
-        lastName,
-        city,
-        address,
-        phoneNumber,
-        postIndex,
-        provider,
-        roles,
-    } = userData;
+        customerEmail,
+        customerName,
+        customerPassword,
+        customerPhoneNumber,
+        custormerAddress,
+        signupVerifyToken,
+        userRole,
+        orders,
+        reviews,
+    } = customerData;
 
     useEffect(() => {
         dispatch(fetchUserInfo(match.params.id));
     }, []);
 
     useEffect(() => {
-        dispatch(fetchUserOrders(email));
-    }, [userData]);
+        dispatch(fetchUserOrders(customerEmail));
+    }, [customerData]);
 
     return (
         <>
@@ -56,7 +56,7 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                                 className="mr-2"
                                 icon={faUserEdit}
                             />{' '}
-                            User: {firstName} {lastName}
+                            User: {customerName}
                         </h4>
                         <div className="row mt-5 mb-4 border px-3 py-3">
                             <div className="col-md-4">
@@ -69,59 +69,47 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                                 <p className="personal_data_item">
                                     Email:
                                     <span className="personal_data_text">
-                                        {email}
+                                        {customerEmail}
                                     </span>
                                 </p>
                                 <p className="personal_data_item">
                                     Role:
                                     <span className="personal_data_text">
-                                        {roles}
+                                        {userRole}
                                     </span>
                                 </p>
                             </div>
                             <div className="col-md-4">
                                 <p className="personal_data_item">
-                                    First name:
+                                    name:
                                     <span className="personal_data_text">
-                                        {firstName}
+                                        {customerName}
                                     </span>
                                 </p>
                                 <p className="personal_data_item">
-                                    Last name:
+                                    Password:
                                     <span className="personal_data_text">
-                                        {lastName}
-                                    </span>
-                                </p>
-                                <p className="personal_data_item">
-                                    Provider:
-                                    <span className="personal_data_text">
-                                        {provider}
+                                        {customerPassword}
                                     </span>
                                 </p>
                             </div>
                             <div className="col-md-4">
                                 <p className="personal_data_item">
-                                    City:
+                                    Phone number:
                                     <span className="personal_data_text">
-                                        {city}
+                                        {customerPhoneNumber}
                                     </span>
                                 </p>
                                 <p className="personal_data_item">
                                     Address:
                                     <span className="personal_data_text">
-                                        {address}
+                                        {custormerAddress}
                                     </span>
                                 </p>
                                 <p className="personal_data_item">
-                                    Phone number:
+                                    Role:
                                     <span className="personal_data_text">
-                                        {phoneNumber}
-                                    </span>
-                                </p>
-                                <p className="personal_data_item">
-                                    Post index:
-                                    <span className="personal_data_text">
-                                        {postIndex}
+                                        {userRole}
                                     </span>
                                 </p>
                             </div>

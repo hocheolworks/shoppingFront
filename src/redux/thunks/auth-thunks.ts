@@ -17,40 +17,6 @@ import {
 } from '../actions/auth-actions';
 import { reset } from '../actions/admin-actions';
 import {
-<<<<<<< HEAD
-    UserData,
-    UserRegistration,
-    UserResetPasswordData,
-} from '../../types/types';
-import { Dispatch } from 'redux';
-import RequestService from '../../utils/request-service';
-
-export const login =
-    (userData: UserData, history: any) => async (dispatch: Dispatch) => {
-        try {
-            const response = await RequestService.post('/auth/login', userData);
-            localStorage.setItem('email', response.data.email);
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('userRole', response.data.userRole);
-            localStorage.setItem('isLoggedIn', 'true');
-            dispatch(loginSuccess(response.data.userRole));
-            history.push('/account');
-        } catch (error) {
-            dispatch(loginFailure(error.response.data));
-        }
-    };
-
-export const registration =
-    (userRegistrationData: UserRegistration) => async (dispatch: Dispatch) => {
-        try {
-            dispatch(showLoader());
-            await RequestService.post('/registration', userRegistrationData);
-            dispatch(registerSuccess());
-        } catch (error) {
-            dispatch(registerFailure(error.response.data));
-        }
-    };
-=======
   UserData,
   UserRegistration,
   UserResetPasswordData,
@@ -114,7 +80,6 @@ export const registration =
       });
     }
   };
->>>>>>> 4a06b33f90b8b2d963cf00bc18b849243ef7841a
 
 export const logout = () => async (dispatch: Dispatch) => {
     localStorage.removeItem('email');
@@ -125,50 +90,6 @@ export const logout = () => async (dispatch: Dispatch) => {
 };
 
 export const activateAccount = (code: string) => async (dispatch: Dispatch) => {
-<<<<<<< HEAD
-    try {
-        const response = await RequestService.get(
-            '/registration/activate/' + code
-        );
-        dispatch(activateAccountSuccess(response.data));
-    } catch (error) {
-        dispatch(activateAccountFailure(error.response.data));
-    }
-};
-
-export const forgotPassword =
-    (email: { email: string }) => async (dispatch: Dispatch) => {
-        try {
-            dispatch(showLoader());
-            const response = await RequestService.post('/auth/forgot', email);
-            dispatch(forgotPasswordSuccess(response.data));
-        } catch (error) {
-            dispatch(forgotPasswordFailure(error.response.data));
-        }
-    };
-
-export const fetchResetPasswordCode =
-    (code: string) => async (dispatch: Dispatch) => {
-        try {
-            const response = await RequestService.get('/auth/reset/' + code);
-            dispatch(resetPasswordCodeSuccess(response.data));
-        } catch (error) {
-            dispatch(resetPasswordCodeFailure(error.response.data));
-        }
-    };
-
-export const resetPassword =
-    (data: UserResetPasswordData, history: any) =>
-    async (dispatch: Dispatch) => {
-        try {
-            const response = await RequestService.post('/auth/reset', data);
-            dispatch(resetPasswordSuccess(response.data));
-            history.push('/login');
-        } catch (error) {
-            dispatch(resetPasswordFailure(error.response.data));
-        }
-    };
-=======
   try {
     const response = await RequestService.get("/registration/activate/" + code);
     dispatch(activateAccountSuccess(response.data));
@@ -208,7 +129,6 @@ export const resetPassword =
       dispatch(resetPasswordFailure(error.response.data));
     }
   };
->>>>>>> 4a06b33f90b8b2d963cf00bc18b849243ef7841a
 
 export const formReset = () => async (dispatch: Dispatch) => {
     dispatch(reset());
