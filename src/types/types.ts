@@ -46,16 +46,40 @@ export type PerfumeErrors = {
     priceError: string;
 };
 
+// export type Review = {
+//     id: number;
+//     author: string;
+//     message: string;
+//     rating: number;
+//     date: any;
+// };
+
+export type Customer = {
+    id: number;
+    customerEmail: string;
+    customerName: string;
+    customerPassword: string;
+    customerPhoneNumber: string;
+    token: string | null;
+    userRole: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+};
+
 export type Review = {
     id: number;
-    author: string;
-    message: string;
-    rating: number;
-    date: any;
+    customer: Customer;
+    productId: number;
+    reviewMessage: string;
+    reviewRating: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
 };
 
 export type ReviewData = {
-    perfumeId: number | string;
+    productId: number | string;
     author: string;
     message: string;
     rating: number;
