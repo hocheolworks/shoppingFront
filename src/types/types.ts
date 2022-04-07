@@ -60,8 +60,11 @@ export type Customer = {
     customerName: string;
     customerPassword: string;
     customerPhoneNumber: string;
-    token: string | null;
+    custormerAddress: string;
+    signupVerifyToken: string | null;
     userRole: string;
+    orders: Array<string>;
+    reviews: Array<string>;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
@@ -153,20 +156,6 @@ export type User = {
     provider: string;
     roles: Array<string>;
 };
-
-export type Customer = {
-    id: number;
-    customerEmail: string;
-    customerName: string;
-    customerPassword: string;
-    customerPhoneNumber: string;
-    custormerAddress: string;
-    signupVerifyToken: string | null;
-    userRole: string;
-    orders: Array<string>;
-    reviews: Array<string>;
-};
-
 
 // export type UserEdit = {
 //     id: number | undefined;

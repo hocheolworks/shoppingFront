@@ -56,12 +56,12 @@ export const authErrorsData: AuthErrors = {
   password2Error: "입력하신 비밀번호를 확인해주세요",
 };
 
-export const reviewData: ReviewData = {
-  perfumeId: 1,
-  author: "John Doe",
-  message: "Hello",
-  rating: 5,
-};
+// export const reviewData: ReviewData = {
+//   perfumeId: 1,
+//   author: "John Doe",
+//   message: "Hello",
+//   rating: 5,
+// };
 
 export const reviewErrorsData: ReviewError = {
   authorError: "Fill in the input field",
