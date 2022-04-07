@@ -12,12 +12,12 @@ import {
 import { logout } from '../../redux/thunks/auth-thunks';
 import './NavBar.css';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { Perfume } from '../../types/types';
+import { Product } from '../../types/types';
 
 const NavBar: FC = () => {
     const dispatch = useDispatch();
-    const perfumes: Array<Perfume> = useSelector(
-        (state: AppStateType) => state.cart.perfumes
+    const products: Array<Product> = useSelector(
+        (state: AppStateType) => state.cart.products
     );
     const isLoggedIn: boolean = useSelector(
         (state: AppStateType) => state.user.isLoggedIn
@@ -132,7 +132,7 @@ const NavBar: FC = () => {
                                         }}
                                     >
                                         <span className="badge badge-success">
-                                            {perfumes.length}
+                                            {products.length}
                                         </span>
                                     </h5>
                                 </Link>

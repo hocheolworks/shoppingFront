@@ -56,7 +56,7 @@ const MenuCards: FC<PropsType> = ({
                             nextPage={nextPage}
                         />
                     </div>
-                    <div className="col-md-6 d-flex justify-content-end">
+                    {/* <div className="col-md-6 d-flex justify-content-end">
                         <ul className="pagination">
                             <li className="page-item disabled">
                                 <a className="page-link" href="#">
@@ -104,7 +104,7 @@ const MenuCards: FC<PropsType> = ({
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
                 {loading ? (
                     <Spinner />

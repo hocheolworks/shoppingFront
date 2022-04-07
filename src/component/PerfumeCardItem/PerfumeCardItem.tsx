@@ -21,7 +21,6 @@ const PerfumeCardItem: FC<PropsType> = ({
     link,
     btnName,
 }) => {
-    console.log(divKey);
     return (
         <div key={`product${divKey}`} className={`col-lg-${colSize}`}>
             <div className="card mb-5" style={{ height: '270px' }}>
