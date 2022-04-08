@@ -9,7 +9,6 @@ const ManageUserOrder: FC = () => {
     const location = useLocation<Order>();
     const {
         id,
-        orderEmail,
         orderCustomerName,
         orderTotalPrice,
         orderPostIndex,
@@ -35,10 +34,6 @@ const ManageUserOrder: FC = () => {
                         <span className="personal_data_text">
                             {orderCustomerName}
                         </span>
-                    </p>
-                    <p className="personal_data_item">
-                        이메일:
-                        <span className="personal_data_text">{orderEmail}</span>
                     </p>
                     <p className="personal_data_item">
                         휴대폰 번호:

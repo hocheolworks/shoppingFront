@@ -111,9 +111,8 @@ export type Order = {
     orderCustomerName: string;
     orderAddress: string;
     orderAddressDetail: string;
-    orderEmail: string;
     orderPhoneNumber: string;
-    orderPostIndex: number;
+    orderPostIndex: string;
     orderItems: Array<OrderItem>;
     createdAt: string;
 };
@@ -152,6 +151,10 @@ export type User = {
     active: boolean;
     provider: string;
     roles: Array<string>;
+};
+
+export type User2 = {
+    id: number;
 };
 
 export type UserEdit = {
@@ -214,4 +217,12 @@ export type PerfumePrice = {
 export type BrandType = {
     name: string;
     url: string;
+};
+
+export type PostCodeObject = {
+    zonecode: string;
+    jibunAddress: string;
+    roadAddress: string;
+    userSelectedType: string;
+    addressType: string;
 };
