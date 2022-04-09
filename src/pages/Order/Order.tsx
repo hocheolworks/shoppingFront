@@ -17,6 +17,7 @@ import {
     Product,
     User,
     PostCodeObject,
+    Customer,
 } from '../../types/types';
 
 import DaumPostcode from 'react-daum-postcode';
@@ -27,6 +28,11 @@ const Order: FC = () => {
     const usersData: Partial<User> = useSelector(
         (state: AppStateType) => state.user.user
     );
+    
+    const customersData: Partial<Customer> = useSelector(
+        (state: AppStateType) => state.user.customer
+    );
+
     const products: Array<Product> = useSelector(
         (state: AppStateType) => state.cart.products
     );
@@ -63,17 +69,15 @@ const Order: FC = () => {
     const [validateEmailError, setValidateEmailError] = useState<string>('');
 
     // hjlee define state for order--------------------------------------------
-    const [orderCustomerName, setOrderCustomerName] = useState<
-        string | undefined
-    >(usersData.lastName);
-    const [orderPhoneNumber, setOrderPhoneNumber] = useState<
-        string | undefined
-    >();
+    const [orderCustomerName, setOrderCustomerName] = useState<string | undefined>(
+        customersData.customerName
+    );
+    const [orderPhoneNumber, setOrderPhoneNumber] = useState<string | undefined>(
+        customersData.customerPhoneNumber
+    );
     const [orderPostIndex, setOrderPostIndex] = useState<string | undefined>();
     const [orderAddress, setOrderAddress] = useState<string | undefined>();
-    const [orderAddressDetail, setOrderAddressDetail] = useState<
-        string | undefined
-    >();
+    const [orderAddressDetail, setOrderAddressDetail] = useState<string | undefined>();
     const [orderItems, setOrderItems] = useState<Array<OrderItem> | undefined>(
         []
     );
@@ -108,25 +112,25 @@ const Order: FC = () => {
         const productsId = Object.fromEntries(
             new Map(JSON.parse(localStorage.getItem('products') as string))
         );
-        const validateEmailError: string = validateEmail(email);
+        // const validateEmailError: string = validateEmail(email);
 
-        if (validateEmailError) {
-            setValidateEmailError(validateEmailError);
-        } else {
-            setValidateEmailError('');
-            const order = {
-                firstName,
-                lastName,
-                city,
-                address,
-                postIndex,
-                phoneNumber,
-                email,
-                productsId,
-                totalPrice,
-            };
-            dispatch(addOrder(order, history));
-        }
+        // if (validateEmailError) {
+        //     setValidateEmailError(validateEmailError);
+        // } else {
+        //     setValidateEmailError('');
+        // }
+
+        const order = {
+            orderCustomerName,
+            orderPhoneNumber,
+            orderPostIndex,
+            orderAddress,
+            orderAddressDetail,
+            orderItems,
+            productsId,
+            totalPrice,
+        };
+        dispatch(addOrder(order, history));
     };
 
     let pageLoading;
@@ -235,7 +239,7 @@ const Order: FC = () => {
                                     name="address"
                                     value={orderAddressDetail}
                                     onChange={(event) =>
-                                        setAddress(event.target.value)
+                                        setOrderAddressDetail(event.target.value)
                                     }
                                 />
                                 <div className="invalid-feedback">
@@ -257,7 +261,7 @@ const Order: FC = () => {
                                     }
                                     name="phoneNumber"
                                     value={orderPhoneNumber}
-                                    placeholder="(000)-0000-0000"
+                                    placeholder="000-0000-0000"
                                     onChange={(event) =>
                                         setOrderPhoneNumber(event.target.value)
                                     }
@@ -328,8 +332,7 @@ const Order: FC = () => {
                             type="submit"
                             className="btn btn-primary btn-lg btn-success px-5 float-right"
                         >
-                            <FontAwesomeIcon icon={faCheckCircle} /> Validate
-                            order
+                            <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
                         </button>
                         <div className="row">
                             <h4>

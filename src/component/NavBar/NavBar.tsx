@@ -27,64 +27,6 @@ const NavBar: FC = () => {
     dispatch(logout());
   };
 
-<<<<<<< HEAD
-    let links;
-    let signOut;
-    localStorage.setItem('token', 'test'); // hard coding
-    if (localStorage.getItem('isLoggedIn') || isLoggedIn) {
-        links = (
-            <li className="nav-item">
-                <Link to={'/account'}>
-                    <span className="nav-link pl-5 pr-5">
-                        <FontAwesomeIcon className="mr-2" icon={faUser} />
-                        내 계정
-                    </span>
-                </Link>
-            </li>
-        );
-        signOut = (
-            <Link to={'/'} onClick={handleLogout}>
-                <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-                로그아웃
-            </Link>
-        );
-    } else {
-        links = (
-            <>
-                <li className="nav-item">
-                    <Link to={'/login'} className="nav-link pl-5 pr-3">
-                        <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
-                        로그인
-                    </Link>
-                </li>
-                <li className="nav-item">
-                    <Link to={'/registration'} className="nav-link">
-                        <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
-                        회원가입
-                    </Link>
-                </li>
-            </>
-        );
-        signOut = null;
-    }
-
-    return (
-        <div>
-            <div
-                id="header"
-                className="container-fluid header-top d-none d-md-block pb-5 pt-5"
-            >
-                <img
-                    src="https://i.ibb.co/fqYvrL8/LOGO4.jpg"
-                    className="rounded mx-auto d-block"
-                />
-            </div>
-            <div className="container-fluid bg-black">
-                <nav
-                    id="navbar-main"
-                    className={`container navbar navbar-expand-lg bg-black text-white `}
-                    style={{ fontSize: '18px' }}
-=======
   let links;
   let signOut;
   localStorage.setItem("token", "test"); // hard coding
@@ -152,7 +94,6 @@ const NavBar: FC = () => {
                     pathname: "/menu",
                     state: { id: "all" },
                   }}
->>>>>>> 5920b783deea0b0cbcd0714e43ffa2a350316721
                 >
                   <span className="nav-link pl-5 pr-5">PERFUMES</span>
                 </Link>
