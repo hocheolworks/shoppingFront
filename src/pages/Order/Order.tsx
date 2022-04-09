@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react';
+import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,7 +11,15 @@ import { validateEmail } from '../../utils/input-validators';
 import PageLoader from '../../component/PageLoader/PageLoader';
 import { AppStateType } from '../../redux/reducers/root-reducer';
 import { useHistory } from 'react-router-dom';
-import { OrderError, Product, User } from '../../types/types';
+import {
+    OrderError,
+    OrderItem,
+    Product,
+    User,
+    PostCodeObject,
+} from '../../types/types';
+
+import DaumPostcode from 'react-daum-postcode';
 
 const Order: FC = () => {
     const dispatch = useDispatch();
@@ -54,15 +62,41 @@ const Order: FC = () => {
     const [email, setEmail] = useState<string | undefined>(usersData.email);
     const [validateEmailError, setValidateEmailError] = useState<string>('');
 
-    const {
-        firstNameError,
-        lastNameError,
-        cityError,
-        addressError,
-        postIndexError,
-        phoneNumberError,
-        emailError,
-    } = errors;
+    // hjlee define state for order--------------------------------------------
+    const [orderCustomerName, setOrderCustomerName] = useState<
+        string | undefined
+    >(usersData.lastName);
+    const [orderPhoneNumber, setOrderPhoneNumber] = useState<
+        string | undefined
+    >();
+    const [orderPostIndex, setOrderPostIndex] = useState<string | undefined>();
+    const [orderAddress, setOrderAddress] = useState<string | undefined>();
+    const [orderAddressDetail, setOrderAddressDetail] = useState<
+        string | undefined
+    >();
+    const [orderItems, setOrderItems] = useState<Array<OrderItem> | undefined>(
+        []
+    );
+
+    const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+
+    const postIndexRef = useRef(null);
+
+    const onClickPostIndex = (): void => {
+        setIsPopupOpen((prevState) => !prevState);
+    };
+
+    const onCompletePostIndex = (data: PostCodeObject): void => {
+        setOrderAddress(
+            data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
+        );
+        setOrderPostIndex(data.zonecode);
+        setIsPopupOpen(false);
+    };
+    // -------------------------------------------------------------------------
+
+    const { lastNameError, addressError, postIndexError, phoneNumberError } =
+        errors;
 
     useEffect(() => {
         dispatch(fetchOrder());
@@ -105,7 +139,7 @@ const Order: FC = () => {
             {pageLoading}
             <h4 className="mb-4 text-center">
                 <FontAwesomeIcon className="mr-2" icon={faShoppingBag} />{' '}
-                Ordering
+                주문하기
             </h4>
             <br />
             <form onSubmit={onFormSubmit}>
@@ -113,31 +147,7 @@ const Order: FC = () => {
                     <div className="col-lg-6">
                         <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
-                                Name:
-                            </label>
-                            <div className="col-sm-8">
-                                <input
-                                    type="text"
-                                    className={
-                                        firstNameError
-                                            ? 'form-control is-invalid'
-                                            : 'form-control'
-                                    }
-                                    name="firstName"
-                                    value={firstName}
-                                    placeholder="Enter the first name"
-                                    onChange={(event) =>
-                                        setFirstName(event.target.value)
-                                    }
-                                />
-                                <div className="invalid-feedback">
-                                    {firstNameError}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label className="col-sm-2 col-form-label">
-                                Surname:
+                                수령인:
                             </label>
                             <div className="col-sm-8">
                                 <input
@@ -148,10 +158,10 @@ const Order: FC = () => {
                                             : 'form-control'
                                     }
                                     name="lastName"
-                                    value={lastName}
+                                    value={orderCustomerName}
                                     placeholder="Enter the last name"
                                     onChange={(event) =>
-                                        setLastName(event.target.value)
+                                        setOrderCustomerName(event.target.value)
                                     }
                                 />
                                 <div className="invalid-feedback">
@@ -161,34 +171,38 @@ const Order: FC = () => {
                         </div>
                         <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
-                                City:
+                                우편번호:
                             </label>
                             <div className="col-sm-8">
                                 <input
+                                    ref={postIndexRef}
+                                    onClick={onClickPostIndex}
+                                    readOnly
                                     type="text"
                                     className={
-                                        cityError
+                                        postIndexError
                                             ? 'form-control is-invalid'
                                             : 'form-control'
                                     }
-                                    name="city"
-                                    value={city}
-                                    placeholder="Enter the city"
+                                    name="postIndex"
+                                    value={orderPostIndex}
+                                    placeholder="우편번호"
                                     onChange={(event) =>
-                                        setCity(event.target.value)
+                                        setOrderPostIndex(event.target.value)
                                     }
                                 />
                                 <div className="invalid-feedback">
-                                    {cityError}
+                                    {postIndexError}
                                 </div>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
-                                Address:
+                                주소:
                             </label>
                             <div className="col-sm-8">
                                 <input
+                                    readOnly
                                     type="text"
                                     className={
                                         addressError
@@ -196,8 +210,7 @@ const Order: FC = () => {
                                             : 'form-control'
                                     }
                                     name="address"
-                                    value={address}
-                                    placeholder="Enter the address"
+                                    value={orderAddress}
                                     onChange={(event) =>
                                         setAddress(event.target.value)
                                     }
@@ -209,31 +222,30 @@ const Order: FC = () => {
                         </div>
                         <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
-                                Index:
+                                상세주소:
                             </label>
                             <div className="col-sm-8">
                                 <input
                                     type="text"
                                     className={
-                                        postIndexError
+                                        addressError
                                             ? 'form-control is-invalid'
                                             : 'form-control'
                                     }
-                                    name="postIndex"
-                                    value={postIndex}
-                                    placeholder="Enter the index"
+                                    name="address"
+                                    value={orderAddressDetail}
                                     onChange={(event) =>
-                                        setPostIndex(event.target.value)
+                                        setAddress(event.target.value)
                                     }
                                 />
                                 <div className="invalid-feedback">
-                                    {postIndexError}
+                                    {addressError}
                                 </div>
                             </div>
                         </div>
                         <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
-                                Mobile:
+                                연락처:
                             </label>
                             <div className="col-sm-8">
                                 <input
@@ -244,10 +256,10 @@ const Order: FC = () => {
                                             : 'form-control'
                                     }
                                     name="phoneNumber"
-                                    value={phoneNumber}
-                                    placeholder="(___)-___-____"
+                                    value={orderPhoneNumber}
+                                    placeholder="(000)-0000-0000"
                                     onChange={(event) =>
-                                        setPhoneNumber(event.target.value)
+                                        setOrderPhoneNumber(event.target.value)
                                     }
                                 />
                                 <div className="invalid-feedback">
@@ -255,30 +267,21 @@ const Order: FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="form-group row">
-                            <label className="col-sm-2 col-form-label">
-                                Email:
-                            </label>
-                            <div className="col-sm-8">
-                                <input
-                                    type="text"
-                                    className={
-                                        emailError || validateEmailError
-                                            ? 'form-control is-invalid'
-                                            : 'form-control'
-                                    }
-                                    name="email"
-                                    value={email}
-                                    placeholder="example@gmail.com"
-                                    onChange={(event) =>
-                                        setEmail(event.target.value)
-                                    }
-                                />
-                                <div className="invalid-feedback">
-                                    {emailError || validateEmailError}
+                        {isPopupOpen && (
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label"></label>
+                                <div className="col-sm-8">
+                                    <DaumPostcode
+                                        className="form-control"
+                                        style={{
+                                            border: '1px solid black',
+                                            padding: 0,
+                                        }}
+                                        onComplete={onCompletePostIndex}
+                                    />
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                     <div className="col-lg-6">
                         <div className="container-fluid">
@@ -300,16 +303,15 @@ const Order: FC = () => {
                                                     </h5>
                                                     <h6>
                                                         <span>
-                                                            Price: ${' '}
-                                                            {
-                                                                product.productPrice
-                                                            }
+                                                            가격 :{' '}
+                                                            {`${product.productPrice.toLocaleString(
+                                                                'ko-KR'
+                                                            )} 원`}
                                                         </span>
-                                                        .00
                                                     </h6>
                                                     <h6>
                                                         <span>
-                                                            Quantity:{' '}
+                                                            수량 :{' '}
                                                             {productsFromLocalStorage.get(
                                                                 product.id
                                                             )}
@@ -331,7 +333,10 @@ const Order: FC = () => {
                         </button>
                         <div className="row">
                             <h4>
-                                To pay : $ <span>{totalPrice}</span>.00
+                                주문 금액 :{' '}
+                                <span>{`${totalPrice.toLocaleString(
+                                    'ko-KR'
+                                )} 원`}</span>
                             </h4>
                         </div>
                     </div>

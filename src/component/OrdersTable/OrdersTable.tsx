@@ -30,8 +30,7 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                             <tr>
                                 <th>주문번호</th>
                                 <th>주문날짜</th>
-                                <th>주문자</th>
-                                <th>이메일</th>
+                                <th>수령인</th>
                                 <th>금액</th>
                                 <th></th>
                             </tr>
@@ -43,7 +42,6 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                                         <th>{order.id}</th>
                                         <th>{order.createdAt}</th>
                                         <th>{order.orderCustomerName}</th>
-                                        <th>{order.orderEmail}</th>
                                         <th>
                                             {order.orderTotalPrice.toLocaleString(
                                                 'ko-KR'

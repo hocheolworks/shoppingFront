@@ -25,7 +25,7 @@ export const addOrder =
             history.push('/order/finalize');
             localStorage.removeItem('perfumes');
             dispatch(orderAddedSuccess(response.data));
-        } catch (error) {
+        } catch (error: any) {
             dispatch(orderAddedFailure(error.response?.data));
         }
     };

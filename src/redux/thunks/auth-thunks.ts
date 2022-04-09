@@ -1,21 +1,21 @@
 import { RegistrationEmailData } from "./../../types/types";
 import {
-    activateAccountFailure,
-    activateAccountSuccess,
-    forgotPasswordFailure,
-    forgotPasswordSuccess,
-    loginFailure,
-    loginSuccess,
-    logoutSuccess,
-    registerFailure,
-    registerSuccess,
-    resetPasswordCodeFailure,
-    resetPasswordCodeSuccess,
-    resetPasswordFailure,
-    resetPasswordSuccess,
-    showLoader,
-} from '../actions/auth-actions';
-import { reset } from '../actions/admin-actions';
+  activateAccountFailure,
+  activateAccountSuccess,
+  forgotPasswordFailure,
+  forgotPasswordSuccess,
+  loginFailure,
+  loginSuccess,
+  logoutSuccess,
+  registerFailure,
+  registerSuccess,
+  resetPasswordCodeFailure,
+  resetPasswordCodeSuccess,
+  resetPasswordFailure,
+  resetPasswordSuccess,
+  showLoader,
+} from "../actions/auth-actions";
+import { reset } from "../actions/admin-actions";
 import {
   UserData,
   UserRegistration,
@@ -47,19 +47,7 @@ export const registration =
   (userRegistrationData: UserRegistration) => async (dispatch: Dispatch) => {
     try {
       dispatch(showLoader());
-      const result = await RequestService.post(
-        "/registration",
-        userRegistrationData
-      );
-      if (result.status === 201) {
-        const registrationEmailData: RegistrationEmailData = {
-          from: "일진유통 slogupemailmoduletest@gmail.com", //TODO 하드코딩
-          to: userRegistrationData.customerEmail,
-          title: "일진유통 회원가입 확인 안내",
-          customerName: userRegistrationData.customerName,
-        };
-        await RequestService.post("/email", registrationEmailData);
-      }
+      await RequestService.post("/customer", userRegistrationData);
       dispatch(registerSuccess());
     } catch (error: any) {
       let errorMessage = error.response.data.message;
@@ -82,11 +70,11 @@ export const registration =
   };
 
 export const logout = () => async (dispatch: Dispatch) => {
-    localStorage.removeItem('email');
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('isLoggedIn');
-    dispatch(logoutSuccess());
+  localStorage.removeItem("email");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("isLoggedIn");
+  dispatch(logoutSuccess());
 };
 
 export const activateAccount = (code: string) => async (dispatch: Dispatch) => {
@@ -131,5 +119,5 @@ export const resetPassword =
   };
 
 export const formReset = () => async (dispatch: Dispatch) => {
-    dispatch(reset());
+  dispatch(reset());
 };

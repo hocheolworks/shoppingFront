@@ -235,7 +235,6 @@ const Cart: FC = () => {
                                     </div>
                                 );
                             })}
-                            <hr className="my-3" />
                             <div className="row">
                                 <div className="col-9">
                                     <p className="h5 text-right">
