@@ -11,7 +11,7 @@ import "./PersonalData.css";
 
 const PersonalData: FC = () => {
     const customersData: Partial<Customer> = useSelector((state: AppStateType) => state.user.customer);
-    const  { id, customerEmail, customerName, customerPassword, customerPhoneNumber, custormerAddress, userRole } = customersData;
+    const  { id, customerEmail, customerName, customerPassword, customerPhoneNumber, customerAddress, userRole } = customersData;
     const location = useLocation();
 
     return (
@@ -33,7 +33,7 @@ const PersonalData: FC = () => {
                     <span className="personal_data_text">{customerPhoneNumber}</span>
                 </p>
                 <p className="personal_data_item">Address:
-                    <span className="personal_data_text">{custormerAddress}</span>
+                    <span className="personal_data_text">{customerAddress}</span>
                 </p>
                 <p className="personal_data_item">Role:
                     <span className="personal_data_text">{userRole}</span>

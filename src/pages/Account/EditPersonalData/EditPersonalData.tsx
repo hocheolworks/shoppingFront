@@ -17,7 +17,7 @@ const EditPersonalData: FC = () => {
         (state: AppStateType) => state.user.userEditErrors
     );
     const [customer, setUser] = useState<Partial<Customer>>(customersData);
-    const { id, customerEmail, customerName, customerPassword, customerPhoneNumber, custormerAddress, userRole } =
+    const { id, customerEmail, customerName, customerPassword, customerPhoneNumber, customerAddress, userRole } =
     customer;
     const { firstNameError, lastNameError } = errors;
 
@@ -33,7 +33,7 @@ const EditPersonalData: FC = () => {
             customerName,
             customerPassword,
             customerPhoneNumber,
-            custormerAddress,
+            customerAddress,
             userRole,
         };
         dispatch(updateUserInfo(userEdit));
@@ -118,7 +118,7 @@ const EditPersonalData: FC = () => {
                             type="text"
                             className={'form-control'}
                             name="custormerAddress"
-                            value={custormerAddress}
+                            value={customerAddress}
                             onChange={handleInputChange}
                         />
                     </div>

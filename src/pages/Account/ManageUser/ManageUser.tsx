@@ -29,7 +29,7 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
         customerName,
         customerPassword,
         customerPhoneNumber,
-        custormerAddress,
+        customerAddress,
         signupVerifyToken,
         userRole,
         orders,
@@ -103,7 +103,7 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                                 <p className="personal_data_item">
                                     Address:
                                     <span className="personal_data_text">
-                                        {custormerAddress}
+                                        {customerAddress}
                                     </span>
                                 </p>
                                 <p className="personal_data_item">

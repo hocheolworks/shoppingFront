@@ -36,7 +36,9 @@ const Order: FC = () => {
     const products: Array<Product> = useSelector(
         (state: AppStateType) => state.cart.products
     );
-    const totalPrice: number = useSelector(
+    
+    // totalPricee --> orderTotalPrice로 변경
+    const orderTotalPrice: number = useSelector(
         (state: AppStateType) => state.cart.totalPrice
     );
     const errors: Partial<OrderError> = useSelector(
@@ -75,12 +77,23 @@ const Order: FC = () => {
     const [orderPhoneNumber, setOrderPhoneNumber] = useState<string | undefined>(
         customersData.customerPhoneNumber
     );
-    const [orderPostIndex, setOrderPostIndex] = useState<string | undefined>();
-    const [orderAddress, setOrderAddress] = useState<string | undefined>();
-    const [orderAddressDetail, setOrderAddressDetail] = useState<string | undefined>();
+    const [orderPostIndex, setOrderPostIndex] = useState<string | undefined>(
+        customersData.customerPostIndex
+    );
+    const [orderAddress, setOrderAddress] = useState<string | undefined>(
+        customersData.customerAddress
+    );
+    const [orderAddressDetail, setOrderAddressDetail] = useState<string | undefined>(
+        customersData.customerAddressDetail
+    );
     const [orderItems, setOrderItems] = useState<Array<OrderItem> | undefined>(
         []
     );
+    // hyeongwook add
+    const [customerId] = useState<number | undefined>(
+        customersData.id
+    );
+    
 
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
@@ -112,15 +125,10 @@ const Order: FC = () => {
         const productsId = Object.fromEntries(
             new Map(JSON.parse(localStorage.getItem('products') as string))
         );
-        // const validateEmailError: string = validateEmail(email);
 
-        // if (validateEmailError) {
-        //     setValidateEmailError(validateEmailError);
-        // } else {
-        //     setValidateEmailError('');
-        // }
-
+        console.log(productsId.arguments);
         const order = {
+            customerId,
             orderCustomerName,
             orderPhoneNumber,
             orderPostIndex,
@@ -128,7 +136,7 @@ const Order: FC = () => {
             orderAddressDetail,
             orderItems,
             productsId,
-            totalPrice,
+            orderTotalPrice,
         };
         dispatch(addOrder(order, history));
     };
@@ -337,7 +345,7 @@ const Order: FC = () => {
                         <div className="row">
                             <h4>
                                 주문 금액 :{' '}
-                                <span>{`${totalPrice.toLocaleString(
+                                <span>{`${orderTotalPrice.toLocaleString(
                                     'ko-KR'
                                 )} 원`}</span>
                             </h4>

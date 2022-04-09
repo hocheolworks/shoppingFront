@@ -41,7 +41,7 @@ const UsersList: FC = () => {
                                 <th>{customer.id}</th>
                                 <th>{customer.customerName}</th>
                                 <th>{customer.customerEmail}</th>
-                                <th>{customer.custormerAddress}</th>
+                                <th>{customer.customerAddress}</th>
                                 <th>{customer.userRole}</th>
                                 <th>
                                     <Link to={`/account/admin/users/${customer.id}`}>Show more</Link>

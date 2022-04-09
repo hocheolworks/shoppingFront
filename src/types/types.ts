@@ -60,7 +60,9 @@ export type Customer = {
     customerName: string;
     customerPassword: string;
     customerPhoneNumber: string;
-    custormerAddress: string;
+    customerPostIndex: string;
+    customerAddress: string;
+    customerAddressDetail: string;
     signupVerifyToken: string | null;
     userRole: string;
     orders: Array<string>;
@@ -175,7 +177,7 @@ export type UserEdit = {
     customerName: string | undefined;
     customerPassword: string | undefined;
     customerPhoneNumber: string | undefined;
-    custormerAddress: string | undefined;
+    customerAddress: string | undefined;
     userRole: string | undefined;
 };
 
