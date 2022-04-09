@@ -1,153 +1,268 @@
-import React, {ChangeEvent, FC, useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     faChevronDown,
     faChevronUp,
     faMinusSquare,
     faShoppingBag,
-    faShoppingCart
-} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+    faShoppingCart,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import Spinner from "../../component/Spinner/Spinner";
-import {calculateCartPrice, fetchCart, loadCart} from "../../redux/thunks/cart-thunks";
-import {AppStateType} from "../../redux/reducers/root-reducer";
-import {Perfume} from "../../types/types";
+import Spinner from '../../component/Spinner/Spinner';
+import {
+    calculateCartPrice,
+    fetchCart,
+    loadCart,
+} from '../../redux/thunks/cart-thunks';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import { Product } from '../../types/types';
 
 const Cart: FC = () => {
     const dispatch = useDispatch();
-    const perfumes: Array<Perfume> = useSelector((state: AppStateType) => state.cart.perfumes);
-    const totalPrice: number = useSelector((state: AppStateType) => state.cart.totalPrice);
-    const loading: boolean = useSelector((state: AppStateType) => state.cart.loading);
-    const [perfumeInCart, setPerfumeInCart] = useState(() => new Map());
+    const products: Array<Product> = useSelector(
+        (state: AppStateType) => state.cart.products
+    );
+    const totalPrice: number = useSelector(
+        (state: AppStateType) => state.cart.totalPrice
+    );
+    const loading: boolean = useSelector(
+        (state: AppStateType) => state.cart.loading
+    );
+    const [productInCart, setProductInCart] = useState(() => new Map());
 
     useEffect(() => {
-        const perfumesFromLocalStorage: Map<number, number> = new Map(JSON.parse(localStorage.getItem("perfumes") as string));
+        const productsFromLocalStorage: Map<number, number> = new Map(
+            JSON.parse(localStorage.getItem('products') as string)
+        );
 
-        if (perfumesFromLocalStorage !== null) {
-            dispatch(fetchCart(Array.from(perfumesFromLocalStorage.keys())))
-            perfumesFromLocalStorage.forEach((value: number, key: number) => {
-                setPerfumeInCart(perfumeInCart.set(key, value))
+        if (productsFromLocalStorage !== null) {
+            dispatch(fetchCart(Array.from(productsFromLocalStorage.keys())));
+            productsFromLocalStorage.forEach((value: number, key: number) => {
+                setProductInCart(productInCart.set(key, value));
             });
         } else {
             dispatch(loadCart());
         }
     }, []);
 
-    const deleteFromCart = (perfumeId: number): void => {
-        perfumeInCart.delete(perfumeId);
+    const deleteFromCart = (productId: number): void => {
+        productInCart.delete(productId);
 
-        if (perfumeInCart.size === 0) {
-            localStorage.removeItem("perfumes");
-            setPerfumeInCart(new Map());
+        if (productInCart.size === 0) {
+            localStorage.removeItem('products');
+            setProductInCart(new Map());
         } else {
-            localStorage.setItem("perfumes", JSON.stringify(Array.from(perfumeInCart.entries())));
+            localStorage.setItem(
+                'products',
+                JSON.stringify(Array.from(productInCart.entries()))
+            );
         }
-        dispatch(fetchCart(Array.from(perfumeInCart.keys())));
+        dispatch(fetchCart(Array.from(productInCart.keys())));
     };
 
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>, perfumeId: number): void => {
-        if (isNaN(parseInt(event.target.value)) || parseInt(event.target.value) === 0 || parseInt(event.target.value) > 99) {
-            setPerfumeInCart(perfumeInCart.set(perfumeId, 1));
-            localStorage.setItem("perfumes", JSON.stringify(Array.from(perfumeInCart.entries())));
+    const handleInputChange = (
+        event: ChangeEvent<HTMLInputElement>,
+        productId: number
+    ): void => {
+        if (
+            isNaN(parseInt(event.target.value)) ||
+            parseInt(event.target.value) === 0 ||
+            parseInt(event.target.value) > 99
+        ) {
+            setProductInCart(productInCart.set(productId, 1));
+            localStorage.setItem(
+                'products',
+                JSON.stringify(Array.from(productInCart.entries()))
+            );
         } else {
-            setPerfumeInCart(perfumeInCart.set(perfumeId, parseInt(event.target.value)));
-            localStorage.setItem("perfumes", JSON.stringify(Array.from(perfumeInCart.entries())));
+            setProductInCart(
+                productInCart.set(productId, parseInt(event.target.value))
+            );
+            localStorage.setItem(
+                'products',
+                JSON.stringify(Array.from(productInCart.entries()))
+            );
         }
-        dispatch(calculateCartPrice(perfumes));
+        dispatch(calculateCartPrice(products));
     };
 
-    const onIncrease = (perfumeId: number): void => {
-        setPerfumeInCart(perfumeInCart.set(perfumeId, perfumeInCart.get(perfumeId) + 1));
-        localStorage.setItem("perfumes", JSON.stringify(Array.from(perfumeInCart.entries())));
-        dispatch(calculateCartPrice(perfumes));
+    const onIncrease = (productId: number): void => {
+        setProductInCart(
+            productInCart.set(productId, productInCart.get(productId) + 1)
+        );
+        localStorage.setItem(
+            'products',
+            JSON.stringify(Array.from(productInCart.entries()))
+        );
+        dispatch(calculateCartPrice(products));
     };
 
-    const onDecrease = (perfumeId: number): void => {
-        setPerfumeInCart(perfumeInCart.set(perfumeId, perfumeInCart.get(perfumeId) - 1));
-        localStorage.setItem("perfumes", JSON.stringify(Array.from(perfumeInCart.entries())));
-        dispatch(calculateCartPrice(perfumes));
+    const onDecrease = (productId: number): void => {
+        setProductInCart(
+            productInCart.set(productId, productInCart.get(productId) - 1)
+        );
+        localStorage.setItem(
+            'products',
+            JSON.stringify(Array.from(productInCart.entries()))
+        );
+        dispatch(calculateCartPrice(products));
     };
 
     return (
-        <div className="container mt-5 pb-5" style={{minHeight: "350px"}}>
-            {loading ? <Spinner/> :
+        <div className="container mt-5 pb-5" style={{ minHeight: '350px' }}>
+            {loading ? (
+                <Spinner />
+            ) : (
                 <div>
-                    {perfumes.length === 0 ?
-                        <div style={{textAlign: "center"}}>
+                    {products.length === 0 ? (
+                        <div style={{ textAlign: 'center' }}>
                             <h2>Cart is empty</h2>
-                        </div> :
+                        </div>
+                    ) : (
                         <div>
                             <p className="h4 mb-4 text-center">
-                                <FontAwesomeIcon className="mr-2" icon={faShoppingCart}/> Cart
+                                <FontAwesomeIcon
+                                    className="mr-2"
+                                    icon={faShoppingCart}
+                                />{' '}
+                                장바구니
                             </p>
-                            {perfumes.map((perfume: Perfume) => {
+                            {products.map((product: Product) => {
                                 return (
-                                    <div key={perfume.id} className="card mb-3 mx-auto" style={{maxWidth: "940px"}}>
+                                    <div
+                                        key={product.id}
+                                        className="card mb-3 mx-auto"
+                                        style={{ maxWidth: '940px' }}
+                                    >
                                         <div className="row no-gutters">
                                             <div className="col-2 mx-3 my-3">
-                                                <img src={perfume.filename} className="img-fluid"/>
+                                                <img
+                                                    src={`/image/product/${product.productName}.jpeg`}
+                                                    className="img-fluid"
+                                                />
                                             </div>
                                             <div className="col-6">
                                                 <div className="card-body">
-                                                    <h4 className="card-title">{perfume.perfumer + " " + perfume.perfumeTitle}</h4>
-                                                    <p className="card-text">{perfume.type}</p>
-                                                    <p className="card-text"><span>{perfume.volume}</span> ml.</p>
+                                                    <h4 className="card-title">
+                                                        {product.productName}
+                                                    </h4>
+                                                    <p className="card-text"></p>
+                                                    <p className="card-text"></p>
                                                 </div>
                                             </div>
                                             <div className="col-1 mt-3">
-                                                <button className="btn btn-default"
-                                                        disabled={perfumeInCart.get(perfume.id) === 99}
-                                                        onClick={() => onIncrease(perfume.id)}>
-                                                    <FontAwesomeIcon size="lg" icon={faChevronUp}/>
+                                                <button
+                                                    className="btn btn-default"
+                                                    disabled={
+                                                        productInCart.get(
+                                                            product.id
+                                                        ) === 99
+                                                    }
+                                                    onClick={() =>
+                                                        onIncrease(product.id)
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        size="lg"
+                                                        icon={faChevronUp}
+                                                    />
                                                 </button>
-                                                <input type="text"
-                                                       className="form-control input-number"
-                                                       style={{width: "45px"}}
-                                                       value={perfumeInCart.get(perfume.id)}
-                                                       onChange={(event) => handleInputChange(event, perfume.id)}/>
-                                                <button className="btn btn-default"
-                                                        disabled={perfumeInCart.get(perfume.id) === 1}
-                                                        onClick={() => onDecrease(perfume.id)}>
-                                                    <FontAwesomeIcon size="lg" icon={faChevronDown}/>
+                                                <input
+                                                    type="text"
+                                                    className="form-control input-number"
+                                                    style={{ width: '45px' }}
+                                                    value={productInCart.get(
+                                                        product.id
+                                                    )}
+                                                    onChange={(event) =>
+                                                        handleInputChange(
+                                                            event,
+                                                            product.id
+                                                        )
+                                                    }
+                                                />
+                                                <button
+                                                    className="btn btn-default"
+                                                    disabled={
+                                                        productInCart.get(
+                                                            product.id
+                                                        ) === 1
+                                                    }
+                                                    onClick={() =>
+                                                        onDecrease(product.id)
+                                                    }
+                                                >
+                                                    <FontAwesomeIcon
+                                                        size="lg"
+                                                        icon={faChevronDown}
+                                                    />
                                                 </button>
                                             </div>
                                             <div className="col-2">
                                                 <div className="card-body">
                                                     <h5 className="card-title">
-                                                        <span>$ {perfume.price * perfumeInCart.get(perfume.id)}</span>
+                                                        <span>
+                                                            {(
+                                                                product.productPrice *
+                                                                productInCart.get(
+                                                                    product.id
+                                                                )
+                                                            ).toLocaleString(
+                                                                'ko-KR'
+                                                            )}{' '}
+                                                            원
+                                                        </span>
                                                     </h5>
-                                                    <button className="btn btn-warning mb-2"
-                                                            onClick={() => deleteFromCart(perfume.id)}>
-                                                        <FontAwesomeIcon className="mr-2"
-                                                                         icon={faMinusSquare}/> Remove
+                                                    <button
+                                                        className="btn btn-warning mb-2"
+                                                        onClick={() =>
+                                                            deleteFromCart(
+                                                                product.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            className="mr-2"
+                                                            icon={faMinusSquare}
+                                                        />{' '}
+                                                        Remove
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                )
+                                );
                             })}
-                            <hr className="my-3"/>
                             <div className="row">
                                 <div className="col-9">
-                                    <p className="h5 text-right">Total: $ <span>{totalPrice}</span></p>
+                                    <p className="h5 text-right">
+                                        합계:{' '}
+                                        <span>
+                                            {totalPrice.toLocaleString('ko-KR')}{' '}
+                                            원
+                                        </span>
+                                    </p>
                                 </div>
                                 <div className="col-3">
                                     <div className="form-row">
-                                        <Link to={"/order"}>
+                                        <Link to={'/order'}>
                                             <button className="btn btn-success">
-                                                <FontAwesomeIcon className="mr-2" icon={faShoppingBag}/> Checkout
+                                                <FontAwesomeIcon
+                                                    className="mr-2"
+                                                    icon={faShoppingBag}
+                                                />{' '}
+                                                주문하기
                                             </button>
                                         </Link>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    }
+                    )}
                 </div>
-            }
+            )}
         </div>
     );
 };
