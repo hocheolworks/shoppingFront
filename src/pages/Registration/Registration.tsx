@@ -38,6 +38,7 @@ const Registration: FC = () => {
   const [customerPassword, setPassword] = useState<string>("");
   const [customerPassword2, setPassword2] = useState<string>("");
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
+  const [verifyNumber, setVerifyNumber] = useState<string>("");
 
   useEffect(() => {
     dispatch(formReset());
@@ -61,6 +62,7 @@ const Registration: FC = () => {
       customerPassword,
       customerPassword2,
       captcha: captchaValue,
+      verifyNumber,
     };
     dispatch(registration(userRegistrationData));
     // @ts-ignore
