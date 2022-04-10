@@ -20,6 +20,9 @@ import {
 } from '../../types/types';
 
 import DaumPostcode from 'react-daum-postcode';
+import './Order.css';
+import { loadTossPayments } from '@tosspayments/payment-sdk';
+const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
 const Order: FC = () => {
     const dispatch = useDispatch();
@@ -93,6 +96,8 @@ const Order: FC = () => {
         setOrderPostIndex(data.zonecode);
         setIsPopupOpen(false);
     };
+
+    useEffect(() => {}, []);
     // -------------------------------------------------------------------------
 
     const { lastNameError, addressError, postIndexError, phoneNumberError } =
@@ -104,29 +109,53 @@ const Order: FC = () => {
 
     const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
+        if (
+            products === undefined ||
+            products === null ||
+            products.length === 0
+        )
+            return;
+        console.log(`order-${usersData.lastName}-${new Date().toString()}`);
+        loadTossPayments(clientKey).then((tossPayments) => {
+            tossPayments.requestPayment('카드', {
+                // 결제 수단 파라미터
+                // 결제 정보 파라미터
+                amount: totalPrice,
+                orderId: 'abcdUPTZ-',
+                orderName:
+                    products.length === 1
+                        ? products[0].productName
+                        : `${products[0].productName} 외 ${
+                              products.length - 1
+                          }건`,
+                customerName: usersData.lastName,
+                successUrl: 'http://localhost:3000/order/success',
+                failUrl: 'http://localhost:3000/order/fail',
+            });
+        });
 
-        const productsId = Object.fromEntries(
-            new Map(JSON.parse(localStorage.getItem('products') as string))
-        );
-        const validateEmailError: string = validateEmail(email);
+        // const productsId = Object.fromEntries(
+        //     new Map(JSON.parse(localStorage.getItem('products') as string))
+        // );
+        // const validateEmailError: string = validateEmail(email);
 
-        if (validateEmailError) {
-            setValidateEmailError(validateEmailError);
-        } else {
-            setValidateEmailError('');
-            const order = {
-                firstName,
-                lastName,
-                city,
-                address,
-                postIndex,
-                phoneNumber,
-                email,
-                productsId,
-                totalPrice,
-            };
-            dispatch(addOrder(order, history));
-        }
+        // if (validateEmailError) {
+        //     setValidateEmailError(validateEmailError);
+        // } else {
+        //     setValidateEmailError('');
+        //     const order = {
+        //         firstName,
+        //         lastName,
+        //         city,
+        //         address,
+        //         postIndex,
+        //         phoneNumber,
+        //         email,
+        //         productsId,
+        //         totalPrice,
+        //     };
+        //     dispatch(addOrder(order, history));
+        // }
     };
 
     let pageLoading;
@@ -282,6 +311,15 @@ const Order: FC = () => {
                                 </div>
                             </div>
                         )}
+                        <hr />
+                        {/* <div className="form-group row">
+                            <label className="col-sm-2 col-form-label">
+                                결제수단:
+                            </label>
+                            <div className="col-sm-8">
+                                <input type="radio" />
+                            </div>
+                        </div> */}
                     </div>
                     <div className="col-lg-6">
                         <div className="container-fluid">

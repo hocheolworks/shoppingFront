@@ -47,65 +47,6 @@ const MenuCards: FC<PropsType> = ({
                 /> */}
             </div>
             <div className="container-fluid mt-3 ml-2">
-                <div className="row">
-                    <div className="col-md-6">
-                        <PaginationItem
-                            pagination={pagination}
-                            prevPage={prevPage}
-                            changePage={changePage}
-                            nextPage={nextPage}
-                        />
-                    </div>
-                    {/* <div className="col-md-6 d-flex justify-content-end">
-                        <ul className="pagination">
-                            <li className="page-item disabled">
-                                <a className="page-link" href="#">
-                                    Sort by price
-                                </a>
-                            </li>
-                            <li
-                                className={
-                                    sortByPrice
-                                        ? 'page-item active'
-                                        : 'page-item'
-                                }
-                            >
-                                <a
-                                    className={
-                                        sortByPrice
-                                            ? 'page-link bg-light border-dark text-dark'
-                                            : 'page-link bg-dark border-dark text-light'
-                                    }
-                                >
-                                    <FontAwesomeIcon
-                                        className="fa-sm"
-                                        icon={faArrowDown}
-                                    />
-                                </a>
-                            </li>
-                            <li
-                                className={
-                                    sortByPrice
-                                        ? 'page-item'
-                                        : 'page-item active'
-                                }
-                            >
-                                <a
-                                    className={
-                                        sortByPrice
-                                            ? 'page-link bg-dark border-dark text-light'
-                                            : 'page-link bg-light border-dark text-dark'
-                                    }
-                                >
-                                    <FontAwesomeIcon
-                                        className="fa-sm"
-                                        icon={faArrowUp}
-                                    />
-                                </a>
-                            </li>
-                        </ul>
-                    </div> */}
-                </div>
                 {loading ? (
                     <Spinner />
                 ) : (

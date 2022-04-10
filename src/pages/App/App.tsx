@@ -10,7 +10,8 @@ import Login from '../Login/Login';
 import Registration from '../Registration/Registration';
 import Account from '../Account/Account';
 import Order from '../Order/Order';
-import OrderFinalize from '../Order/OrderFinalize/OrderFinalize';
+import OrderSuccess from '../Order/OrderFinalize/OrderSuccess';
+import OrderFail from '../Order/OrderFinalize/OrderFail';
 import ForgotPassword from '../ForgotPassword/ForgotPassword';
 import ResetPassword from '../ResetPassword/ResetPassword';
 import Cart from '../Cart/Cart';
@@ -33,7 +34,8 @@ const App: FC = () => {
                 <Route exact path="/contacts" component={Contacts} />
                 <Route exact path="/cart" component={Cart} />
                 <Route exact path="/order" component={Order} />
-                <Route exact path="/order/finalize" component={OrderFinalize} />
+                <Route exact path="/order/success" component={OrderSuccess} />
+                <Route exact path="/order/fail" component={OrderFail} />
                 <Route
                     path="/oauth2/redirect"
                     component={OAuth2RedirectHandler}
