@@ -173,8 +173,8 @@ export type UserEditErrors = {
 };
 
 export type UserData = {
-  email: string;
-  password: string;
+  customerEmail: string;
+  customerPassword: string;
 };
 
 export type UserRegistration = {

@@ -31,8 +31,8 @@ const MySwal = withReactContent(Swal);
 export const login =
   (userData: UserData, history: any) => async (dispatch: Dispatch) => {
     try {
-      const response = await RequestService.post("/auth/login", userData);
-      localStorage.setItem("email", response.data.email);
+      const response = await RequestService.post("/customer/login", userData);
+      localStorage.setItem("email", response.data.customerEmail);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userRole", response.data.userRole);
       localStorage.setItem("isLoggedIn", "true");
