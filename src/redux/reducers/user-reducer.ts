@@ -49,7 +49,7 @@ export type InitialStateType = {
 const initialState: InitialStateType = {
     user: { id: 16, lastName: '이정철' },
     customer: { 
-        id: 7,
+        id: 13,
         customerEmail: 'jahanda@naver.com', 
         customerName: '김형욱', 
         customerPassword:'123123', 
