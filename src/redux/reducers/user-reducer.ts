@@ -1,5 +1,6 @@
 import {
     AuthErrors,
+    Customer,
     ReviewError,
     User,
     UserEditErrors,
@@ -21,6 +22,7 @@ import {
 
 export type InitialStateType = {
     user: Partial<User>;
+    customer: Partial<Customer>;
     isLoggedIn: boolean;
     isLoaded: boolean;
     successMessage: string;
@@ -43,8 +45,20 @@ export type InitialStateType = {
 // };
 
 // hard coding
+// TODO: 나중에 지울것
 const initialState: InitialStateType = {
     user: { id: 16, lastName: '이정철' },
+    customer: { 
+        id: 13,
+        customerEmail: 'jahanda@naver.com', 
+        customerName: '김형욱', 
+        customerPassword:'123123', 
+        customerPhoneNumber: '01098651070',
+        customerPostIndex: '13493',
+        customerAddress: '경기 성남시 분당구 판교로 338',
+        customerAddressDetail: '3층 에스트래픽',
+        userRole:'USER',
+    },
     isLoggedIn: true,
     isLoaded: false,
     successMessage: '',

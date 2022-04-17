@@ -60,8 +60,13 @@ export type Customer = {
   customerName: string;
   customerPassword: string;
   customerPhoneNumber: string;
-  token: string | null;
+  customerPostIndex: string;
+  customerAddress: string;
+  customerAddressDetail: string;
+  signupVerifyToken: string | null;
   userRole: string;
+  orders: Array<string>;
+  reviews: Array<string>;
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
@@ -153,18 +158,27 @@ export type User = {
   roles: Array<string>;
 };
 
+// export type UserEdit = {
+//     id: number | undefined;
+//     firstName: string | undefined;
+//     lastName: string | undefined;
+//     city: string | undefined;
+//     address: string | undefined;
+//     phoneNumber: string | undefined;
+//     postIndex: string | undefined;
+// };
 export type User2 = {
   id: number;
 };
 
 export type UserEdit = {
   id: number | undefined;
-  firstName: string | undefined;
-  lastName: string | undefined;
-  city: string | undefined;
-  address: string | undefined;
-  phoneNumber: string | undefined;
-  postIndex: string | undefined;
+  customerEmail: string | undefined;
+  customerName: string | undefined;
+  customerPassword: string | undefined;
+  customerPhoneNumber: string | undefined;
+  customerAddress: string | undefined;
+  userRole: string | undefined;
 };
 
 export type UserEditErrors = {

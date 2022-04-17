@@ -6,12 +6,12 @@ import {Link} from "react-router-dom";
 
 import {fetchAllUsers} from "../../../redux/thunks/admin-thunks";
 import {AppStateType} from "../../../redux/reducers/root-reducer";
-import {User} from "../../../types/types";
+import {Customer, User} from "../../../types/types";
 import Spinner from '../../../component/Spinner/Spinner';
 
 const UsersList: FC = () => {
     const dispatch = useDispatch();
-    const users: Array<User> = useSelector((state: AppStateType) => state.admin.users);
+    const customers: Array<Customer> = useSelector((state: AppStateType) => state.admin.customers);
     const loading: boolean = useSelector((state: AppStateType) => state.admin.isLoaded);
 
     useEffect(() => {
@@ -35,16 +35,16 @@ const UsersList: FC = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {users.map((user) => {
+                    {customers.map((customer) => {
                         return (
-                            <tr key={user.id}>
-                                <th>{user.id}</th>
-                                <th>{user.firstName}</th>
-                                <th>{user.email}</th>
-                                <th>{user.roles[0]}</th>
-                                <th>{user.provider}</th>
+                            <tr key={customer.id}>
+                                <th>{customer.id}</th>
+                                <th>{customer.customerName}</th>
+                                <th>{customer.customerEmail}</th>
+                                <th>{customer.customerAddress}</th>
+                                <th>{customer.userRole}</th>
                                 <th>
-                                    <Link to={`/account/admin/users/${user.id}`}>Show more</Link>
+                                    <Link to={`/account/admin/users/${customer.id}`}>Show more</Link>
                                 </th>
                             </tr>
                         );

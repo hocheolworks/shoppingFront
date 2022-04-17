@@ -14,14 +14,16 @@ import {
     FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
     LOADING_DATA
 } from "../action-types/admin-action-types";
-import {Order, PerfumeErrors, User} from "../../types/types";
+import {Customer, Order, PerfumeErrors, User} from "../../types/types";
 import {AdminActionTypes} from "../action-types/admin-action-types";
 
 export type InitialStateType = {
     orders: Array<Order>
     userOrders: Array<Order>
     users: Array<User>
+    customers:  Array<Customer>
     user: Partial<User>
+    customer: Partial<Customer>
     errors: Partial<PerfumeErrors>
     isPerfumeAdded: boolean
     isPerfumeEdited: boolean
@@ -32,7 +34,9 @@ const initialState: InitialStateType = {
     orders: [],
     userOrders: [],
     users: [],
+    customers: [],
     user: {},
+    customer: {},
     errors: {},
     isPerfumeAdded: false,
     isPerfumeEdited: false,

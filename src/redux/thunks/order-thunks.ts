@@ -21,7 +21,7 @@ export const addOrder =
     (order: any, history: any) => async (dispatch: Dispatch) => {
         try {
             dispatch(showLoader());
-            const response = await RequestService.post('/users/order', order);
+            const response = await RequestService.post('/order/payment', order);
             history.push('/order/finalize');
             localStorage.removeItem('perfumes');
             dispatch(orderAddedSuccess(response.data));

@@ -29,7 +29,7 @@ export const updateUserInfo =
     (userEdit: UserEdit) => async (dispatch: Dispatch) => {
         try {
             const response = await RequestService.put(
-                '/users/edit',
+                '/account/edit',
                 userEdit,
                 true
             );
