@@ -1,13 +1,13 @@
-import React, { FC } from "react";
-import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC } from 'react';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import usePagination from "../Pagination/usePagination";
-import PerfumeCardItem from "../PerfumeCardItem/PerfumeCardItem";
-import PaginationItem from "../Pagination/PaginationItem";
-import SearchForm from "../SearchForm/SearchForm";
-import { Product } from "../../types/types";
-import Spinner from "../Spinner/Spinner";
+import usePagination from '../Pagination/usePagination';
+import PerfumeCardItem from '../ProductCardItem/ProductCardItem';
+import PaginationItem from '../Pagination/PaginationItem';
+import SearchForm from '../SearchForm/SearchForm';
+import { Product } from '../../types/types';
+import Spinner from '../Spinner/Spinner';
 
 type PropsType = {
   data: Array<Product>;
@@ -58,8 +58,8 @@ const MenuCards: FC<PropsType> = ({
                     divKey={product.id}
                     product={product}
                     colSize={3}
-                    link={"/product"}
-                    btnName={"상세 보기"}
+                    link={'/product'}
+                    btnName={'상세 보기'}
                   />
                 );
               })}
