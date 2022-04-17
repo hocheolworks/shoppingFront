@@ -17,6 +17,7 @@ import { AppStateType } from "../../redux/reducers/root-reducer";
 import { UserData } from "../../types/types";
 import googleLogo from "../../img/google.png";
 import facebookLogo from "../../img/facebook.png";
+import KakaoLogin from "../../component/Kakao/KakaoLogin";
 import "./Login.css";
 
 const Login: FC<RouteComponentProps<{ code: string }>> = ({ match }) => {
@@ -108,7 +109,7 @@ const Login: FC<RouteComponentProps<{ code: string }>> = ({ match }) => {
         </div>
         <div className="col-md-6">
           <div className="mt-5">
-            <a
+            {/* <a
               className="btn btn-block social-btn google"
               href="http://localhost:8080/oauth2/authorize/google"
             >
@@ -121,7 +122,8 @@ const Login: FC<RouteComponentProps<{ code: string }>> = ({ match }) => {
             >
               <img src={facebookLogo} alt="facebook" />
               페이스북 계정으로 로그인
-            </a>
+            </a> */}
+            <KakaoLogin></KakaoLogin>
           </div>
         </div>
       </div>
