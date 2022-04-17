@@ -108,7 +108,7 @@ const Order: FC = () => {
         // 결제 수단 파라미터
         // 결제 정보 파라미터
         amount: orderTotalPrice,
-        orderId: "abcdUPTZ-",
+        orderId: "2dwadawdwadw-",
         orderName:
           products.length === 1
             ? products[0].productName
