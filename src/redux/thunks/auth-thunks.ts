@@ -46,7 +46,13 @@ export const login =
       dispatch(fetchCustomerSuccess(response.data));
       history.push('/account');
     } catch (error: any) {
-      dispatch(loginFailure(error.response.data));
+      let errorMessage = error.response.data.message;
+
+      await MySwal.fire({
+        title: `<strong>로그인 실패!</strong>`,
+        html: `<i>${errorMessage}</i>`,
+        icon: "error",
+      });
     }
   };
 

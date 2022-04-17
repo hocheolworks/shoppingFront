@@ -21,6 +21,7 @@ import { AppStateType } from "../../redux/reducers/root-reducer";
 import { AuthErrors, CustomerRegistration } from "../../types/types";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
 
 const MySwal = withReactContent(Swal);
 
@@ -98,6 +99,7 @@ const Registration: FC = () => {
         captcha: captchaValue,
         verifyNumber,
       };
+
       dispatch(registration(userRegistrationData));
     } else {
       await MySwal.fire({
