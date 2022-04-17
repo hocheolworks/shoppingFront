@@ -1,3 +1,4 @@
+import { emailVerifySuccess } from "./../actions/auth-actions";
 import { RegistrationEmailData } from "./../../types/types";
 import {
   activateAccountFailure,
@@ -44,6 +45,31 @@ export const login =
       history.push("/account");
     } catch (error: any) {
       dispatch(loginFailure(error.response.data));
+    }
+  };
+
+export const emailValidation =
+  (userRegistrationData: CustomerRegistration) =>
+  async (dispatch: Dispatch) => {
+    try {
+      dispatch(showLoader());
+      await RequestService.post("/customer/email-verify", userRegistrationData);
+      dispatch(emailVerifySuccess());
+    } catch (error: any) {
+      dispatch(registerFailure(error.response.data));
+      let errorMessage = error.response.data.message;
+      if (Array.isArray(error.response.data.message)) {
+        if (/[a-zA-Z]/.test(error.response.data.message[0])) {
+          errorMessage = "입력하신 정보를 확인해주세요";
+        } else {
+          errorMessage = error.response.data.message[0];
+        }
+      }
+      await MySwal.fire({
+        title: `<strong>이메일 인증 실패</strong>`,
+        html: `<i>${errorMessage}</i>`,
+        icon: "error",
+      });
     }
   };
 

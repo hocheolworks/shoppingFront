@@ -16,6 +16,7 @@ import {
   RESET_PASSWORD_SUCCESS,
   SHOW_LOADER,
   AuthActionTypes,
+  EMAIL_VERIFY_SUCCESS,
 } from "../action-types/auth-action-types";
 
 export type InitialStateType = {
@@ -55,6 +56,9 @@ const reducer = (
       return { ...state, error: action.payload };
 
     case REGISTER_SUCCESS:
+      return { ...state, isRegistered: true, loading: false, errors: {} };
+
+    case EMAIL_VERIFY_SUCCESS:
       return { ...state, isRegistered: true, loading: false, errors: {} };
 
     case REGISTER_FAILURE:

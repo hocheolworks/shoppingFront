@@ -28,6 +28,8 @@ import {
   ResetPasswordFailureActionType,
   ResetPasswordSuccessActionType,
   ShowLoaderActionType,
+  EMAIL_VERIFY_SUCCESS,
+  EmailValidationSuccessActionType,
 } from "../action-types/auth-action-types";
 
 export const loginSuccess = (userRole: string): LoginSuccessActionType => ({
@@ -46,6 +48,10 @@ export const showLoader = (): ShowLoaderActionType => ({
 
 export const registerSuccess = (): RegisterSuccessActionType => ({
   type: REGISTER_SUCCESS,
+});
+
+export const emailVerifySuccess = (): EmailValidationSuccessActionType => ({
+  type: EMAIL_VERIFY_SUCCESS,
 });
 
 export const registerFailure = (
