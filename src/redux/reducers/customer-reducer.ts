@@ -3,8 +3,8 @@ import {
   ReviewError,
   Customer,
   CustomerEditErrors,
-} from "../../types/types";
-import { LOGOUT_SUCCESS } from "../action-types/auth-action-types";
+} from '../../types/types';
+import { LOGOUT_SUCCESS } from '../action-types/auth-action-types';
 import {
   FETCH_CUSTOMER_SUCCESS,
   CUSTOMER_ADDED_REVIEW_FAILURE,
@@ -17,7 +17,7 @@ import {
   FETCH_CUSTOMER_BY_QUERY_SUCCESS,
   LOADING_CUSTOMER_INFO,
   CustomerActionsTypes,
-} from "../action-types/customer-actions-types";
+} from '../action-types/customer-actions-types';
 
 export type InitialStateType = {
   customer: Partial<Customer>;
@@ -34,7 +34,7 @@ const initialState: InitialStateType = {
   customer: {},
   isLoggedIn: false,
   isLoaded: false,
-  successMessage: "",
+  successMessage: '',
   customerEditErrors: {},
   customerResetPasswordErrors: {},
   reviewErrors: {},
@@ -88,7 +88,7 @@ const reducer = (
       return {
         ...state,
         customerResetPasswordErrors: {},
-        successMessage: "",
+        successMessage: '',
         customerEditErrors: {},
         reviewErrors: {},
       };

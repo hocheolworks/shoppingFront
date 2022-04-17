@@ -177,3 +177,12 @@ export type CustomerData = {
   customerEmail: string;
   customerPassword: string;
 };
+
+export type CartItem = {
+  id: number | undefined;
+  customerId: number | undefined;
+  customer: Customer | undefined;
+  productId: number | undefined;
+  product: Product | undefined;
+  productCount: number;
+};
