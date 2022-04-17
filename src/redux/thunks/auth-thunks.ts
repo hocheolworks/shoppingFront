@@ -29,13 +29,17 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 export const login =
-  (userData: CustomerData, history: any) => async (dispatch: Dispatch) => {
+  (customerData: CustomerData, history: any) => async (dispatch: Dispatch) => {
     try {
-      const response = await RequestService.post("/customer/login", userData);
-      localStorage.setItem("email", response.data.customerEmail);
+      const response = await RequestService.post(
+        "/customer/login",
+        customerData
+      );
+      localStorage.setItem("customerEmail", response.data.customerEmail);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userRole", response.data.userRole);
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("id", response.data.id);
       dispatch(loginSuccess(response.data.userRole));
       history.push("/account");
     } catch (error: any) {
