@@ -17,9 +17,9 @@ import {
 } from "../actions/auth-actions";
 import { reset } from "../actions/admin-actions";
 import {
-  UserData,
-  UserRegistration,
-  UserResetPasswordData,
+  CustomerData,
+  CustomerRegistration,
+  CustomerResetPasswordData,
 } from "../../types/types";
 import { Dispatch } from "redux";
 import RequestService from "../../utils/request-service";
@@ -29,7 +29,7 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 export const login =
-  (userData: UserData, history: any) => async (dispatch: Dispatch) => {
+  (userData: CustomerData, history: any) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.post("/customer/login", userData);
       localStorage.setItem("email", response.data.customerEmail);
@@ -44,7 +44,8 @@ export const login =
   };
 
 export const registration =
-  (userRegistrationData: UserRegistration) => async (dispatch: Dispatch) => {
+  (userRegistrationData: CustomerRegistration) =>
+  async (dispatch: Dispatch) => {
     try {
       dispatch(showLoader());
       await RequestService.post("/customer", userRegistrationData);
@@ -108,7 +109,8 @@ export const fetchResetPasswordCode =
   };
 
 export const resetPassword =
-  (data: UserResetPasswordData, history: any) => async (dispatch: Dispatch) => {
+  (data: CustomerResetPasswordData, history: any) =>
+  async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.post("/auth/reset", data);
       dispatch(resetPasswordSuccess(response.data));

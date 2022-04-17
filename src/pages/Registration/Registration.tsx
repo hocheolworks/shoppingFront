@@ -12,7 +12,7 @@ import {
 import { formReset, registration } from "../../redux/thunks/auth-thunks";
 import PageLoader from "../../component/PageLoader/PageLoader";
 import { AppStateType } from "../../redux/reducers/root-reducer";
-import { AuthErrors, UserRegistration } from "../../types/types";
+import { AuthErrors, CustomerRegistration } from "../../types/types";
 
 const Registration: FC = () => {
   const dispatch = useDispatch();
@@ -55,7 +55,7 @@ const Registration: FC = () => {
 
   const onClickSignUp = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const userRegistrationData: UserRegistration = {
+    const userRegistrationData: CustomerRegistration = {
       customerEmail,
       customerName,
       customerPhoneNumber,

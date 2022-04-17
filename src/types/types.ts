@@ -1,23 +1,3 @@
-export type Perfume = {
-  id: number;
-  perfumeTitle: string;
-  perfumer: string;
-  year: number;
-  country: string;
-  type: string;
-  volume: string;
-  perfumeGender: string;
-  fragranceTopNotes: string;
-  fragranceMiddleNotes: string;
-  fragranceBaseNotes: string;
-  description: string;
-  filename: string;
-  price: number;
-  perfumeRating: number;
-  file: any;
-  reviews: Array<Review>;
-};
-
 export type Product = {
   id: number;
   productName: string;
@@ -32,27 +12,19 @@ export type Product = {
   deletedAt: string;
 };
 
-export type PerfumeErrors = {
-  perfumeTitleError: string;
-  perfumerError: string;
+export type ProductErrors = {
+  productTitleError: string;
+  productrError: string;
   yearError: string;
   countryError: string;
   typeError: string;
   volumeError: string;
-  perfumeGenderError: string;
+  productGenderError: string;
   fragranceTopNotesError: string;
   fragranceMiddleNotesError: string;
   fragranceBaseNotesError: string;
   priceError: string;
 };
-
-// export type Review = {
-//     id: number;
-//     author: string;
-//     message: string;
-//     rating: number;
-//     date: any;
-// };
 
 export type Customer = {
   id: number;
@@ -64,7 +36,7 @@ export type Customer = {
   customerAddress: string;
   customerAddressDetail: string;
   signupVerifyToken: string | null;
-  userRole: string;
+  customerRole: string;
   orders: Array<string>;
   reviews: Array<string>;
   createdAt: string;
@@ -95,20 +67,6 @@ export type ReviewError = {
   messageError: string;
   ratingError: string;
 };
-
-// export type Order = {
-//   id: number;
-//   totalPrice: number;
-//   date: string;
-//   firstName: string;
-//   lastName: string;
-//   city: string;
-//   address: string;
-//   email: string;
-//   phoneNumber: string;
-//   postIndex: number;
-//   orderItems: Array<OrderItem>;
-// };
 
 export type Order = {
   id: number;
@@ -142,56 +100,7 @@ export type OrderError = {
   phoneNumberError: string;
 };
 
-export type User = {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  city: string;
-  address: string;
-  phoneNumber: string;
-  postIndex: string;
-  activationCode: string | null;
-  passwordResetCode: string | null;
-  active: boolean;
-  provider: string;
-  roles: Array<string>;
-};
-
-// export type UserEdit = {
-//     id: number | undefined;
-//     firstName: string | undefined;
-//     lastName: string | undefined;
-//     city: string | undefined;
-//     address: string | undefined;
-//     phoneNumber: string | undefined;
-//     postIndex: string | undefined;
-// };
-export type User2 = {
-  id: number;
-};
-
-export type UserEdit = {
-  id: number | undefined;
-  customerEmail: string | undefined;
-  customerName: string | undefined;
-  customerPassword: string | undefined;
-  customerPhoneNumber: string | undefined;
-  customerAddress: string | undefined;
-  userRole: string | undefined;
-};
-
-export type UserEditErrors = {
-  firstNameError: string;
-  lastNameError: string;
-};
-
-export type UserData = {
-  customerEmail: string;
-  customerPassword: string;
-};
-
-export type UserRegistration = {
+export type CustomerRegistration = {
   customerEmail: string;
   customerName: string;
   customerPhoneNumber: string;
@@ -208,7 +117,7 @@ export type RegistrationEmailData = {
   customerName: string;
 };
 
-export type UserResetPasswordData = {
+export type CustomerResetPasswordData = {
   email: string | undefined;
   password: string;
   password2: string;
@@ -247,4 +156,24 @@ export type PostCodeObject = {
   roadAddress: string;
   userSelectedType: string;
   addressType: string;
+};
+
+export type CustomerEdit = {
+  id: number | undefined;
+  customerEmail: string | undefined;
+  customerName: string | undefined;
+  customerPassword: string | undefined;
+  customerPhoneNumber: string | undefined;
+  customerAddress: string | undefined;
+  customerRole: string | undefined;
+};
+
+export type CustomerEditErrors = {
+  firstNameError: string;
+  lastNameError: string;
+};
+
+export type CustomerData = {
+  customerEmail: string;
+  customerPassword: string;
 };

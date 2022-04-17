@@ -1,21 +1,20 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import productReducer from './product-reducer';
-import perfumeReducer from './perfume-reducer';
-import authReducer from './auth-reducer';
-import cartReducer from './cart-reducer';
-import adminReducer from './admin-reducer';
-import orderReducer from './order-reducer';
-import userReducer from './user-reducer';
+import productReducer from "./product-reducer";
+
+import authReducer from "./auth-reducer";
+import cartReducer from "./cart-reducer";
+import adminReducer from "./admin-reducer";
+import orderReducer from "./order-reducer";
+import customerReducer from "./customer-reducer";
 
 const rootReducer = combineReducers({
-    product: productReducer,
-    perfume: perfumeReducer,
-    auth: authReducer,
-    cart: cartReducer,
-    admin: adminReducer,
-    order: orderReducer,
-    user: userReducer,
+  product: productReducer,
+  auth: authReducer,
+  cart: cartReducer,
+  admin: adminReducer,
+  order: orderReducer,
+  customer: customerReducer,
 });
 
 type RootReducerType = typeof rootReducer;

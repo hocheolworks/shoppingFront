@@ -15,7 +15,6 @@ import {
   OrderError,
   OrderItem,
   Product,
-  User,
   PostCodeObject,
   Customer,
 } from "../../types/types";
@@ -28,12 +27,8 @@ const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
 const Order: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const usersData: Partial<User> = useSelector(
-    (state: AppStateType) => state.user.user
-  );
-
   const customersData: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.user.customer
+    (state: AppStateType) => state.customer.customer
   );
 
   const products: Array<Product> = useSelector(
@@ -54,21 +49,6 @@ const Order: FC = () => {
     JSON.parse(localStorage.getItem("products") as string)
   );
 
-  const [firstName, setFirstName] = useState<string | undefined>(
-    usersData.firstName
-  );
-  const [lastName, setLastName] = useState<string | undefined>(
-    usersData.lastName
-  );
-  const [city, setCity] = useState<string | undefined>(usersData.city);
-  const [address, setAddress] = useState<string | undefined>(usersData.address);
-  const [postIndex, setPostIndex] = useState<string | undefined>(
-    usersData.postIndex
-  );
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(
-    usersData.phoneNumber
-  );
-  const [email, setEmail] = useState<string | undefined>(usersData.email);
   const [validateEmailError, setValidateEmailError] = useState<string>("");
 
   // hjlee define state for order--------------------------------------------
@@ -123,7 +103,6 @@ const Order: FC = () => {
     event.preventDefault();
     if (products === undefined || products === null || products.length === 0)
       return;
-    console.log(`order-${usersData.lastName}-${new Date().toString()}`);
     loadTossPayments(clientKey).then((tossPayments) => {
       tossPayments.requestPayment("카드", {
         // 결제 수단 파라미터
@@ -134,7 +113,7 @@ const Order: FC = () => {
           products.length === 1
             ? products[0].productName
             : `${products[0].productName} 외 ${products.length - 1}건`,
-        customerName: usersData.lastName,
+        customerName: customersData.customerName,
         successUrl: "http://localhost:3000/order/success",
         failUrl: "http://localhost:3000/order/fail",
       });
@@ -220,7 +199,7 @@ const Order: FC = () => {
                   }
                   name="address"
                   value={orderAddress}
-                  onChange={(event) => setAddress(event.target.value)}
+                  onChange={(event) => setOrderAddress(event.target.value)}
                 />
                 <div className="invalid-feedback">{addressError}</div>
               </div>

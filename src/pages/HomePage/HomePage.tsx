@@ -1,32 +1,32 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect } from "react";
 
-import HomePageTheme from '../../component/HomePageTheme/HomePageTheme';
-import CarouselImageSlider from '../../component/CarouselImageSlider/CarouselImageSlider';
-import SliderBrands from '../../component/SliderBrands/SliderBrands';
-import SliderCards from '../../component/PerfumeCardsSlider/PerfumeCardsSlider';
-import { useDispatch } from 'react-redux';
-import { fetchCart } from '../../redux/thunks/cart-thunks';
-import ScrollButton from '../../component/ScrollButton/ScrollButton';
+import HomePageTheme from "../../component/HomePageTheme/HomePageTheme";
+import CarouselImageSlider from "../../component/CarouselImageSlider/CarouselImageSlider";
+import SliderBrands from "../../component/SliderBrands/SliderBrands";
+import SliderCards from "../../component/ProductCardsSlider/ProductCardsSlider";
+import { useDispatch } from "react-redux";
+import { fetchCart } from "../../redux/thunks/cart-thunks";
+import ScrollButton from "../../component/ScrollButton/ScrollButton";
 
 const HomePage: FC = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        const productsFromLocalStorage: Map<number, number> = new Map(
-            JSON.parse(localStorage.getItem('products') as string)
-        );
-        dispatch(fetchCart(Array.from(productsFromLocalStorage.keys())));
-    }, []);
-
-    return (
-        <div>
-            <ScrollButton />
-            <CarouselImageSlider />
-            <SliderBrands />
-            <HomePageTheme />
-            <SliderCards />
-        </div>
+  useEffect(() => {
+    const productsFromLocalStorage: Map<number, number> = new Map(
+      JSON.parse(localStorage.getItem("products") as string)
     );
+    dispatch(fetchCart(Array.from(productsFromLocalStorage.keys())));
+  }, []);
+
+  return (
+    <div>
+      <ScrollButton />
+      <CarouselImageSlider />
+      <SliderBrands />
+      <HomePageTheme />
+      <SliderCards />
+    </div>
+  );
 };
 
 export default HomePage;

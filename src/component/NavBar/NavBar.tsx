@@ -20,7 +20,7 @@ const NavBar: FC = () => {
     (state: AppStateType) => state.cart.products
   );
   const isLoggedIn: boolean = useSelector(
-    (state: AppStateType) => state.user.isLoggedIn
+    (state: AppStateType) => state.customer.isLoggedIn
   );
 
   const handleLogout = () => {

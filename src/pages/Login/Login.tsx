@@ -14,7 +14,7 @@ import {
   login,
 } from "../../redux/thunks/auth-thunks";
 import { AppStateType } from "../../redux/reducers/root-reducer";
-import { UserData } from "../../types/types";
+import { CustomerData } from "../../types/types";
 import googleLogo from "../../img/google.png";
 import facebookLogo from "../../img/facebook.png";
 import KakaoLogin from "../../component/Kakao/KakaoLogin";
@@ -40,8 +40,8 @@ const Login: FC<RouteComponentProps<{ code: string }>> = ({ match }) => {
 
   const onClickSignIn = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const userData: UserData = { customerEmail, customerPassword };
-    dispatch(login(userData, history));
+    const customerData: CustomerData = { customerEmail, customerPassword };
+    dispatch(login(customerData, history));
   };
 
   return (
