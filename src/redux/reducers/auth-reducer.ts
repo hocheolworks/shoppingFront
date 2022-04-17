@@ -28,6 +28,7 @@ export type InitialStateType = {
   success: string;
   error: string;
   errors: Partial<AuthErrors>;
+  isLoggedIn: boolean;
 };
 
 const initialState: InitialStateType = {
@@ -39,6 +40,7 @@ const initialState: InitialStateType = {
   success: "",
   error: "",
   errors: {},
+  isLoggedIn: false,
 };
 
 const reducer = (
@@ -50,7 +52,7 @@ const reducer = (
       return { ...state, loading: true, errors: {} };
 
     case LOGIN_SUCCESS:
-      return { ...state, customerRole: action.payload };
+      return { ...state, customerRole: action.payload, isLoggedIn: true };
 
     case LOGIN_FAILURE:
       return { ...state, error: action.payload };

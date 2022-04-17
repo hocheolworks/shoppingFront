@@ -1,3 +1,4 @@
+import { fetchCustomerSuccess } from "./../actions/customer-actions";
 import { emailVerifySuccess } from "./../actions/auth-actions";
 import { RegistrationEmailData } from "./../../types/types";
 import {
@@ -42,6 +43,7 @@ export const login =
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("id", response.data.id);
       dispatch(loginSuccess(response.data.userRole));
+      dispatch(fetchCustomerSuccess(response.data));
       history.push("/account");
     } catch (error: any) {
       dispatch(loginFailure(error.response.data));

@@ -13,6 +13,7 @@ import { logout } from "../../redux/thunks/auth-thunks";
 import "./NavBar.css";
 import { AppStateType } from "../../redux/reducers/root-reducer";
 import { Product } from "../../types/types";
+import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
@@ -29,14 +30,14 @@ const NavBar: FC = () => {
 
   let links;
   let signOut;
-  localStorage.setItem("token", "test"); // hard coding
+
   if (localStorage.getItem("isLoggedIn") || isLoggedIn) {
     links = (
       <li className="nav-item">
         <Link to={"/account"}>
           <span className="nav-link pl-5 pr-5">
             <FontAwesomeIcon className="mr-2" icon={faUser} />
-            MY ACCOUNT
+            마이페이지
           </span>
         </Link>
       </li>
@@ -44,7 +45,7 @@ const NavBar: FC = () => {
     signOut = (
       <Link to={"/"} onClick={handleLogout}>
         <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-        EXIT
+        로그아웃
       </Link>
     );
   } else {

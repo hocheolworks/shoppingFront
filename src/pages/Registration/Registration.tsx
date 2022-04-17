@@ -52,8 +52,6 @@ const Registration: FC = () => {
   const [userInputVerifyNumber, setUserInputVerifyNumber] =
     useState<string>("");
 
-  // if (localStorage.getItem("isLoggedIn") || isLoggedIn) {
-
   useEffect(() => {
     dispatch(formReset());
   }, []);
