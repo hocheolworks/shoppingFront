@@ -12,11 +12,9 @@ const HomePage: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const productsFromLocalStorage: Map<number, number> = new Map(
-      JSON.parse(localStorage.getItem('products') as string)
-    );
     const customerId: string = localStorage.getItem('id') as string;
-    dispatch(fetchCart(parseInt(customerId)));
+    const isLoggedIn: string = localStorage.getItem('isLoggedIn') as string;
+    if (isLoggedIn === 'true') dispatch(fetchCart(parseInt(customerId)));
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -12,58 +12,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Spinner from '../../component/Spinner/Spinner';
 import {
-  calculateCartPrice,
+  deleteCartItem,
   fetchCart,
-  loadCart,
+  updateCart,
 } from '../../redux/thunks/cart-thunks';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { Customer, Product } from '../../types/types';
+import { CartItem } from '../../types/types';
 
 const Cart: FC = () => {
   const dispatch = useDispatch();
 
-  const products: Array<Product> = useSelector(
-    (state: AppStateType) => state.cart.products
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
   );
+
   const totalPrice: number = useSelector(
     (state: AppStateType) => state.cart.totalPrice
   );
   const loading: boolean = useSelector(
     (state: AppStateType) => state.cart.loading
   );
-  const [productInCart, setProductInCart] = useState(() => new Map());
+
+  const customerId = useRef<number>(
+    parseInt(localStorage.getItem('id') as string)
+  );
 
   useEffect(() => {
-    const customerId: string = localStorage.getItem('id') as string;
-
-    const productsFromLocalStorage: Map<number, number> = new Map(
-      JSON.parse(localStorage.getItem('products') as string)
-    );
-
-    if (productsFromLocalStorage !== null) {
-      dispatch(fetchCart(parseInt(customerId)));
-      productsFromLocalStorage.forEach((value: number, key: number) => {
-        setProductInCart(productInCart.set(key, value));
-      });
-    } else {
-      dispatch(loadCart());
-    }
+    dispatch(fetchCart(customerId.current));
   }, []);
 
   const deleteFromCart = (productId: number): void => {
-    const customerId: string = localStorage.getItem('id') as string;
-    productInCart.delete(productId);
-
-    if (productInCart.size === 0) {
-      localStorage.removeItem('products');
-      setProductInCart(new Map());
-    } else {
-      localStorage.setItem(
-        'products',
-        JSON.stringify(Array.from(productInCart.entries()))
-      );
-    }
-    dispatch(fetchCart(parseInt(customerId)));
+    dispatch(deleteCartItem(customerId.current, productId));
   };
 
   const handleInputChange = (
@@ -73,45 +52,22 @@ const Cart: FC = () => {
     if (
       isNaN(parseInt(event.target.value)) ||
       parseInt(event.target.value) === 0 ||
-      parseInt(event.target.value) > 99
+      parseInt(event.target.value) > 1000
     ) {
-      setProductInCart(productInCart.set(productId, 1));
-      localStorage.setItem(
-        'products',
-        JSON.stringify(Array.from(productInCart.entries()))
-      );
+      dispatch(updateCart(customerId.current, productId, 10));
     } else {
-      setProductInCart(
-        productInCart.set(productId, parseInt(event.target.value))
-      );
-      localStorage.setItem(
-        'products',
-        JSON.stringify(Array.from(productInCart.entries()))
+      dispatch(
+        updateCart(customerId.current, productId, parseInt(event.target.value))
       );
     }
-    dispatch(calculateCartPrice(products));
   };
 
-  const onIncrease = (productId: number): void => {
-    setProductInCart(
-      productInCart.set(productId, productInCart.get(productId) + 1)
-    );
-    localStorage.setItem(
-      'products',
-      JSON.stringify(Array.from(productInCart.entries()))
-    );
-    dispatch(calculateCartPrice(products));
+  const onIncrease = (productId: number, prevCount: number): void => {
+    dispatch(updateCart(customerId.current, productId, prevCount + 1));
   };
 
-  const onDecrease = (productId: number): void => {
-    setProductInCart(
-      productInCart.set(productId, productInCart.get(productId) - 1)
-    );
-    localStorage.setItem(
-      'products',
-      JSON.stringify(Array.from(productInCart.entries()))
-    );
-    dispatch(calculateCartPrice(products));
+  const onDecrease = (productId: number, prevCount: number): void => {
+    dispatch(updateCart(customerId.current, productId, prevCount - 1));
   };
 
   return (
@@ -120,7 +76,7 @@ const Cart: FC = () => {
         <Spinner />
       ) : (
         <div>
-          {products.length === 0 ? (
+          {cart.length === 0 ? (
             <div style={{ textAlign: 'center' }}>
               <h2>Cart is empty</h2>
             </div>
@@ -130,66 +86,80 @@ const Cart: FC = () => {
                 <FontAwesomeIcon className="mr-2" icon={faShoppingCart} />{' '}
                 장바구니
               </p>
-              {products.map((product: Product) => {
+              {cart.map((cartItem: CartItem) => {
                 return (
                   <div
-                    key={product.id}
+                    key={cartItem.product.id}
                     className="card mb-3 mx-auto"
                     style={{ maxWidth: '940px' }}
                   >
                     <div className="row no-gutters">
                       <div className="col-2 mx-3 my-3">
                         <img
-                          src={`/image/product/${product.productName}.jpeg`}
+                          src={`/image/product/${cartItem.product.productName}.jpeg`}
                           className="img-fluid"
                         />
                       </div>
-                      <div className="col-6">
+                      <div className="col-5">
                         <div className="card-body">
-                          <h4 className="card-title">{product.productName}</h4>
+                          <h4 className="card-title">
+                            {cartItem.product.productName}
+                          </h4>
                           <p className="card-text"></p>
                           <p className="card-text"></p>
                         </div>
                       </div>
-                      <div className="col-1 mt-3">
+                      <div className="col-1 mt-3 text-center">
                         <button
                           className="btn btn-default"
-                          disabled={productInCart.get(product.id) === 99}
-                          onClick={() => onIncrease(product.id)}
+                          disabled={cartItem.productCount === 1000}
+                          onClick={() =>
+                            onIncrease(
+                              cartItem.product.id,
+                              cartItem.productCount
+                            )
+                          }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronUp} />
                         </button>
                         <input
                           type="text"
                           className="form-control input-number"
-                          style={{ width: '45px' }}
-                          value={productInCart.get(product.id)}
+                          style={{
+                            width: '65px',
+                          }}
+                          value={cartItem.productCount}
                           onChange={(event) =>
-                            handleInputChange(event, product.id)
+                            handleInputChange(event, cartItem.product.id)
                           }
                         />
                         <button
                           className="btn btn-default"
-                          disabled={productInCart.get(product.id) === 1}
-                          onClick={() => onDecrease(product.id)}
+                          disabled={cartItem.productCount === 10}
+                          onClick={() =>
+                            onDecrease(
+                              cartItem.product.id,
+                              cartItem.productCount
+                            )
+                          }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronDown} />
                         </button>
                       </div>
-                      <div className="col-2">
-                        <div className="card-body">
+                      <div className="col-3">
+                        <div className="card-body text-right">
                           <h5 className="card-title">
                             <span>
                               {(
-                                product.productPrice *
-                                productInCart.get(product.id)
+                                cartItem.product.productPrice *
+                                cartItem.productCount
                               ).toLocaleString('ko-KR')}{' '}
                               원
                             </span>
                           </h5>
                           <button
                             className="btn btn-warning mb-2"
-                            onClick={() => deleteFromCart(product.id)}
+                            onClick={() => deleteFromCart(cartItem.product.id)}
                           >
                             <FontAwesomeIcon
                               className="mr-2"

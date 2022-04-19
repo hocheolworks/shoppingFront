@@ -14,12 +14,24 @@ import {
   resetForm,
 } from '../../redux/thunks/customer-thunks';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { Product, Review, ReviewData, ReviewError } from '../../types/types';
+import {
+  CartItem,
+  Product,
+  Review,
+  ReviewData,
+  ReviewError,
+} from '../../types/types';
 import halfStar from '../../img/star-half.svg';
 import Spinner from '../../component/Spinner/Spinner';
 import ProductReview from './ProductReview';
 import ScrollButton from '../../component/ScrollButton/ScrollButton';
 import { fetchProduct } from '../../redux/thunks/product-thunks';
+import RequestService from '../../utils/request-service';
+import {
+  fetchCart,
+  insertCart,
+  updateCart,
+} from '../../redux/thunks/cart-thunks';
 
 const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
@@ -43,6 +55,14 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     (state: AppStateType) => state.product.isProductLoading
   );
 
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const [isCartExist, setIsCartExist] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(
+    product.productMinimumEA as number
+  );
   const [author, setAuthor] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
@@ -51,7 +71,22 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   useEffect(() => {
     dispatch(fetchProduct(parseInt(match.params.id)));
     dispatch(resetForm());
+    if (isLoggedIn) {
+      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+    }
   }, []);
+
+  useEffect(() => {
+    if (cart === undefined || cart === null || cart.length === 0)
+      setIsCartExist(false);
+    else {
+      setIsCartExist(
+        cart.findIndex(
+          (value: CartItem) => value.productId === parseInt(match.params.id)
+        ) !== -1
+      );
+    }
+  }, [cart]);
 
   useEffect(() => {
     setAuthor('');
@@ -60,12 +95,32 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   }, [isReviewAdded]);
 
   const addToCart = (): void => {
-    const productId: number | undefined = product.id;
+    const productId: number = product.id as number;
     const customerId: number | undefined = parseInt(
       localStorage.getItem('id') as string
     );
 
+    if (isCartExist) {
+      const prevCartItem: CartItem = cart.find(
+        (val: CartItem) => val.productId === parseInt(match.params.id)
+      ) as CartItem;
+
+      dispatch(
+        updateCart(customerId, productId, prevCartItem.productCount + count)
+      );
+    } else {
+      dispatch(insertCart(customerId, productId, count));
+    }
+
     history.push('/cart');
+  };
+
+  const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
+    const num = parseInt(onlyNumber);
+    // if (num >= parseInt(e.target.min) && num <= parseInt(e.target.max))
+    setCount(num);
   };
 
   // 리뷰 남기기 기능은 나중에 개발
@@ -139,7 +194,23 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 <h4 className="mr-5">
                   <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
                 </h4>
-                {isLoggedIn && (
+              </div>
+              {isLoggedIn && (
+                <div className="row ml-1" style={{ alignItems: 'center' }}>
+                  <span style={{ marginRight: '5px' }}>수량: </span>
+                  <input
+                    type="number"
+                    min={product.productMinimumEA}
+                    max="1000"
+                    step="10"
+                    maxLength={4}
+                    style={{
+                      width: '60px',
+                      height: '30px',
+                    }}
+                    value={count}
+                    onChange={countOnChange}
+                  ></input>
                   <button
                     type="submit"
                     className="btn btn-success mx-3"
@@ -148,8 +219,8 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                     <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{' '}
                     장바구니 담기
                   </button>
-                )}
-              </div>
+                </div>
+              )}
               <br />
               <table className="table">
                 <tbody>

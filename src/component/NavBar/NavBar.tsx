@@ -12,16 +12,17 @@ import {
 import { logout } from '../../redux/thunks/auth-thunks';
 import './NavBar.css';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { Product } from '../../types/types';
+import { CartItem, Product } from '../../types/types';
 import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
-  const products: Array<Product> = useSelector(
-    (state: AppStateType) => state.cart.products
-  );
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
+  );
+
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
   );
 
   const handleLogout = () => {
@@ -96,7 +97,7 @@ const NavBar: FC = () => {
                     state: { id: 'all' },
                   }}
                 >
-                  <span className="nav-link pl-5 pr-5">PERFUMES</span>
+                  <span className="nav-link pl-5 pr-5">PRODUCTS</span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -121,9 +122,7 @@ const NavBar: FC = () => {
                         bottom: '8px',
                       }}
                     >
-                      <span className="badge badge-success">
-                        {products.length}
-                      </span>
+                      <span className="badge badge-success">{cart.length}</span>
                     </h5>
                   </Link>
                 </li>

@@ -9,14 +9,12 @@ import {
 } from '../action-types/cart-action-types';
 
 export type InitialStateType = {
-  products: Array<Product>;
   cartItems: Array<CartItem>;
   loading: boolean;
   totalPrice: number;
 };
 
 const initialState: InitialStateType = {
-  products: [],
   cartItems: [],
   loading: false,
   totalPrice: 0,
@@ -37,10 +35,10 @@ const reducer = (
       return { ...state, totalPrice: action.payload, loading: false };
 
     case STOP_LOADING_CART:
-      return { ...state, loading: false, products: [] };
+      return { ...state, loading: false, cartItems: [] };
 
     case CLEAR_CART_SUCCESS:
-      return { ...state, products: [] };
+      return { ...state, cartItems: [] };
 
     default:
       return state;

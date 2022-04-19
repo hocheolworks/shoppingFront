@@ -27,6 +27,7 @@ import { Dispatch } from 'redux';
 import RequestService from '../../utils/request-service';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { fetchCartSuccess } from '../actions/cart-actions';
 
 const MySwal = withReactContent(Swal);
 
@@ -44,6 +45,12 @@ export const login =
       localStorage.setItem('id', response.data.id);
       dispatch(loginSuccess(response.data.userRole));
       dispatch(fetchCustomerSuccess(response.data));
+
+      const cartResponse = await RequestService.get(
+        `/customer/${response.data.id}/cart`
+      );
+      dispatch(fetchCartSuccess(cartResponse.data));
+
       history.push('/account');
     } catch (error: any) {
       let errorMessage = error.response.data.message;
@@ -51,7 +58,7 @@ export const login =
       await MySwal.fire({
         title: `<strong>로그인 실패!</strong>`,
         html: `<i>${errorMessage}</i>`,
-        icon: "error",
+        icon: 'error',
       });
     }
   };
@@ -111,8 +118,9 @@ export const registration =
 export const logout = () => async (dispatch: Dispatch) => {
   localStorage.removeItem('email');
   localStorage.removeItem('token');
-  localStorage.removeItem('userRole');
+  localStorage.removeItem('customerRole');
   localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('id');
   dispatch(logoutSuccess());
 };
 

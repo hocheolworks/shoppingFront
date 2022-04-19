@@ -179,10 +179,10 @@ export type CustomerData = {
 };
 
 export type CartItem = {
-  id: number | undefined;
-  customerId: number | undefined;
-  customer: Customer | undefined;
-  productId: number | undefined;
-  product: Product | undefined;
+  id: number;
+  customerId: number;
+  customer: Customer;
+  productId: number;
+  product: Product;
   productCount: number;
 };
