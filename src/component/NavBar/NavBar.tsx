@@ -1,27 +1,28 @@
-import React, { FC } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSignInAlt,
   faSignOutAlt,
   faUser,
   faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
-import { logout } from "../../redux/thunks/auth-thunks";
-import "./NavBar.css";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import { Product } from "../../types/types";
-import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
+import { logout } from '../../redux/thunks/auth-thunks';
+import './NavBar.css';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import { CartItem, Product } from '../../types/types';
+import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
-  const products: Array<Product> = useSelector(
-    (state: AppStateType) => state.cart.products
-  );
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
+  );
+
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
   );
 
   const handleLogout = () => {
@@ -31,10 +32,10 @@ const NavBar: FC = () => {
   let links;
   let signOut;
 
-  if (localStorage.getItem("isLoggedIn") || isLoggedIn) {
+  if (localStorage.getItem('isLoggedIn') || isLoggedIn) {
     links = (
       <li className="nav-item">
-        <Link to={"/account"}>
+        <Link to={'/account'}>
           <span className="nav-link pl-5 pr-5">
             <FontAwesomeIcon className="mr-2" icon={faUser} />
             마이페이지
@@ -43,7 +44,7 @@ const NavBar: FC = () => {
       </li>
     );
     signOut = (
-      <Link to={"/"} onClick={handleLogout}>
+      <Link to={'/'} onClick={handleLogout}>
         <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
         로그아웃
       </Link>
@@ -52,13 +53,13 @@ const NavBar: FC = () => {
     links = (
       <>
         <li className="nav-item">
-          <Link to={"/login"} className="nav-link pl-5 pr-3">
+          <Link to={'/login'} className="nav-link pl-5 pr-3">
             <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
             로그인
           </Link>
         </li>
         <li className="nav-item">
-          <Link to={"/registration"} className="nav-link">
+          <Link to={'/registration'} className="nav-link">
             <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
             회원가입
           </Link>
@@ -80,52 +81,53 @@ const NavBar: FC = () => {
         <nav
           id="navbar-main"
           className={`container navbar navbar-expand-lg bg-black text-white `}
-          style={{ fontSize: "18px" }}
+          style={{ fontSize: '18px' }}
         >
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto ">
               <li className="nav-item">
-                <Link to={"/"}>
+                <Link to={'/'}>
                   <span className="nav-link pl-5 pr-5">HOME</span>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
                   to={{
-                    pathname: "/menu",
-                    state: { id: "all" },
+                    pathname: '/menu',
+                    state: { id: 'all' },
                   }}
                 >
-                  <span className="nav-link pl-5 pr-5">PERFUMES</span>
+                  <span className="nav-link pl-5 pr-5">PRODUCTS</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to={"/contacts"}>
+                <Link to={'/contacts'}>
                   <span className="nav-link pl-5 pr-5">CONTACTS</span>
                 </Link>
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link className="nav-link" to={"/cart"}>
-                  <i
-                    className="fas fa-shopping-cart fa-lg pl-5"
-                    style={{ color: "white" }}
-                  ></i>
-                  <h5
-                    className="d-inline"
-                    style={{
-                      position: "relative",
-                      right: "15px",
-                      bottom: "8px",
-                    }}
-                  >
-                    <span className="badge badge-success">
-                      {products.length}
-                    </span>
-                  </h5>
-                </Link>
-              </li>
+              {isLoggedIn && (
+                <li className="nav-item">
+                  <Link className="nav-link" to={'/cart'}>
+                    <i
+                      className="fas fa-shopping-cart fa-lg pl-5"
+                      style={{ color: 'white' }}
+                    ></i>
+                    <h5
+                      className="d-inline"
+                      style={{
+                        position: 'relative',
+                        right: '15px',
+                        bottom: '8px',
+                      }}
+                    >
+                      <span className="badge badge-success">{cart.length}</span>
+                    </h5>
+                  </Link>
+                </li>
+              )}
+
               {links}
             </ul>
             {signOut}

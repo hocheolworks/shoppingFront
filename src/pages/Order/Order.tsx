@@ -1,28 +1,29 @@
-import React, { FC, FormEvent, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faShoppingBag,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
-import { addOrder, fetchOrder } from "../../redux/thunks/order-thunks";
-import { validateEmail } from "../../utils/input-validators";
-import PageLoader from "../../component/PageLoader/PageLoader";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import { useHistory } from "react-router-dom";
+import { addOrder, fetchOrder } from '../../redux/thunks/order-thunks';
+import { validateEmail } from '../../utils/input-validators';
+import PageLoader from '../../component/PageLoader/PageLoader';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import { useHistory } from 'react-router-dom';
 import {
   OrderError,
   OrderItem,
   Product,
   PostCodeObject,
   Customer,
-} from "../../types/types";
+  CartItem,
+} from '../../types/types';
 
-import DaumPostcode from "react-daum-postcode";
-import "./Order.css";
-import { loadTossPayments } from "@tosspayments/payment-sdk";
-const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
+import DaumPostcode from 'react-daum-postcode';
+import './Order.css';
+import { loadTossPayments } from '@tosspayments/payment-sdk';
+const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
 const Order: FC = () => {
   const dispatch = useDispatch();
@@ -31,8 +32,8 @@ const Order: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
 
-  const products: Array<Product> = useSelector(
-    (state: AppStateType) => state.cart.products
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
   );
 
   // totalPricee --> orderTotalPrice로 변경
@@ -45,11 +46,8 @@ const Order: FC = () => {
   const loading: boolean = useSelector(
     (state: AppStateType) => state.order.loading
   );
-  const productsFromLocalStorage: Map<number, number> = new Map(
-    JSON.parse(localStorage.getItem("products") as string)
-  );
 
-  const [validateEmailError, setValidateEmailError] = useState<string>("");
+  const [validateEmailError, setValidateEmailError] = useState<string>('');
 
   // hjlee define state for order--------------------------------------------
   const [orderCustomerName, setOrderCustomerName] = useState<
@@ -83,7 +81,7 @@ const Order: FC = () => {
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setOrderAddress(
-      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
+      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
     );
     setOrderPostIndex(data.zonecode);
     setIsPopupOpen(false);
@@ -101,26 +99,25 @@ const Order: FC = () => {
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (products === undefined || products === null || products.length === 0)
-      return;
+    if (cart === undefined || cart === null || cart.length === 0) return;
     loadTossPayments(clientKey).then((tossPayments) => {
-      tossPayments.requestPayment("카드", {
+      tossPayments.requestPayment('카드', {
         // 결제 수단 파라미터
         // 결제 정보 파라미터
         amount: orderTotalPrice,
-        orderId: "2dwadawdwadw-",
+        orderId: '2dwadawdwadw-',
         orderName:
-          products.length === 1
-            ? products[0].productName
-            : `${products[0].productName} 외 ${products.length - 1}건`,
+          cart.length === 1
+            ? cart[0].product.productName
+            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
         customerName: customersData.customerName,
-        successUrl: "http://localhost:3000/order/success",
-        failUrl: "http://localhost:3000/order/fail",
+        successUrl: 'http://localhost:3000/order/success',
+        failUrl: 'http://localhost:3000/order/fail',
       });
     });
 
     const productsId = Object.fromEntries(
-      new Map(JSON.parse(localStorage.getItem("products") as string))
+      new Map(JSON.parse(localStorage.getItem('products') as string))
     );
 
     console.log(productsId.arguments);
@@ -159,7 +156,7 @@ const Order: FC = () => {
                 <input
                   type="text"
                   className={
-                    lastNameError ? "form-control is-invalid" : "form-control"
+                    lastNameError ? 'form-control is-invalid' : 'form-control'
                   }
                   name="lastName"
                   value={orderCustomerName}
@@ -178,7 +175,7 @@ const Order: FC = () => {
                   readOnly
                   type="text"
                   className={
-                    postIndexError ? "form-control is-invalid" : "form-control"
+                    postIndexError ? 'form-control is-invalid' : 'form-control'
                   }
                   name="postIndex"
                   value={orderPostIndex}
@@ -195,7 +192,7 @@ const Order: FC = () => {
                   readOnly
                   type="text"
                   className={
-                    addressError ? "form-control is-invalid" : "form-control"
+                    addressError ? 'form-control is-invalid' : 'form-control'
                   }
                   name="address"
                   value={orderAddress}
@@ -210,7 +207,7 @@ const Order: FC = () => {
                 <input
                   type="text"
                   className={
-                    addressError ? "form-control is-invalid" : "form-control"
+                    addressError ? 'form-control is-invalid' : 'form-control'
                   }
                   name="address"
                   value={orderAddressDetail}
@@ -228,8 +225,8 @@ const Order: FC = () => {
                   type="text"
                   className={
                     phoneNumberError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="phoneNumber"
                   value={orderPhoneNumber}
@@ -246,7 +243,7 @@ const Order: FC = () => {
                   <DaumPostcode
                     className="form-control"
                     style={{
-                      border: "1px solid black",
+                      border: '1px solid black',
                       padding: 0,
                     }}
                     onComplete={onCompletePostIndex}
@@ -267,31 +264,29 @@ const Order: FC = () => {
           <div className="col-lg-6">
             <div className="container-fluid">
               <div className="row">
-                {products.map((product) => {
+                {cart.map((cartItem: CartItem) => {
                   return (
                     <div
-                      key={product.id}
+                      key={cartItem.product.id}
                       className="col-lg-6 d-flex align-items-stretch"
                     >
                       <div className="card mb-5">
                         <img
-                          src={`/image/product/${product.productName}.jpeg`}
+                          src={`/image/product/${cartItem.product.productName}.jpeg`}
                           className="rounded mx-auto w-50"
                         />
                         <div className="card-body text-center">
-                          <h5>{product.productName}</h5>
+                          <h5>{cartItem.product.productName}</h5>
                           <h6>
                             <span>
-                              가격 :{" "}
-                              {`${product.productPrice.toLocaleString(
-                                "ko-KR"
+                              가격 :{' '}
+                              {`${cartItem.product.productPrice.toLocaleString(
+                                'ko-KR'
                               )} 원`}
                             </span>
                           </h6>
                           <h6>
-                            <span>
-                              수량 : {productsFromLocalStorage.get(product.id)}
-                            </span>
+                            <span>수량 : {cartItem.productCount}</span>
                           </h6>
                         </div>
                       </div>
@@ -308,8 +303,8 @@ const Order: FC = () => {
             </button>
             <div className="row">
               <h4>
-                주문 금액 :{" "}
-                <span>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</span>
+                주문 금액 :{' '}
+                <span>{`${orderTotalPrice.toLocaleString('ko-KR')} 원`}</span>
               </h4>
             </div>
           </div>

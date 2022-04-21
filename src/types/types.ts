@@ -177,3 +177,12 @@ export type CustomerData = {
   customerEmail: string;
   customerPassword: string;
 };
+
+export type CartItem = {
+  id: number;
+  customerId: number;
+  customer: Customer;
+  productId: number;
+  product: Product;
+  productCount: number;
+};

@@ -1,39 +1,45 @@
-import { Product } from '../../types/types';
+import { CartItem, Product } from '../../types/types';
 import {
-    CALCULATE_CART_PRICE_SUCCESS,
-    CLEAR_CART_SUCCESS,
-    FETCH_CART_SUCCESS,
-    LOADING_CART,
-    STOP_LOADING_CART,
-    CalculateCartPriceSuccessActionType,
-    ClearCartActionType,
-    FetchCartSuccessActionType,
-    LoadingCartActionType,
-    StopLoadingCartActionType,
+  CALCULATE_CART_PRICE_SUCCESS,
+  CLEAR_CART_SUCCESS,
+  FETCH_CART_SUCCESS,
+  LOADING_CART,
+  STOP_LOADING_CART,
+  CalculateCartPriceSuccessActionType,
+  ClearCartActionType,
+  FetchCartSuccessActionType,
+  LoadingCartActionType,
+  StopLoadingCartActionType,
+  UpdateCartSuccessActionType,
+  UPDATE_CART_SUCCESS,
 } from '../action-types/cart-action-types';
 
 export const loadingCart = (): LoadingCartActionType => ({
-    type: LOADING_CART,
+  type: LOADING_CART,
 });
 
 export const fetchCartSuccess = (
-    products: Array<Product>
+  cartItems: Array<CartItem>
 ): FetchCartSuccessActionType => ({
-    type: FETCH_CART_SUCCESS,
-    payload: products,
+  type: FETCH_CART_SUCCESS,
+  payload: cartItems,
 });
 
 export const calculateCartPriceSuccess = (
-    total: number
+  total: number
 ): CalculateCartPriceSuccessActionType => ({
-    type: CALCULATE_CART_PRICE_SUCCESS,
-    payload: total,
+  type: CALCULATE_CART_PRICE_SUCCESS,
+  payload: total,
 });
 
 export const clearCartSuccess = (): ClearCartActionType => ({
-    type: CLEAR_CART_SUCCESS,
+  type: CLEAR_CART_SUCCESS,
 });
 
 export const stopLoadingCart = (): StopLoadingCartActionType => ({
-    type: STOP_LOADING_CART,
+  type: STOP_LOADING_CART,
+});
+
+export const updateCartSuccess = (): UpdateCartSuccessActionType => ({
+  type: UPDATE_CART_SUCCESS,
 });
