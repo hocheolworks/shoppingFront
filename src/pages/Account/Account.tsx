@@ -41,7 +41,7 @@ const Account: FC = () => {
             마이 페이지
           </h4>
           <NavLink
-            to={'/account/user/info'}
+            to={'/account/customer/info'}
             className="account-sidebar-link nav-link"
             activeClassName="is-active"
           >
@@ -81,7 +81,7 @@ const Account: FC = () => {
           ) : (
             <>
               <NavLink
-                to={'/account/user/edit'}
+                to={'/account/customer/edit'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
@@ -99,9 +99,9 @@ const Account: FC = () => {
         </div>
         <div className="col-md-10">
           <Route exact path="/account" component={() => <AccountItem />} />
-          <Route path="/account/user/info" component={() => <PersonalData />} />
+          <Route path="/account/customer/info" component={() => <PersonalData />} />
           <Route
-            path="/account/user/edit"
+            path="/account/customer/edit"
             component={() => <ChangePassword />}
           />
           <Route

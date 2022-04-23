@@ -29,7 +29,7 @@ export const fetchCustomerInfo = () => async (dispatch: Dispatch) => {
 };
 
 export const updateCustomerInfo =
-  (customerEdit: CustomerEdit) => async (dispatch: Dispatch) => {
+  (customerEdit: Partial<CustomerEdit>) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.put(
         '/account/edit',

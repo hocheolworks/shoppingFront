@@ -38,12 +38,14 @@ export const login =
         '/customer/login',
         customerData
       );
+
       localStorage.setItem('customerEmail', response.data.customerEmail);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('customerRole', response.data.customerRole);
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('id', response.data.id);
       dispatch(loginSuccess(response.data.customerRole));
+      debugger;
       dispatch(fetchCustomerSuccess(response.data));
 
       const cartResponse = await RequestService.get(
