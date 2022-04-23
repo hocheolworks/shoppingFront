@@ -45,7 +45,6 @@ export const login =
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('id', response.data.id);
       dispatch(loginSuccess(response.data.customerRole));
-      debugger;
       dispatch(fetchCustomerSuccess(response.data));
 
       const cartResponse = await RequestService.get(
