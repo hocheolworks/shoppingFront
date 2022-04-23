@@ -21,7 +21,6 @@ const PersonalData: FC = () => {
     id,
     customerEmail,
     customerName,
-    customerPassword,
     customerPhoneNumber,
     customerAddress,
     customerRole,
@@ -42,10 +41,6 @@ const PersonalData: FC = () => {
         <p className="personal_data_item">
           Name:
           <span className="personal_data_text">{customerName}</span>
-        </p>
-        <p className="personal_data_item">
-          Password:
-          <span className="personal_data_text">{customerPassword}</span>
         </p>
         <p className="personal_data_item">
           Phone Number:
