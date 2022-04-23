@@ -18,6 +18,7 @@ import {
 } from '../../redux/thunks/cart-thunks';
 import { AppStateType } from '../../redux/reducers/root-reducer';
 import { CartItem } from '../../types/types';
+import { API_BASE_URL } from '../../utils/constants/url';
 
 const Cart: FC = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,13 @@ const Cart: FC = () => {
   );
 
   useEffect(() => {
+    if (
+      customerId === undefined ||
+      customerId === null ||
+      isNaN(customerId.current)
+    )
+      return;
+
     dispatch(fetchCart(customerId.current));
   }, []);
 
@@ -96,7 +104,9 @@ const Cart: FC = () => {
                     <div className="row no-gutters">
                       <div className="col-2 mx-3 my-3">
                         <img
-                          src={`/image/product/${cartItem.product.productName}.jpeg`}
+                          src={`${API_BASE_URL.replace('api/v1', '')}${
+                            cartItem.product.productImageFilepath
+                          }`}
                           className="img-fluid"
                         />
                       </div>
@@ -105,7 +115,12 @@ const Cart: FC = () => {
                           <h4 className="card-title">
                             {cartItem.product.productName}
                           </h4>
-                          <p className="card-text"></p>
+                          <p className="card-text">
+                            {cartItem.product.productPrice.toLocaleString(
+                              'ko-KR'
+                            )}{' '}
+                            원
+                          </p>
                           <p className="card-text"></p>
                         </div>
                       </div>

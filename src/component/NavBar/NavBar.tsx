@@ -107,7 +107,7 @@ const NavBar: FC = () => {
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {isLoggedIn && (
+              {(localStorage.getItem('isLoggedIn') || isLoggedIn) && (
                 <li className="nav-item">
                   <Link className="nav-link" to={'/cart'}>
                     <i

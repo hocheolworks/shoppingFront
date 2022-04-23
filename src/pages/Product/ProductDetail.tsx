@@ -32,6 +32,7 @@ import {
   insertCart,
   updateCart,
 } from '../../redux/thunks/cart-thunks';
+import { API_BASE_URL } from '../../utils/constants/url';
 
 const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
@@ -60,9 +61,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   );
 
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
-  const [count, setCount] = useState<number>(
-    product.productMinimumEA as number
-  );
+  const [count, setCount] = useState<number>(0);
   const [author, setAuthor] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
@@ -93,6 +92,10 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     setMessage('');
     setRating(0);
   }, [isReviewAdded]);
+
+  useEffect(() => {
+    setCount(product.productMinimumEA as number);
+  }, [product]);
 
   const addToCart = (): void => {
     const productId: number = product.id as number;
@@ -167,7 +170,9 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <div className="col-md-5">
               <div>
                 <img
-                  src={`/image/product/${product.productName}.jpeg`}
+                  src={`${API_BASE_URL.replace('api/v1', '')}${
+                    product.productImageFilepath
+                  }`}
                   className="rounded mx-auto w-100"
                 />
               </div>
@@ -178,12 +183,12 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 상품 번호: <span>{product.id}</span>
               </p>
               <div className="row">
-                <div className="col-md-2">
+                <div className="col-md-4">
                   {renderStars(
                     product.productRating === 0 ? 0 : product.productRating
                   )}
                 </div>
-                <div className="col-md-10">
+                <div className="col-md-8">
                   <span style={{ paddingBottom: '50px' }}>
                     {product.productRatingCount}개의 리뷰
                   </span>
@@ -195,7 +200,8 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
                 </h4>
               </div>
-              {isLoggedIn && (
+              {(localStorage.getItem('isLoggedIn') === 'true' ||
+                isLoggedIn) && (
                 <div className="row ml-1" style={{ alignItems: 'center' }}>
                   <span style={{ marginRight: '5px' }}>수량: </span>
                   <input

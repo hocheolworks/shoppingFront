@@ -5,6 +5,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 
 import { Product } from '../../types/types';
 import StarRating from '../StarRating/StarRating';
+import { API_BASE_URL } from '../../utils/constants/url';
 
 type PropsType = {
   divKey: number;
@@ -35,7 +36,9 @@ const ProductCardItem: FC<PropsType> = ({
           <LazyLoadImage
             effect="blur"
             style={{ width: '80px', marginTop: '20px' }}
-            src={`/image/product/${product.productName}.jpeg`}
+            src={`${API_BASE_URL.replace('api/v1', '')}${
+              product.productImageFilepath
+            }`}
           />
         </div>
         <div className="card-body text-center">

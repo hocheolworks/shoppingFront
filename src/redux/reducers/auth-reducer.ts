@@ -1,5 +1,5 @@
-import { AuthErrors, Customer } from "../../types/types";
-import { FORM_RESET } from "../action-types/admin-action-types";
+import { AuthErrors, Customer } from '../../types/types';
+import { FORM_RESET } from '../action-types/admin-action-types';
 import {
   ACTIVATE_ACCOUNT_FAILURE,
   ACTIVATE_ACCOUNT_SUCCESS,
@@ -17,7 +17,7 @@ import {
   SHOW_LOADER,
   AuthActionTypes,
   EMAIL_VERIFY_SUCCESS,
-} from "../action-types/auth-action-types";
+} from '../action-types/auth-action-types';
 
 export type InitialStateType = {
   customer: Partial<Customer>;
@@ -33,12 +33,12 @@ export type InitialStateType = {
 
 const initialState: InitialStateType = {
   customer: {},
-  customerEmail: "",
-  customerRole: "",
+  customerEmail: '',
+  customerRole: '',
   isRegistered: false,
   loading: false,
-  success: "",
-  error: "",
+  success: '',
+  error: '',
   errors: {},
   isLoggedIn: false,
 };
@@ -78,7 +78,7 @@ const reducer = (
         success: action.payload,
         loading: false,
         errors: {},
-        error: "",
+        error: '',
       };
 
     case FORGOT_PASSWORD_FAILURE:
@@ -97,14 +97,20 @@ const reducer = (
       return { ...state, errors: action.payload };
 
     case LOGOUT_SUCCESS:
-      return { ...state, customerRole: "" };
+      return {
+        ...state,
+        customer: {},
+        customerEmail: '',
+        customerRole: '',
+        isLoggedIn: false,
+      };
 
     case FORM_RESET:
       return {
         ...state,
-        error: "",
+        error: '',
         errors: {},
-        success: "",
+        success: '',
         isRegistered: false,
         loading: false,
       };

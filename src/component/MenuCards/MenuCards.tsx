@@ -3,11 +3,11 @@ import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import usePagination from '../Pagination/usePagination';
-import PerfumeCardItem from '../ProductCardItem/ProductCardItem';
 import PaginationItem from '../Pagination/PaginationItem';
 import SearchForm from '../SearchForm/SearchForm';
 import { Product } from '../../types/types';
 import Spinner from '../Spinner/Spinner';
+import ProductCardItem from '../ProductCardItem/ProductCardItem';
 
 type PropsType = {
   data: Array<Product>;
@@ -54,7 +54,7 @@ const MenuCards: FC<PropsType> = ({
             <div className="row">
               {slicedData.map((product: Product) => {
                 return (
-                  <PerfumeCardItem
+                  <ProductCardItem
                     divKey={product.id}
                     product={product}
                     colSize={3}
