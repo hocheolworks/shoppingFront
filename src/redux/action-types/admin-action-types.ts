@@ -18,6 +18,7 @@ export const FETCH_ALL_USERS_ORDERS_BY_QUERY_SUCCESS =
   "FETCH_ALL_USERS_ORDERS_BY_QUERY_SUCCESS";
 export const FETCH_USER_ORDERS_BY_QUERY_SUCCESS =
   "FETCH_USER_ORDERS_BY_QUERY_SUCCESS";
+export const EMAIL_VALIDATION_SUCCESS = "EMAIL_VALIDATION_SUCCESS";
 
 export type LoadingDataActionType = { type: typeof LOADING_DATA };
 export type AddProductSuccessActionType = {
@@ -51,6 +52,9 @@ export type GetUserInfoActionType = {
   payload: Customer;
 };
 export type ResetActionType = { type: typeof FORM_RESET };
+export type EmailValidationSuccessActionType = {
+  type: typeof EMAIL_VALIDATION_SUCCESS;
+};
 export type GetUserInfoByQueryActionType = {
   type: typeof FETCH_USER_INFO_BY_QUERY_SUCCESS;
   payload: Customer;

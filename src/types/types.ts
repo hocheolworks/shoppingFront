@@ -4,6 +4,7 @@ export type Product = {
   productDescription: string;
   productPrice: number;
   productMinimumEA: number;
+  productImageFilepath: string;
   productRating: number;
   productRatingCount: number;
   reviews: Array<Review>;
@@ -13,17 +14,10 @@ export type Product = {
 };
 
 export type ProductErrors = {
-  productTitleError: string;
-  productrError: string;
-  yearError: string;
-  countryError: string;
-  typeError: string;
-  volumeError: string;
-  productGenderError: string;
-  fragranceTopNotesError: string;
-  fragranceMiddleNotesError: string;
-  fragranceBaseNotesError: string;
-  priceError: string;
+  productNameError: string;
+  productDescriptionError: string;
+  productPriceError: string;
+  productMinimumEAError: string;
 };
 
 export type Customer = {
@@ -176,4 +170,13 @@ export type CustomerEditErrors = {
 export type CustomerData = {
   customerEmail: string;
   customerPassword: string;
+};
+
+export type CartItem = {
+  id: number;
+  customerId: number;
+  customer: Customer;
+  productId: number;
+  product: Product;
+  productCount: number;
 };

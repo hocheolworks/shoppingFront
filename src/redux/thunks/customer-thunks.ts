@@ -1,6 +1,6 @@
-import { Dispatch } from "redux";
+import { Dispatch } from 'redux';
 
-import { fetchProductSuccess } from "../actions/product-actions";
+import { fetchProductSuccess } from '../actions/product-actions';
 import {
   fetchCustomerSuccess,
   loadingCustomerInfo,
@@ -11,20 +11,20 @@ import {
   customerUpdatedPasswordFailure,
   customerUpdatedPasswordSuccess,
   customerUpdatedSuccess,
-} from "../actions/customer-actions";
+} from '../actions/customer-actions';
 import {
   ReviewData,
   CustomerEdit,
   CustomerResetPasswordData,
-} from "../../types/types";
-import RequestService from "../../utils/request-service";
+} from '../../types/types';
+import RequestService from '../../utils/request-service';
 
 export const fetchCustomerInfo = () => async (dispatch: Dispatch) => {
   dispatch(loadingCustomerInfo());
-  const response = await RequestService.get("/customers/info", true);
-  localStorage.setItem("email", response.data.email);
-  localStorage.setItem("customerRole", response.data.roles);
-  localStorage.setItem("isLoggedIn", "true");
+  const response = await RequestService.get('/customers/info', true);
+  localStorage.setItem('email', response.data.email);
+  localStorage.setItem('customerRole', response.data.roles);
+  localStorage.setItem('isLoggedIn', 'true');
   dispatch(fetchCustomerSuccess(response.data));
 };
 
@@ -32,7 +32,7 @@ export const updateCustomerInfo =
   (customerEdit: CustomerEdit) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.put(
-        "/account/edit",
+        '/account/edit',
         customerEdit,
         true
       );
@@ -46,7 +46,7 @@ export const updateCustomerPassword =
   (data: CustomerResetPasswordData) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.put(
-        "/auth/edit/password",
+        '/auth/edit/password',
         data,
         true
       );
@@ -59,7 +59,7 @@ export const updateCustomerPassword =
 export const addReviewToProduct =
   (review: ReviewData) => async (dispatch: Dispatch) => {
     try {
-      const response = await RequestService.post("/customers/review", review);
+      const response = await RequestService.post('/customers/review', review);
       dispatch(fetchProductSuccess(response.data));
       dispatch(customerAddedReviewSuccess());
     } catch (error: any) {

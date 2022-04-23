@@ -10,6 +10,7 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const REGISTER_FAILURE = "REGISTER_FAILURE";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const EMAIL_VERIFY_SUCCESS = "EMAIL_VERIFY_SUCCESS";
 export const RESET_PASSWORD_CODE_FAILURE = "RESET_PASSWORD_CODE_FAILURE";
 export const RESET_PASSWORD_CODE_SUCCESS = "RESET_PASSWORD_CODE_SUCCESS";
 export const RESET_PASSWORD_FAILURE = "RESET_PASSWORD_FAILURE";
@@ -26,6 +27,9 @@ export type LoginFailureActionType = {
 };
 export type ShowLoaderActionType = { type: typeof SHOW_LOADER };
 export type RegisterSuccessActionType = { type: typeof REGISTER_SUCCESS };
+export type EmailValidationSuccessActionType = {
+  type: typeof EMAIL_VERIFY_SUCCESS;
+};
 export type RegisterFailureActionType = {
   type: typeof REGISTER_FAILURE;
   payload: AuthErrors;
@@ -79,4 +83,5 @@ export type AuthActionTypes =
   | ResetPasswordCodeFailureActionType
   | ResetPasswordSuccessActionType
   | ResetPasswordFailureActionType
-  | ResetActionType;
+  | ResetActionType
+  | EmailValidationSuccessActionType;

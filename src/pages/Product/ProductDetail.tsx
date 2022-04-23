@@ -1,33 +1,45 @@
-import React, { FC, FormEvent, useEffect, useState } from "react";
-import { Route, RouteComponentProps, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import { Route, RouteComponentProps, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCartPlus,
   faPaperPlane,
   faStar,
-} from "@fortawesome/free-solid-svg-icons";
-import SockJS from "sockjs-client";
-import { CompatClient, Stomp } from "@stomp/stompjs";
-import StarRatingComponent from "react-star-rating-component";
+} from '@fortawesome/free-solid-svg-icons';
+import StarRatingComponent from 'react-star-rating-component';
 
 import {
   addReviewToProduct,
   resetForm,
-} from "../../redux/thunks/customer-thunks";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import { Product, Review, ReviewData, ReviewError } from "../../types/types";
-import halfStar from "../../img/star-half.svg";
-import Spinner from "../../component/Spinner/Spinner";
-import ProductReview from "./ProductReview";
-import ScrollButton from "../../component/ScrollButton/ScrollButton";
-import { fetchProduct } from "../../redux/thunks/product-thunks";
-
-let stompClient: CompatClient | null = null;
+} from '../../redux/thunks/customer-thunks';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import {
+  CartItem,
+  Product,
+  Review,
+  ReviewData,
+  ReviewError,
+} from '../../types/types';
+import halfStar from '../../img/star-half.svg';
+import Spinner from '../../component/Spinner/Spinner';
+import ProductReview from './ProductReview';
+import ScrollButton from '../../component/ScrollButton/ScrollButton';
+import { fetchProduct } from '../../redux/thunks/product-thunks';
+import RequestService from '../../utils/request-service';
+import {
+  fetchCart,
+  insertCart,
+  updateCart,
+} from '../../redux/thunks/cart-thunks';
+import { API_BASE_URL } from '../../utils/constants/url';
 
 const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const isLoggedIn: boolean = useSelector(
+    (state: AppStateType) => state.customer.isLoggedIn
+  );
   const product: Partial<Product> = useSelector(
     (state: AppStateType) => state.product.product
   );
@@ -44,49 +56,74 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     (state: AppStateType) => state.product.isProductLoading
   );
 
-  const [author, setAuthor] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const cart: Array<CartItem> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const [isCartExist, setIsCartExist] = useState<boolean>(false);
+  const [count, setCount] = useState<number>(0);
+  const [author, setAuthor] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const { authorError, messageError, ratingError } = errors;
 
   useEffect(() => {
     dispatch(fetchProduct(parseInt(match.params.id)));
     dispatch(resetForm());
-    // window.scrollTo(0, 0);
-    // const socket = new SockJS(WEBSOCKET_URL);
-    // stompClient = Stomp.over(socket);
-    // stompClient.connect({}, () => {
-    //     stompClient?.subscribe("/topic/reviews/" + match.params.id, (response: any) => {
-    //         dispatch(fetchProductReviewsWS(JSON.parse(response.body)));
-    //     });
-    // });
-    // return () => stompClient?.disconnect();
+    if (isLoggedIn) {
+      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+    }
   }, []);
 
   useEffect(() => {
-    setAuthor("");
-    setMessage("");
+    if (cart === undefined || cart === null || cart.length === 0)
+      setIsCartExist(false);
+    else {
+      setIsCartExist(
+        cart.findIndex(
+          (value: CartItem) => value.productId === parseInt(match.params.id)
+        ) !== -1
+      );
+    }
+  }, [cart]);
+
+  useEffect(() => {
+    setAuthor('');
+    setMessage('');
     setRating(0);
   }, [isReviewAdded]);
 
-  const addToCart = (): void => {
-    const productId: number | undefined = product.id;
-    let data: string | null = localStorage.getItem("products");
-    let cart: Map<number, any> = data
-      ? new Map(JSON.parse(data as string))
-      : new Map();
+  useEffect(() => {
+    setCount(product.productMinimumEA as number);
+  }, [product]);
 
-    if (cart.has(productId as number)) {
-      cart.set(productId as number, cart.get(productId as number) + 1);
-    } else {
-      cart.set(productId as number, 1);
-    }
-    console.log(JSON.stringify(Array.from(cart.entries())));
-    localStorage.setItem(
-      "products",
-      JSON.stringify(Array.from(cart.entries()))
+  const addToCart = (): void => {
+    const productId: number = product.id as number;
+    const customerId: number | undefined = parseInt(
+      localStorage.getItem('id') as string
     );
-    history.push("/cart");
+
+    if (isCartExist) {
+      const prevCartItem: CartItem = cart.find(
+        (val: CartItem) => val.productId === parseInt(match.params.id)
+      ) as CartItem;
+
+      dispatch(
+        updateCart(customerId, productId, prevCartItem.productCount + count)
+      );
+    } else {
+      dispatch(insertCart(customerId, productId, count));
+    }
+
+    history.push('/cart');
+  };
+
+  const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
+    const num = parseInt(onlyNumber);
+    // if (num >= parseInt(e.target.min) && num <= parseInt(e.target.max))
+    setCount(num);
   };
 
   // 리뷰 남기기 기능은 나중에 개발
@@ -108,13 +145,13 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
           <img
             src={halfStar}
             alt="halfStar"
-            style={{ width: "14.5px", marginBottom: "2px" }}
+            style={{ width: '14.5px', marginBottom: '2px' }}
           />
         )}
         renderStarIcon={() => (
           <FontAwesomeIcon className="fa-sm" icon={faStar} />
         )}
-        name={"star"}
+        name={'star'}
         starCount={5}
         editing={false}
         value={productRating}
@@ -133,7 +170,9 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <div className="col-md-5">
               <div>
                 <img
-                  src={`/image/product/${product.productName}.jpeg`}
+                  src={`${API_BASE_URL.replace('api/v1', '')}${
+                    product.productImageFilepath
+                  }`}
                   className="rounded mx-auto w-100"
                 />
               </div>
@@ -144,31 +183,50 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 상품 번호: <span>{product.id}</span>
               </p>
               <div className="row">
-                <div className="col-md-2">
+                <div className="col-md-4">
                   {renderStars(
                     product.productRating === 0 ? 0 : product.productRating
                   )}
                 </div>
-                <div className="col-md-10">
-                  <span style={{ paddingBottom: "50px" }}>
+                <div className="col-md-8">
+                  <span style={{ paddingBottom: '50px' }}>
                     {product.productRatingCount}개의 리뷰
                   </span>
                 </div>
               </div>
-              <p style={{ color: "#54C0A1" }}>재고 있음</p>
+              <p style={{ color: '#54C0A1' }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
+                  <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
                 </h4>
-                <button
-                  type="submit"
-                  className="btn btn-success mx-3"
-                  onClick={addToCart}
-                >
-                  <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
-                  장바구니 담기
-                </button>
               </div>
+              {(localStorage.getItem('isLoggedIn') === 'true' ||
+                isLoggedIn) && (
+                <div className="row ml-1" style={{ alignItems: 'center' }}>
+                  <span style={{ marginRight: '5px' }}>수량: </span>
+                  <input
+                    type="number"
+                    min={product.productMinimumEA}
+                    max="1000"
+                    step="10"
+                    maxLength={4}
+                    style={{
+                      width: '60px',
+                      height: '30px',
+                    }}
+                    value={count}
+                    onChange={countOnChange}
+                  ></input>
+                  <button
+                    type="submit"
+                    className="btn btn-success mx-3"
+                    onClick={addToCart}
+                  >
+                    <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{' '}
+                    장바구니 담기
+                  </button>
+                </div>
+              )}
               <br />
               <table className="table">
                 <tbody>
@@ -201,15 +259,15 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{" "}
+                        </span>{' '}
                         작성자
                       </label>
                       <input
                         type="text"
                         className={
                           authorError
-                            ? "form-control is-invalid"
-                            : "form-control"
+                            ? 'form-control is-invalid'
+                            : 'form-control'
                         }
                         name="author"
                         value={author}
@@ -219,7 +277,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{" "}
+                        </span>{' '}
                         내용
                       </label>
                     </div>
@@ -227,7 +285,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{" "}
+                        </span>{' '}
                         별점
                       </label>
                       <div>
@@ -249,11 +307,11 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   <textarea
                     rows={4}
                     className={
-                      messageError ? "form-control is-invalid" : "form-control"
+                      messageError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="message"
                     value={message}
-                    style={{ resize: "none" }}
+                    style={{ resize: 'none' }}
                     onChange={(event) => setMessage(event.target.value)}
                   />
                   <div className="invalid-feedback">{messageError}</div>

@@ -1,35 +1,35 @@
-import React, { FC, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { FC, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   NavLink,
   Redirect,
   Route,
   RouteComponentProps,
-} from "react-router-dom";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+} from 'react-router-dom';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { formReset } from "../../redux/thunks/admin-thunks";
-import { fetchCustomerInfo } from "../../redux/thunks/customer-thunks";
-import PersonalOrdersList from "./PersonalOrdersList/PersonalOrdersList";
-import ChangePassword from "./ChangePassword/ChangePassword";
-import PersonalData from "./PersonalData/PersonalData";
-import AccountItem from "./AccountItem";
-import AddProduct from "./AddProduct/AddProduct";
-import OrdersList from "./OrdersList/OrdersList";
-import CustomersList from "./CustomersList/CustomersList";
-import ProductList from "./ProductList/ProductList";
-import ManageCustomer from "./ManageCustomer/ManageCustomer";
-import EditProduct from "./EditProduct/EditProduct";
-import ManageCustomerOrder from "./ManageCustomerOrder/ManageCustomerOrder";
-import "./Account.css";
+import { formReset } from '../../redux/thunks/admin-thunks';
+import { fetchCustomerInfo } from '../../redux/thunks/customer-thunks';
+import PersonalOrdersList from './PersonalOrdersList/PersonalOrdersList';
+import ChangePassword from './ChangePassword/ChangePassword';
+import PersonalData from './PersonalData/PersonalData';
+import AccountItem from './AccountItem';
+import AddProduct from './AddProduct/AddProduct';
+import OrdersList from './OrdersList/OrdersList';
+import CustomersList from './CustomersList/CustomersList';
+import ProductList from './ProductList/ProductList';
+import ManageCustomer from './ManageCustomer/ManageCustomer';
+import EditProduct from './EditProduct/EditProduct';
+import ManageCustomerOrder from './ManageCustomerOrder/ManageCustomerOrder';
+import './Account.css';
 
 const Account: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(formReset());
-    dispatch(fetchCustomerInfo());
+    // dispatch(fetchCustomerInfo());
   }, []);
 
   return (
@@ -41,37 +41,37 @@ const Account: FC = () => {
             마이 페이지
           </h4>
           <NavLink
-            to={"/account/user/info"}
+            to={'/account/user/info'}
             className="account-sidebar-link nav-link"
             activeClassName="is-active"
           >
             내 정보
           </NavLink>
-          {localStorage.getItem("userRole") === "ADMIN" ? (
+          {localStorage.getItem('customerRole') === 'ADMIN' ? (
             <>
               <NavLink
-                to={"/account/admin/add"}
+                to={'/account/admin/add'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
                 상품 추가
               </NavLink>
               <NavLink
-                to={"/account/admin/products"}
+                to={'/account/admin/products'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
                 상품 목록
               </NavLink>
               <NavLink
-                to={"/account/admin/orders"}
+                to={'/account/admin/orders'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
                 전체 주문 목록
               </NavLink>
               <NavLink
-                to={"/account/admin/users"}
+                to={'/account/admin/users'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
@@ -81,14 +81,14 @@ const Account: FC = () => {
           ) : (
             <>
               <NavLink
-                to={"/account/user/edit"}
+                to={'/account/user/edit'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
                 비밀번호 변경
               </NavLink>
               <NavLink
-                to={"/account/user/orders"}
+                to={'/account/user/orders'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
@@ -114,7 +114,7 @@ const Account: FC = () => {
             path="/account/user/orders/:id"
             component={() => <ManageCustomerOrder />}
           />
-          {localStorage.getItem("userRole") === "ADMIN" ? (
+          {localStorage.getItem('customerRole') === 'ADMIN' ? (
             <>
               <Route
                 path="/account/admin/add"
@@ -151,7 +151,7 @@ const Account: FC = () => {
               />
             </>
           ) : (
-            <Redirect to={"/account"} />
+            <Redirect to={'/account'} />
           )}
         </div>
       </div>

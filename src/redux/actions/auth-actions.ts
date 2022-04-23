@@ -1,4 +1,4 @@
-import { AuthErrors, Customer } from "../../types/types";
+import { AuthErrors, Customer } from '../../types/types';
 import {
   ACTIVATE_ACCOUNT_FAILURE,
   ACTIVATE_ACCOUNT_SUCCESS,
@@ -28,11 +28,13 @@ import {
   ResetPasswordFailureActionType,
   ResetPasswordSuccessActionType,
   ShowLoaderActionType,
-} from "../action-types/auth-action-types";
+  EMAIL_VERIFY_SUCCESS,
+  EmailValidationSuccessActionType,
+} from '../action-types/auth-action-types';
 
-export const loginSuccess = (userRole: string): LoginSuccessActionType => ({
+export const loginSuccess = (customerRole: string): LoginSuccessActionType => ({
   type: LOGIN_SUCCESS,
-  payload: userRole,
+  payload: customerRole,
 });
 
 export const loginFailure = (error: string): LoginFailureActionType => ({
@@ -46,6 +48,10 @@ export const showLoader = (): ShowLoaderActionType => ({
 
 export const registerSuccess = (): RegisterSuccessActionType => ({
   type: REGISTER_SUCCESS,
+});
+
+export const emailVerifySuccess = (): EmailValidationSuccessActionType => ({
+  type: EMAIL_VERIFY_SUCCESS,
 });
 
 export const registerFailure = (
