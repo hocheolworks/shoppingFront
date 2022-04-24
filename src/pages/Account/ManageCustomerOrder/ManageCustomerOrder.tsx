@@ -1,12 +1,13 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-
 import { Order } from "../../../types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import RequsetService from "../../../utils/request-service";
 
 const ManageUserOrder: FC = () => {
   const location = useLocation<Order>();
+  console.log(location.state);
   const {
     id,
     orderCustomerName,
