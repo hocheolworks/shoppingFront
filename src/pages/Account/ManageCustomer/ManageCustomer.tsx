@@ -41,7 +41,7 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchUserOrders(customerEmail));
+    dispatch(fetchUserOrders(match.params.id));
   }, [customerData]);
 
   return (
@@ -58,42 +58,34 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <div className="row mt-5 mb-4 border px-3 py-3">
               <div className="col-md-4">
                 <p className="personal_data_item">
-                  User id:
+                  고객 번호:
                   <span className="personal_data_text">{id}</span>
                 </p>
                 <p className="personal_data_item">
-                  Email:
+                  이메일:
                   <span className="personal_data_text">{customerEmail}</span>
                 </p>
                 <p className="personal_data_item">
-                  Role:
+                  구분:
                   <span className="personal_data_text">{customerRole}</span>
                 </p>
               </div>
               <div className="col-md-4">
                 <p className="personal_data_item">
-                  name:
+                  이름:
                   <span className="personal_data_text">{customerName}</span>
-                </p>
-                <p className="personal_data_item">
-                  Password:
-                  <span className="personal_data_text">{customerPassword}</span>
                 </p>
               </div>
               <div className="col-md-4">
                 <p className="personal_data_item">
-                  Phone number:
+                  휴대폰 번호:
                   <span className="personal_data_text">
                     {customerPhoneNumber}
                   </span>
                 </p>
                 <p className="personal_data_item">
-                  Address:
+                  주소:
                   <span className="personal_data_text">{customerAddress}</span>
-                </p>
-                <p className="personal_data_item">
-                  Role:
-                  <span className="personal_data_text">{customerRole}</span>
                 </p>
               </div>
             </div>
@@ -105,11 +97,11 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 <table className="table border text-center">
                   <thead className="table-active">
                     <tr>
-                      <th>Order №</th>
-                      <th>Date</th>
-                      <th>Address</th>
-                      <th>Post index</th>
-                      <th>Order Summary</th>
+                      <th>주문 번호</th>
+                      <th>날짜</th>
+                      <th>주소</th>
+                      <th>우편번호</th>
+                      <th>금액</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -121,18 +113,15 @@ const ManageUser: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                           <th>{order.createdAt}</th>
                           <th>{order.orderAddress}</th>
                           <th>{order.orderPostIndex}</th>
-                          <th>
-                            {order.orderTotalPrice}
-                            .0 $
-                          </th>
+                          <th>{order.orderTotalPrice}원</th>
                           <th>
                             <Link
                               to={{
-                                pathname: `/account/customer/orders/${order.id}`,
+                                pathname: `/account/user/orders/${order.id}`,
                                 state: order,
                               }}
                             >
-                              Show more
+                              자세히 보기
                             </Link>
                           </th>
                         </tr>
