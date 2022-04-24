@@ -6,6 +6,8 @@ import { AppStateType } from "../../redux/reducers/root-reducer";
 import requestService from "../request-service";
 import { API_BASE_URL } from "../constants/url";
 import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const OAuth2RedirectHandler = (props: any) => {
   const history = useHistory();
@@ -26,11 +28,22 @@ const OAuth2RedirectHandler = (props: any) => {
     axios
       .get(`${API_BASE_URL}/customer/kakao/login?code = ${code}`)
       .then((res) => {
-        console.log(res); // 토큰이 넘어올 것임
-        const ACCESS_TOKEN = res.data.accessToken;
+        if (res.data === false) {
+          const MySwal = withReactContent(Swal);
+          MySwal.fire({
+            title: `<strong>로그인 실패</strong>`,
+            html: `<i>가입된 회원이 아닙니다. 회원 가입 페이지로 이동합니다.</i>`,
+            icon: "error",
+          });
+          console.log(res);
+          history.push("/registration");
+        } else {
+          console.log(res); // 토큰이 넘어올 것임
+          const ACCESS_TOKEN = res.data.token;
 
-        localStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
-        history.push("/account");
+          localStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
+          history.push("/account");
+        }
       })
       .catch((err) => console.log(err));
   }, []);

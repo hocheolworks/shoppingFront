@@ -1,38 +1,38 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react';
-import { Route, RouteComponentProps, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, useEffect, useState } from "react";
+import { Route, RouteComponentProps, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartPlus,
   faPaperPlane,
   faStar,
-} from '@fortawesome/free-solid-svg-icons';
-import StarRatingComponent from 'react-star-rating-component';
+} from "@fortawesome/free-solid-svg-icons";
+import StarRatingComponent from "react-star-rating-component";
 
 import {
   addReviewToProduct,
   resetForm,
-} from '../../redux/thunks/customer-thunks';
-import { AppStateType } from '../../redux/reducers/root-reducer';
+} from "../../redux/thunks/customer-thunks";
+import { AppStateType } from "../../redux/reducers/root-reducer";
 import {
   CartItem,
   Product,
   Review,
   ReviewData,
   ReviewError,
-} from '../../types/types';
-import halfStar from '../../img/star-half.svg';
-import Spinner from '../../component/Spinner/Spinner';
-import ProductReview from './ProductReview';
-import ScrollButton from '../../component/ScrollButton/ScrollButton';
-import { fetchProduct } from '../../redux/thunks/product-thunks';
-import RequestService from '../../utils/request-service';
+} from "../../types/types";
+import halfStar from "../../img/star-half.svg";
+import Spinner from "../../component/Spinner/Spinner";
+import ProductReview from "./ProductReview";
+import ScrollButton from "../../component/ScrollButton/ScrollButton";
+import { fetchProduct } from "../../redux/thunks/product-thunks";
+import RequestService from "../../utils/request-service";
 import {
   fetchCart,
   insertCart,
   updateCart,
-} from '../../redux/thunks/cart-thunks';
-import { API_BASE_URL } from '../../utils/constants/url';
+} from "../../redux/thunks/cart-thunks";
+import { API_BASE_URL } from "../../utils/constants/url";
 
 const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
@@ -62,8 +62,8 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
 
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
-  const [author, setAuthor] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [author, setAuthor] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const { authorError, messageError, ratingError } = errors;
 
@@ -71,7 +71,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     dispatch(fetchProduct(parseInt(match.params.id)));
     dispatch(resetForm());
     if (isLoggedIn) {
-      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+      dispatch(fetchCart(parseInt(localStorage.getItem("id") as string)));
     }
   }, []);
 
@@ -88,8 +88,8 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   }, [cart]);
 
   useEffect(() => {
-    setAuthor('');
-    setMessage('');
+    setAuthor("");
+    setMessage("");
     setRating(0);
   }, [isReviewAdded]);
 
@@ -100,7 +100,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const addToCart = (): void => {
     const productId: number = product.id as number;
     const customerId: number | undefined = parseInt(
-      localStorage.getItem('id') as string
+      localStorage.getItem("id") as string
     );
 
     if (isCartExist) {
@@ -115,12 +115,12 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
       dispatch(insertCart(customerId, productId, count));
     }
 
-    history.push('/cart');
+    history.push("/cart");
   };
 
   const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
+    const onlyNumber = value.replace(/[^0-9]/g, "").substring(0, 4);
     const num = parseInt(onlyNumber);
     // if (num >= parseInt(e.target.min) && num <= parseInt(e.target.max))
     setCount(num);
@@ -145,13 +145,13 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
           <img
             src={halfStar}
             alt="halfStar"
-            style={{ width: '14.5px', marginBottom: '2px' }}
+            style={{ width: "14.5px", marginBottom: "2px" }}
           />
         )}
         renderStarIcon={() => (
           <FontAwesomeIcon className="fa-sm" icon={faStar} />
         )}
-        name={'star'}
+        name={"star"}
         starCount={5}
         editing={false}
         value={productRating}
@@ -170,7 +170,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <div className="col-md-5">
               <div>
                 <img
-                  src={`${API_BASE_URL.replace('api/v1', '')}${
+                  src={`${API_BASE_URL.replace("api/v1", "")}${
                     product.productImageFilepath
                   }`}
                   className="rounded mx-auto w-100"
@@ -189,21 +189,21 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   )}
                 </div>
                 <div className="col-md-8">
-                  <span style={{ paddingBottom: '50px' }}>
+                  <span style={{ paddingBottom: "50px" }}>
                     {product.productRatingCount}개의 리뷰
                   </span>
                 </div>
               </div>
-              <p style={{ color: '#54C0A1' }}>재고 있음</p>
+              <p style={{ color: "#54C0A1" }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
+                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
                 </h4>
               </div>
-              {(localStorage.getItem('isLoggedIn') === 'true' ||
+              {(localStorage.getItem("isLoggedIn") === "true" ||
                 isLoggedIn) && (
-                <div className="row ml-1" style={{ alignItems: 'center' }}>
-                  <span style={{ marginRight: '5px' }}>수량: </span>
+                <div className="row ml-1" style={{ alignItems: "center" }}>
+                  <span style={{ marginRight: "5px" }}>수량: </span>
                   <input
                     type="number"
                     min={product.productMinimumEA}
@@ -211,8 +211,8 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                     step="10"
                     maxLength={4}
                     style={{
-                      width: '60px',
-                      height: '30px',
+                      width: "60px",
+                      height: "30px",
                     }}
                     value={count}
                     onChange={countOnChange}
@@ -222,7 +222,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                     className="btn btn-success mx-3"
                     onClick={addToCart}
                   >
-                    <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{' '}
+                    <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
                     장바구니 담기
                   </button>
                 </div>
@@ -259,15 +259,15 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{' '}
+                        </span>{" "}
                         작성자
                       </label>
                       <input
                         type="text"
                         className={
                           authorError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
+                            ? "form-control is-invalid"
+                            : "form-control"
                         }
                         name="author"
                         value={author}
@@ -277,7 +277,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{' '}
+                        </span>{" "}
                         내용
                       </label>
                     </div>
@@ -285,7 +285,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                       <label>
                         <span className="text-danger">
                           <b>*</b>
-                        </span>{' '}
+                        </span>{" "}
                         별점
                       </label>
                       <div>
@@ -307,11 +307,11 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   <textarea
                     rows={4}
                     className={
-                      messageError ? 'form-control is-invalid' : 'form-control'
+                      messageError ? "form-control is-invalid" : "form-control"
                     }
                     name="message"
                     value={message}
-                    style={{ resize: 'none' }}
+                    style={{ resize: "none" }}
                     onChange={(event) => setMessage(event.target.value)}
                   />
                   <div className="invalid-feedback">{messageError}</div>
