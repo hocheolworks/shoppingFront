@@ -29,17 +29,16 @@ const UsersList: FC = () => {
       ) : (
         <>
           <h4>
-            <FontAwesomeIcon className="ml-2 mr-2" icon={faUsers} /> List of all
-            users
+            <FontAwesomeIcon className="ml-2 mr-2" icon={faUsers} /> 회원 목록
           </h4>
           <table className="table mt-4 border text-center">
             <thead className="table-active">
               <tr>
                 <th>id</th>
-                <th>First name</th>
-                <th>E-mail</th>
-                <th>Role</th>
-                <th>Provider</th>
+                <th>고객명</th>
+                <th>이메일</th>
+                <th>구분</th>
+                <th>구분</th>
                 <th></th>
               </tr>
             </thead>
@@ -54,7 +53,7 @@ const UsersList: FC = () => {
                     <th>{customer.customerRole}</th>
                     <th>
                       <Link to={`/account/admin/users/${customer.id}`}>
-                        Show more
+                        자세히 보기
                       </Link>
                     </th>
                   </tr>

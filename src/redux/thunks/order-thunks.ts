@@ -1,14 +1,14 @@
-import { Dispatch } from 'redux';
+import { Dispatch } from "redux";
 
-import { showLoader } from '../actions/auth-actions';
+import { showLoader } from "../actions/auth-actions";
 import {
   fetchOrderSuccess,
   fetchUserOrdersByQuerySuccess,
   fetchUserOrdersSuccess,
   orderAddedFailure,
   orderAddedSuccess,
-} from '../actions/order-actions';
-import RequestService from '../../utils/request-service';
+} from "../actions/order-actions";
+import RequestService from "../../utils/request-service";
 
 // import ConstantOrders from '../../utils/constants/orders';
 
@@ -20,9 +20,9 @@ export const addOrder =
   (order: any, history: any) => async (dispatch: Dispatch) => {
     try {
       dispatch(showLoader());
-      const response = await RequestService.post('/order/payment', order);
-      history.push('/order/finalize');
-      localStorage.removeItem('perfumes');
+      const response = await RequestService.post("/order/payment", order);
+      history.push("/order/finalize");
+      localStorage.removeItem("perfumes");
       dispatch(orderAddedSuccess(response.data));
     } catch (error: any) {
       dispatch(orderAddedFailure(error.response?.data));
@@ -36,6 +36,5 @@ export const fetchUserOrders =
     // dispatch(fetchUserOrdersSuccess(response.data));
 
     const response = await RequestService.get(`/order/${customerId}`, false);
-    console.log(response.data);
     dispatch(fetchUserOrdersSuccess(response.data));
   };

@@ -99,29 +99,25 @@ export const deleteProduct =
 
 export const fetchAllUsersOrders = () => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get('/admin/orders', true);
+  const response = await RequestService.get('/order/all', true);
   dispatch(getAllUsersOrders(response.data));
 };
 
-export const fetchUserOrders =
-  (email: string | undefined) => async (dispatch: Dispatch) => {
-    const response = await RequestService.post(
-      '/admin/order',
-      { email: email },
-      true
-    );
-    dispatch(getUserOrders(response.data));
-  };
+export const fetchUserOrders = (id: string) => async (dispatch: Dispatch) => {
+  const response = await RequestService.get('/order/' + id, true);
+  dispatch(getUserOrders(response.data));
+};
 
 export const fetchAllUsers = () => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get('/admin/user/all', true);
+  const response = await RequestService.get('/customer/all', true);
+  console.log(response);
   dispatch(getAllUsers(response.data));
 };
 
 export const fetchUserInfo = (id: string) => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get('/admin/user/' + id, true);
+  const response = await RequestService.get('/customer/' + id, true);
   dispatch(getUserInfo(response.data));
 };
 
