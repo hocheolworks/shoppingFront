@@ -1,13 +1,60 @@
-import React, { FC } from "react";
-import { Redirect } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import PageLoader from "../../component/PageLoader/PageLoader";
+import { AppStateType } from "../../redux/reducers/root-reducer";
+import requestService from "../request-service";
+import { API_BASE_URL } from "../constants/url";
+import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const OAuth2RedirectHandler: FC = () => {
-  const url: Location = window.location;
-  console.log(url);
-  const clientId: string | null = new URLSearchParams(url.search).get("token");
-  console.log(clientId);
+const OAuth2RedirectHandler = (props: any) => {
+  const history = useHistory();
+  let loading: boolean = useSelector(
+    (state: AppStateType) => state.order.loading
+  );
 
-  return <Redirect to="/account" />;
+  let code = new URL(window.location.href).searchParams.get("code");
+  console.log(code);
+
+  let pageLoading;
+  loading = true;
+  if (loading) {
+    pageLoading = <PageLoader />;
+  }
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}/customer/kakao/login?code = ${code}`)
+      .then((res) => {
+        if (res.data === false) {
+          const MySwal = withReactContent(Swal);
+          MySwal.fire({
+            title: `<strong>로그인 실패</strong>`,
+            html: `<i>가입된 회원이 아닙니다. 회원 가입 페이지로 이동합니다.</i>`,
+            icon: "error",
+          });
+          console.log(res);
+          history.push("/registration");
+        } else {
+          console.log(res); // 토큰이 넘어올 것임
+          const ACCESS_TOKEN = res.data.token;
+
+          localStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
+          history.push("/account");
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  return (
+    <div>
+      {" "}
+      <span>로그인 프로세스가 실행중입니다.</span>
+      {pageLoading}{" "}
+    </div>
+  );
 };
 
 export default OAuth2RedirectHandler;
