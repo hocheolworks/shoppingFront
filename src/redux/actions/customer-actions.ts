@@ -3,8 +3,7 @@ import {
   ReviewError,
   Customer,
   CustomerEditErrors,
-  CartItem,
-} from '../../types/types';
+} from "../../types/types";
 import {
   LOADING_CUSTOMER_INFO,
   FETCH_CUSTOMER_SUCCESS,
@@ -26,7 +25,7 @@ import {
   FetchCustomerSuccessActionType,
   FetchCustomerByQuerySuccessActionType,
   LoadingCustomerInfoActionType,
-} from '../action-types/customer-actions-types';
+} from "../action-types/customer-actions-types";
 
 export const loadingCustomerInfo = (): LoadingCustomerInfoActionType => ({
   type: LOADING_CUSTOMER_INFO,
