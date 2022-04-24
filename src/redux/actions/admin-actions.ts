@@ -30,6 +30,8 @@ import {
   LoadingDataActionType,
   DeleteProductFailureActionType,
   PRODUCT_DELETE_FAILURE,
+  DeleteProductSuccessActionType,
+  PRODUCT_DELETE_SUCCESS,
 } from '../action-types/admin-action-types';
 
 export const loadingData = (): LoadingDataActionType => ({
@@ -56,6 +58,10 @@ export const updateProductFailure = (
 ): UpdateProductFailureActionType => ({
   type: PRODUCT_UPDATED_FAILURE,
   payload: error,
+});
+
+export const deleteProductSuccess = (): DeleteProductSuccessActionType => ({
+  type: PRODUCT_DELETE_SUCCESS,
 });
 
 export const deleteProductFailure = (

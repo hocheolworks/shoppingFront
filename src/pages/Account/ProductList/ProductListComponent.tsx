@@ -15,6 +15,7 @@ import { deleteProduct } from '../../../redux/thunks/admin-thunks';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
 import Spinner from '../../../component/Spinner/Spinner';
 import { API_BASE_URL } from '../../../utils/constants/url';
+import { makeImageUrl } from '../../../utils/functions';
 
 type PropsType = {
   data: Array<Product>;
@@ -60,10 +61,6 @@ const ProductListComponent: FC<PropsType> = ({
   useEffect(() => {
     setModalActive(false);
   }, [data]);
-
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
 
   const deleteProductHandler = (id: number): void => {
     dispatch(deleteProduct(id, customerId));
@@ -121,9 +118,7 @@ const ProductListComponent: FC<PropsType> = ({
                             width: '90px',
                             marginTop: '20px',
                           }}
-                          src={`${API_BASE_URL.replace('api/v1', '')}${
-                            product.productImageFilepath
-                          }`}
+                          src={makeImageUrl(product.productImageFilepath)}
                         />
                       </div>
                       <div className="card-body text-center mt-2">

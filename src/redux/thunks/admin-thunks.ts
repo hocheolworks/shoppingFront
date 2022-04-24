@@ -16,6 +16,7 @@ import {
   getUserOrdersByQuery,
   loadingData,
   deleteProductFailure,
+  deleteProductSuccess,
 } from '../actions/admin-actions';
 import { fetchProductSuccess, getProducts } from '../actions/product-actions';
 import RequestService from '../../utils/request-service';
@@ -48,24 +49,40 @@ export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
   }
 };
 
-export const updateProduct = (data: FormData) => async (dispatch: Dispatch) => {
-  try {
-    const response = await RequestService.post(
-      '/admin/edit',
-      data,
-      true,
-      'multipart/form-data'
-    );
-    dispatch(updateProductSuccess());
-    dispatch(fetchProductSuccess(response.data));
-  } catch (error: any) {
-    if (error === undefined) {
-      console.log('error is undefined, wtf');
-      return;
+export const updateProduct =
+  (productId: number, customerId: number, data: FormData) =>
+  async (dispatch: Dispatch) => {
+    try {
+      const url: string = data.has('file')
+        ? `/product/${productId}/w/image?customerId=${customerId}`
+        : `/product/${productId}/w/o/image?customerId=${customerId}`;
+
+      const bodyData = data.has('file')
+        ? data
+        : {
+            productName: data.get('productName'),
+            productDescription: data.get('productDescription'),
+            productMinimumEA: parseInt(data.get('productMinimumEA') as string),
+            productPrice: parseInt(data.get('productPrice') as string),
+          };
+
+      const response = await RequestService.put(
+        url,
+        bodyData,
+        false,
+        data.has('file') ? 'multipart/form-data' : 'application/json'
+      );
+
+      dispatch(updateProductSuccess());
+      dispatch(fetchProductSuccess(response.data));
+    } catch (error: any) {
+      if (error === undefined) {
+        console.log('error is undefined, wtf');
+        return;
+      }
+      dispatch(updateProductFailure(error.response.data));
     }
-    dispatch(updateProductFailure(error.response.data));
-  }
-};
+  };
 
 export const deleteProduct =
   (productId: number, customerId: number) => async (dispatch: Dispatch) => {
@@ -73,6 +90,7 @@ export const deleteProduct =
       const response = await RequestService.delete(
         `/product/${productId}?customerId=${customerId}`
       );
+      dispatch(deleteProductSuccess());
       dispatch(getProducts(response.data));
     } catch (err: any) {
       dispatch(deleteProductFailure(err.response.data.productError));

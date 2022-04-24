@@ -14,9 +14,11 @@ import {
   FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
   LOADING_DATA,
   PRODUCT_DELETE_FAILURE,
+  PRODUCT_DELETE_SUCCESS,
 } from '../action-types/admin-action-types';
 import { Customer, Order, ProductErrors } from '../../types/types';
 import { AdminActionTypes } from '../action-types/admin-action-types';
+import { isDoStatement } from 'typescript';
 
 export type InitialStateType = {
   orders: Array<Order>;
@@ -66,6 +68,14 @@ const reducer = (
         isProductAdded: false,
         isProductEdited: false,
         errors: action.payload,
+      };
+
+    case PRODUCT_DELETE_SUCCESS:
+      return {
+        ...state,
+        isProductAdded: false,
+        isProductEdited: false,
+        errors: {},
       };
 
     case FETCH_USER_INFO_SUCCESS:

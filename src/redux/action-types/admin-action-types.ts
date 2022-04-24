@@ -11,6 +11,7 @@ export const PRODUCT_ADDED_SUCCESS = 'PRODUCT_ADDED_SUCCESS';
 export const PRODUCT_UPDATED_FAILURE = 'PRODUCT_UPDATED_FAILURE';
 export const PRODUCT_UPDATED_SUCCESS = 'PRODUCT_UPDATED_SUCCESS';
 export const PRODUCT_DELETE_FAILURE = 'PRODUCT_DELETE_FAILURE';
+export const PRODUCT_DELETE_SUCCESS = 'PRODUCT_DELETE_SUCCESS';
 export const FETCH_USER_INFO_BY_QUERY_SUCCESS =
   'FETCH_USER_INFO_BY_QUERY_SUCCESS';
 export const FETCH_ALL_USERS_BY_QUERY_SUCCESS =
@@ -35,6 +36,10 @@ export type UpdateProductSuccessActionType = {
 export type UpdateProductFailureActionType = {
   type: typeof PRODUCT_UPDATED_FAILURE;
   payload: ProductErrors;
+};
+
+export type DeleteProductSuccessActionType = {
+  type: typeof PRODUCT_DELETE_SUCCESS;
 };
 
 export type DeleteProductFailureActionType = {
@@ -85,6 +90,7 @@ export type AdminActionTypes =
   | AddProductFailureActionType
   | UpdateProductSuccessActionType
   | UpdateProductFailureActionType
+  | DeleteProductSuccessActionType
   | DeleteProductFailureActionType
   | GetAllUsersOrdersActionType
   | GetUserOrdersActionType

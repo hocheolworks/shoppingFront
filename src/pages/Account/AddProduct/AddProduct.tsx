@@ -40,6 +40,8 @@ const AddProduct: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
 
+  const customerId: number = parseInt(localStorage.getItem('id') as string);
+
   const isProductAdded: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductAdded
   );
@@ -73,7 +75,7 @@ const AddProduct: FC = () => {
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (Boolean(errors.customerRoleError)) {
+    if (Boolean(customerRoleError)) {
       MySwal.fire({
         title: `<strong>상품 추가 실패</strong>`,
         html: `<i>관리자 권한이 필요합니다.</i>`,
@@ -156,8 +158,8 @@ const AddProduct: FC = () => {
     bodyFormData.append('productMinimumEA', productMinimumEA.toString());
     bodyFormData.append('productDescription', productDescription);
     bodyFormData.append('productPrice', productPrice.toString());
-    if (customer && customer.id) {
-      bodyFormData.append('customerId', customer.id.toString());
+    if (customerId) {
+      bodyFormData.append('customerId', customerId.toString());
     }
 
     dispatch(addProduct(bodyFormData));
@@ -171,7 +173,6 @@ const AddProduct: FC = () => {
   };
 
   const handleFileChange = (event: any): void => {
-    console.log(event.target.files[0]);
     setState((prevState) => ({ ...prevState, file: event.target.files[0] }));
   };
 
