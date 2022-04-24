@@ -21,9 +21,10 @@ const PersonalData: FC = () => {
     id,
     customerEmail,
     customerName,
-    customerPassword,
     customerPhoneNumber,
+    customerPostIndex,
     customerAddress,
+    customerAddressDetail,
     customerRole,
   } = customersData;
   const location = useLocation();
@@ -33,45 +34,41 @@ const PersonalData: FC = () => {
       <div className="personal_data col-md-5">
         <h4 className="personal_data_title">
           <FontAwesomeIcon className="ml-2 mr-2" icon={faAddressCard} />
-          Personal data
+          개인 정보
         </h4>
         <p className="personal_data_item">
-          Email:
+          이메일:
           <span className="personal_data_text">{customerEmail}</span>
         </p>
         <p className="personal_data_item">
-          Name:
+          이름:
           <span className="personal_data_text">{customerName}</span>
         </p>
         <p className="personal_data_item">
-          Password:
-          <span className="personal_data_text">{customerPassword}</span>
-        </p>
-        <p className="personal_data_item">
-          Phone Number:
+          휴대폰 번호:
           <span className="personal_data_text">{customerPhoneNumber}</span>
         </p>
         <p className="personal_data_item">
-          Address:
-          <span className="personal_data_text">{customerAddress}</span>
+          우편번호:
+          <span className="personal_data_text">{customerPostIndex}</span>
         </p>
         <p className="personal_data_item">
-          Role:
-          <span className="personal_data_text">{customerRole}</span>
+          주소:
+          <span className="personal_data_text">{customerAddress} {customerAddressDetail}</span>
         </p>
         {location.pathname === "/account/customer/info" ? (
           <Link
             to={"/account/customer/info/edit"}
             className="btn btn-dark personal_data_btn"
           >
-            <FontAwesomeIcon className="mr-2" icon={faEdit} /> Edit
+            <FontAwesomeIcon className="mr-2" icon={faEdit} /> 변경
           </Link>
         ) : (
           <Link
             to={"/account/customer/info"}
             className="btn btn-dark personal_data_btn"
           >
-            <FontAwesomeIcon className="mr-2" icon={faEyeSlash} /> Hide
+            <FontAwesomeIcon className="mr-2" icon={faEyeSlash} /> 취소
           </Link>
         )}
       </div>

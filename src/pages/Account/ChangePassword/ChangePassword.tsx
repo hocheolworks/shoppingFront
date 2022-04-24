@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { faLock, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { AuthErrors, CustomerResetPasswordData } from "../../../types/types";
+import { AuthErrors, Customer, CustomerResetPasswordData } from "../../../types/types";
 import { AppStateType } from "../../../redux/reducers/root-reducer";
 import {
   resetForm,
@@ -12,6 +12,7 @@ import {
 import "./ChangePassword.css";
 
 const ChangePassword: FC = () => {
+  
   const dispatch = useDispatch();
   const errors: Partial<AuthErrors> = useSelector(
     (state: AppStateType) => state.customer.customerResetPasswordErrors
@@ -19,6 +20,13 @@ const ChangePassword: FC = () => {
   const success: string = useSelector(
     (state: AppStateType) => state.customer.successMessage
   );
+
+
+  // 고객 정보 불러오는 부분
+  const customersData: Partial<Customer> = useSelector(
+    (state: AppStateType) => state.customer.customer
+  );
+  const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
   const [password, setPassword] = useState<string>("");
   const [password2, setPassword2] = useState<string>("");
   const { passwordError, password2Error } = errors;
@@ -34,14 +42,14 @@ const ChangePassword: FC = () => {
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const data: CustomerResetPasswordData = { email: "", password, password2 };
+    const data: CustomerResetPasswordData = { email: customer.customerEmail, password, password2 };
     dispatch(updateCustomerPassword(data));
   };
 
   return (
-    <div className="password_reset">
+    <div className="">
       <h4>
-        <FontAwesomeIcon className="mr-2" icon={faLock} /> Change Password
+        <FontAwesomeIcon className="mr-2" icon={faLock} /> 비밀번호 변경
       </h4>
       {success ? (
         <div className="alert alert-success col-6" role="alert">
@@ -51,7 +59,7 @@ const ChangePassword: FC = () => {
       <form className="mt-5" onSubmit={onFormSubmit}>
         <div className="form-group row">
           <label className="col-sm-3 col-form-label">
-            Enter a new password:{" "}
+            새로운 비밀번호 입력:{" "}
           </label>
           <div className="col-sm-4">
             <input
@@ -67,7 +75,7 @@ const ChangePassword: FC = () => {
           </div>
         </div>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Confirm password: </label>
+          <label className="col-sm-3 col-form-label">비밀번호 확인: </label>
           <div className="col-sm-4">
             <input
               type="password"
@@ -83,7 +91,7 @@ const ChangePassword: FC = () => {
         </div>
         <button type="submit" className="btn btn-dark">
           <FontAwesomeIcon className="mr-3" icon={faUndo} />
-          Change
+          변경
         </button>
       </form>
     </div>

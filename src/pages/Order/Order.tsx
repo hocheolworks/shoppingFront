@@ -69,8 +69,8 @@ const Order: FC = () => {
     []
   );
   // hyeongwook add
-  const [customerId] = useState<number | undefined>(customersData.id);
-
+  // const [customerId] = useState<number | undefined>(customersData.id);
+  const [customerId] = [localStorage.getItem("id")];
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const postIndexRef = useRef(null);
