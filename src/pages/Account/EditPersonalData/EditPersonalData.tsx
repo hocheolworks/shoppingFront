@@ -16,9 +16,11 @@ import {
 } from "../../../redux/thunks/customer-thunks";
 import "./EditPersonalData.css";
 import DaumPostcode from "react-daum-postcode";
+import { useHistory } from "react-router-dom";
 
 const EditPersonalData: FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
@@ -84,7 +86,8 @@ const EditPersonalData: FC = () => {
       customerAddressDetail,
       // customerRole,
     };
-    dispatch(updateCustomerInfo(customerEdit));
+    dispatch(updateCustomerInfo(customerEdit, history));
+
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -142,18 +145,18 @@ const EditPersonalData: FC = () => {
           <label className="col-sm-3 col-form-label">우편번호: </label>
           <div className="col-sm-6">
             <input
-                  ref={postIndexRef}
-                  onClick={onClickPostIndex}
-                  readOnly
-                  type="text"
-                  className={
-                    postIndexError ? 'form-control is-invalid' : 'form-control'
-                  }
-                  name="customerPostIndex"
-                  value={customerPostIndex}
-                  placeholder="우편번호"
-                  onChange={(event) => setCustomerPostIndex(event.target.value)}
-              />
+              ref={postIndexRef}
+              onClick={onClickPostIndex}
+              readOnly
+              type="text"
+              className={
+                postIndexError ? 'form-control is-invalid' : 'form-control'
+              }
+              name="customerPostIndex"
+              value={customerPostIndex}
+              placeholder="우편번호"
+              onChange={(event) => setCustomerPostIndex(event.target.value)}
+            />
           </div>
         </div>
         <div className="form-group row">
