@@ -111,6 +111,11 @@ export type RegistrationEmailData = {
   customerName: string;
 };
 
+export type CustomerPasswordConfirmData = {
+  customerEmail: string | undefined;
+  customerPassword: string;
+}
+
 export type CustomerResetPasswordData = {
   email: string | undefined;
   password: string;
@@ -158,13 +163,18 @@ export type CustomerEdit = {
   customerName: string | undefined;
   customerPassword: string | undefined;
   customerPhoneNumber: string | undefined;
+  customerPostIndex: string | undefined;
   customerAddress: string | undefined;
-  customerRole: string | undefined;
+  customerAddressDetail: string | undefined;
+  // customerRole: string | undefined;
 };
 
 export type CustomerEditErrors = {
-  firstNameError: string;
-  lastNameError: string;
+  emailError: string;
+  nameError: string;
+  addressError: string;
+  phoneNumberError: string;
+  postIndexError: string;
 };
 
 export type CustomerData = {

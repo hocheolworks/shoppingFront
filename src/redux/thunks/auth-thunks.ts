@@ -38,6 +38,7 @@ export const login =
         '/customer/login',
         customerData
       );
+
       localStorage.setItem('customerEmail', response.data.customerEmail);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('customerRole', response.data.customerRole);

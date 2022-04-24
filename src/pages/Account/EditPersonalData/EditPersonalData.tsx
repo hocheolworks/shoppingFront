@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FC, FormEvent, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,6 +6,7 @@ import {
   Customer,
   CustomerEdit,
   CustomerEditErrors,
+  PostCodeObject,
 } from "../../../types/types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "../../../redux/reducers/root-reducer";
@@ -14,26 +15,59 @@ import {
   updateCustomerInfo,
 } from "../../../redux/thunks/customer-thunks";
 import "./EditPersonalData.css";
+import DaumPostcode from "react-daum-postcode";
+import { useHistory } from "react-router-dom";
 
 const EditPersonalData: FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
   const errors: Partial<CustomerEditErrors> = useSelector(
     (state: AppStateType) => state.customer.customerEditErrors
   );
+  
   const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
+
+  // ======= 주소 찾기 =====
+  const [customerPostIndex, setCustomerPostIndex] = useState<string | undefined>(
+    customersData.customerPostIndex
+  );
+  const [customerAddress, setCustomerAddress] = useState<string | undefined>(
+    customersData.customerAddress
+  );
+  const [customerAddressDetail, setCustomerAddressDetail] = useState<string | undefined>(
+    customersData.customerAddressDetail
+  );
+
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+
+  const onCompletePostIndex = (data: PostCodeObject): void => {
+    setCustomerAddress(
+      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
+    );
+    setCustomerPostIndex(data.zonecode);
+    setIsPopupOpen(false);
+  };
+
+  const onClickPostIndex = (): void => {
+    setIsPopupOpen((prevState) => !prevState);
+  };
+
+  const postIndexRef = useRef(null);
+  // ===== 주소 찾기 끝 ===
+
   const {
     id,
     customerEmail,
     customerName,
-    customerPassword,
+    // customerPassword,
     customerPhoneNumber,
-    customerAddress,
-    customerRole,
+    // customerRole,
   } = customer;
-  const { firstNameError, lastNameError } = errors;
+
+  const { emailError, nameError, phoneNumberError, postIndexError, addressError} = errors;
 
   useEffect(() => {
     dispatch(resetForm());
@@ -41,16 +75,19 @@ const EditPersonalData: FC = () => {
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const customerEdit: CustomerEdit = {
+    const customerEdit: Partial<CustomerEdit> = {
       id,
       customerEmail,
       customerName,
-      customerPassword,
+      // customerPassword,
       customerPhoneNumber,
+      customerPostIndex,
       customerAddress,
-      customerRole,
+      customerAddressDetail,
+      // customerRole,
     };
-    dispatch(updateCustomerInfo(customerEdit));
+    dispatch(updateCustomerInfo(customerEdit, history));
+
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -62,49 +99,38 @@ const EditPersonalData: FC = () => {
     <>
       <form className="edit_personal_data" onSubmit={onFormSubmit}>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Email: </label>
+          <label className="col-sm-3 col-form-label">이메일: </label>
           <div className="col-sm-6">
             <input
               type="text"
               className={
-                firstNameError ? "form-control is-invalid" : "form-control"
+                emailError ? "form-control is-invalid" : "form-control"
               }
               name="customerEmail"
               value={customerEmail}
               onChange={handleInputChange}
+              readOnly
             />
-            <div className="invalid-feedback">{firstNameError}</div>
+            <div className="invalid-feedback">{emailError}</div>
           </div>
         </div>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Name: </label>
+          <label className="col-sm-3 col-form-label">이름: </label>
           <div className="col-sm-6">
             <input
               type="text"
               className={
-                lastNameError ? "form-control is-invalid" : "form-control"
+                nameError ? "form-control is-invalid" : "form-control"
               }
               name="customerName"
               value={customerName}
               onChange={handleInputChange}
             />
-            <div className="invalid-feedback">{lastNameError}</div>
+            <div className="invalid-feedback">{nameError}</div>
           </div>
         </div>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Password: </label>
-          <div className="col-sm-6">
-            <input
-              type="text"
-              className={"form-control"}
-              name="customerPassword"
-              value={customerPassword}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-        <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Phone Number: </label>
+          <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
           <div className="col-sm-6">
             <input
               type="text"
@@ -116,32 +142,72 @@ const EditPersonalData: FC = () => {
           </div>
         </div>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">Address: </label>
+          <label className="col-sm-3 col-form-label">우편번호: </label>
           <div className="col-sm-6">
             <input
+              ref={postIndexRef}
+              onClick={onClickPostIndex}
+              readOnly
               type="text"
-              className={"form-control"}
-              name="custormerAddress"
-              value={customerAddress}
-              onChange={handleInputChange}
+              className={
+                postIndexError ? 'form-control is-invalid' : 'form-control'
+              }
+              name="customerPostIndex"
+              value={customerPostIndex}
+              placeholder="우편번호"
+              onChange={(event) => setCustomerPostIndex(event.target.value)}
             />
           </div>
         </div>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label">customerRole: </label>
+          <label className="col-sm-3 col-form-label">주소: </label>
           <div className="col-sm-6">
-            <input
-              type="text"
-              className={"form-control"}
-              name="customerRole"
-              value={customerRole}
-              onChange={handleInputChange}
-            />
+              <input
+                  readOnly
+                  type="text"
+                  className={
+                    addressError ? 'form-control is-invalid' : 'form-control'
+                  }
+                  name="address"
+                  value={customerAddress}
+                  onChange={(event) => setCustomerAddress(event.target.value)}
+              />
           </div>
         </div>
+        <div className="form-group row">
+          <label className="col-sm-3 col-form-label">상세 주소: </label>
+          <div className="col-sm-6">
+            <input
+                  type="text"
+                  className={
+                    addressError ? 'form-control is-invalid' : 'form-control'
+                  }
+                  name="address"
+                  value={customerAddressDetail}
+                  onChange={(event) =>
+                    setCustomerAddressDetail(event.target.value)
+                  }
+              />  
+          </div>
+        </div>
+        {isPopupOpen && (
+              <div className="form-group row">
+                <label className="col-sm-2 col-form-label"></label>
+                <div className="col-sm-8">
+                  <DaumPostcode
+                    className="form-control"
+                    style={{
+                      border: '1px solid black',
+                      padding: 0,
+                    }}
+                    onComplete={onCompletePostIndex}
+                  />
+                </div>
+              </div>
+        )}
         <button type="submit" className="btn btn-dark">
           <FontAwesomeIcon className="mr-2" icon={faCheck} />
-          Save
+          저장
         </button>
       </form>
     </>
