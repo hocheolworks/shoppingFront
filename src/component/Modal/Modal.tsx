@@ -1,10 +1,11 @@
-import React, { FC } from "react";
-import { Product } from "../../types/types";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import React, { FC } from 'react';
+import { Product } from '../../types/types';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { API_BASE_URL } from '../../utils/constants/url';
 
 type PropTypes = {
-  product?: Product;
-  deleteProductHandler: (id?: number) => void;
+  product: Product;
+  deleteProductHandler: (id: number) => void;
   setModalActive: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -16,11 +17,11 @@ const Modal: FC<PropTypes> = ({
   return (
     <>
       <div className="modal-open">
-        <div className="modal fade show" style={{ display: "block" }}>
+        <div className="modal fade show" style={{ display: 'block' }}>
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Delete product</h5>
+                <h5 className="modal-title">상품 삭제</h5>
                 <button
                   type="button"
                   className="close"
@@ -30,22 +31,31 @@ const Modal: FC<PropTypes> = ({
                 </button>
               </div>
               <div className="row modal-body">
-                <div className="col-md-6 d-flex justify-content-center">
-                  <LazyLoadImage effect="blur" style={{ width: "89px" }} />
+                <div className="col-md-4 d-flex justify-content-center">
+                  <LazyLoadImage
+                    effect="blur"
+                    style={{ width: '90px' }}
+                    src={`${API_BASE_URL.replace('api/v1', '')}${
+                      product.productImageFilepath
+                    }`}
+                  />
                 </div>
                 <div className="col-md-6 text-center">
-                  <p> Are you sure too delete?</p>
-                  <h6>{}</h6>
-                  <h6>{}</h6>
+                  <h6>상품 번호 : {product.id}</h6>
+                  <h6>
+                    {product.productName} |{' '}
+                    {product.productPrice.toLocaleString('ko-kr')} 원
+                  </h6>
+                  <p>정말 삭제하시겠습니까?</p>
                 </div>
               </div>
               <div className="modal-footer">
                 <button
                   type="button"
                   className="btn btn-danger"
-                  onClick={() => deleteProductHandler(product?.id)}
+                  onClick={() => deleteProductHandler(product.id)}
                 >
-                  Delete
+                  삭제
                 </button>
                 <button
                   type="button"
@@ -53,7 +63,7 @@ const Modal: FC<PropTypes> = ({
                   data-dismiss="modal"
                   onClick={() => setModalActive(false)}
                 >
-                  Close
+                  닫기
                 </button>
               </div>
             </div>

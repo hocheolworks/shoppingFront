@@ -10,22 +10,8 @@ import {
 } from '../../../redux/thunks/product-thunks';
 import { formReset, updateProduct } from '../../../redux/thunks/admin-thunks';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
-import { Product } from '../../../types/types';
+import { Product, ProductErrors } from '../../../types/types';
 import ToastShow from '../../../component/Toasts/ToastShow';
-
-type ProductErrors = {
-  productTitleError: string;
-  productrError: string;
-  yearError: string;
-  countryError: string;
-  typeError: string;
-  volumeError: string;
-  productGenderError: string;
-  fragranceTopNotesError: string;
-  fragranceMiddleNotesError: string;
-  fragranceBaseNotesError: string;
-  priceError: string;
-};
 
 const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
@@ -40,35 +26,21 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const [showToast, setShowToast] = useState(false);
 
   const {
-    productTitleError,
-    productrError,
-    yearError,
-    countryError,
-    typeError,
-    volumeError,
-    productGenderError,
-    fragranceTopNotesError,
-    fragranceMiddleNotesError,
-    fragranceBaseNotesError,
-    priceError,
+    productNameError,
+    productMinimumEAError,
+    productPriceError,
+    productDescriptionError,
+    productImageFileError,
+    customerRoleError,
   } = errors;
 
-  // const {
-  //   id,
-  //   productTitle,
-  //   productr,
-  //   year,
-  //   country,
-  //   type,
-  //   volume,
-  //   productGender,
-  //   fragranceTopNotes,
-  //   fragranceMiddleNotes,
-  //   fragranceBaseNotes,
-  //   price,
-  //   filename,
-  //   file,
-  // } = product;
+  const {
+    id,
+    productName,
+    productDescription,
+    productMinimumEA,
+    productPrice,
+  } = product;
 
   useEffect(() => {
     dispatch(fetchProduct(parseInt(match.params.id)));
@@ -140,241 +112,90 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
       <div className="container">
         <h4>
           <FontAwesomeIcon className="mr-2" icon={faEdit} />
-          Edit product
+          상품 수정
         </h4>
         <form onSubmit={onFormSubmit}>
           <div className="row mt-5">
             <div className="col-md-6">
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Product title:{' '}
+                  상품명:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      productTitleError
+                      productNameError
                         ? 'form-control is-invalid'
                         : 'form-control'
                     }
-                    name="productTitle"
-                    // value={productTitle}
+                    name="productName"
+                    value={productName}
                     onChange={handleInputChange}
                   />
-                  <div className="invalid-feedback">{productTitleError}</div>
+                  <div className="invalid-feedback">{productNameError}</div>
                 </div>
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Brand:{' '}
+                  최소 주문 수량:{' '}
+                </label>
+                <div className="col-sm-8">
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    name="productMinimumEA"
+                    value={productMinimumEA}
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-4 col-form-label font-weight-bold">
+                  가격:{' '}
+                </label>
+                <div className="col-sm-8">
+                  <input
+                    type="number"
+                    className={
+                      productPriceError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    name="productPrice"
+                    value={productPrice}
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-4 col-form-label font-weight-bold">
+                  상품 설명:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      productrError ? 'form-control is-invalid' : 'form-control'
+                      productDescriptionError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
-                    name="productr"
-                    // value={productr}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">{productrError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Release year:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      yearError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="year"
-                    // value={year}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">{yearError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Country:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      countryError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="country"
-                    // value={country}
+                    name="productDescription"
+                    value={productDescription}
                     onChange={handleInputChange}
                   />
 
-                  <div className="invalid-feedback">{countryError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Product type:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <select
-                    name="type"
-                    className={
-                      typeError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    onChange={handleInputChange}
-                  >
-                    {/* {productData.type === "Eau de Parfum" ? (
-                      <>
-                        <option value={productData.type}>
-                          {productData.type}
-                        </option>
-                        <option value="Eau de Toilette">Eau de Toilette</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value={productData.type}>
-                          {productData.type}
-                        </option>
-                        <option value="Eau de Parfum">Eau de Parfum</option>
-                      </>
-                    )} */}
-                  </select>
-                  <div className="invalid-feedback">{typeError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Volume:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      volumeError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="volume"
-                    // value={volume}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">{volumeError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Gender:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <select
-                    name="productGender"
-                    className={
-                      productGenderError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    onChange={handleInputChange}
-                  >
-                    {/* {productData.productGender === "male" ? (
-                      <>
-                        <option value={productData.productGender}>
-                          {productData.productGender}
-                        </option>
-                        <option value="female">female</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value={productData.productGender}>
-                          {productData.productGender}
-                        </option>
-                        <option value="male">male</option>
-                      </>
-                    )} */}
-                  </select>
-                  <div className="invalid-feedback">{productGenderError}</div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Top notes:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      fragranceTopNotesError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    name="fragranceTopNotes"
-                    // value={fragranceTopNotes}
-                    onChange={handleInputChange}
-                  />
                   <div className="invalid-feedback">
-                    {fragranceTopNotesError}
+                    {productDescriptionError}
                   </div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Heart notes:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      fragranceMiddleNotesError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    name="fragranceMiddleNotes"
-                    // value={fragranceMiddleNotes}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">
-                    {fragranceMiddleNotesError}
-                  </div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Base notes:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      fragranceBaseNotesError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    name="fragranceBaseNotes"
-                    // value={fragranceBaseNotes}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">
-                    {fragranceBaseNotesError}
-                  </div>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-4 col-form-label font-weight-bold">
-                  Price:{' '}
-                </label>
-                <div className="col-sm-8">
-                  <input
-                    type="text"
-                    className={
-                      priceError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="price"
-                    // value={price}
-                    onChange={handleInputChange}
-                  />
-                  <div className="invalid-feedback">{priceError}</div>
                 </div>
               </div>
             </div>

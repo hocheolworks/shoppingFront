@@ -29,13 +29,15 @@ import {
 
 export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
   try {
-    await RequestService.post(
+    const response = await RequestService.post(
       '/product/new',
       data,
       false,
       'multipart/form-data'
     );
+
     dispatch(addProductSuccess());
+    dispatch(fetchProductSuccess(response.data));
   } catch (error: any) {
     if (error === undefined || error.response === undefined) {
       console.log('error is undefined, wtf');
@@ -64,10 +66,17 @@ export const updateProduct = (data: FormData) => async (dispatch: Dispatch) => {
   }
 };
 
-export const deleteProduct = (id?: number) => async (dispatch: Dispatch) => {
-  const response = await RequestService.delete('/admin/delete/' + id, true);
-  dispatch(getProducts(response.data));
-};
+export const deleteProduct =
+  (productId: number, customerId: number) => async (dispatch: Dispatch) => {
+    try {
+      const response = await RequestService.delete(
+        `/product/${productId}?customerId=${customerId}`
+      );
+      dispatch(getProducts(response.data));
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
 
 export const fetchAllUsersOrders = () => async (dispatch: Dispatch) => {
   dispatch(loadingData());
