@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import * as H from 'history';
 
 import { fetchProductSuccess } from '../actions/product-actions';
 import {
@@ -16,8 +17,14 @@ import {
   ReviewData,
   CustomerEdit,
   CustomerResetPasswordData,
+  CustomerPasswordConfirmData,
 } from '../../types/types';
 import RequestService from '../../utils/request-service';
+import ChangePassword from '../../pages/Account/ChangePassword/ChangePassword';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
+
+const MySwal = withReactContent(Swal);
 
 export const fetchCustomerInfo = () => async (dispatch: Dispatch) => {
   dispatch(loadingCustomerInfo());
@@ -29,7 +36,7 @@ export const fetchCustomerInfo = () => async (dispatch: Dispatch) => {
 };
 
 export const updateCustomerInfo =
-  (customerEdit: Partial<CustomerEdit>) => async (dispatch: Dispatch) => {
+  (customerEdit: Partial<CustomerEdit>, history: H.History) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.put(
         '/account/edit',
@@ -37,6 +44,7 @@ export const updateCustomerInfo =
         true
       );
       dispatch(customerUpdatedSuccess(response.data));
+      history.push('/account/customer/info');
     } catch (error: any) {
       dispatch(customerUpdatedFailure(error.response.data));
     }
@@ -46,16 +54,40 @@ export const updateCustomerPassword =
   (data: CustomerResetPasswordData) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.put(
-        '/auth/edit/password',
+        '/account/password-change',
         data,
         true
       );
       dispatch(customerUpdatedPasswordSuccess(response.data));
     } catch (error: any) {
-      dispatch(customerUpdatedPasswordFailure(error.response.data));
+      let errorMessage = error.response.data.message;
+      await MySwal.fire({
+        title:`<strong>비밀번호 변경 실패!</strong>`,
+        html:`<i>${errorMessage}</i>`,
+        icon: 'error',
+      })
     }
   };
 
+  export const ConfirmCustomerPassword =
+    (data: CustomerPasswordConfirmData, history: H.History) => async (dispatch: Dispatch) => {
+    try {
+      const response = await RequestService.put(
+        '/account/password-confirm',
+        data,
+        true
+      );
+      history.push('/account/customer/password/change')
+    } catch (error: any) {
+      let errorMessage = error.response.data.message;
+      await MySwal.fire({
+        title:`<strong>비밀번호 확인 실패!</strong>`,
+        html:`<i>${errorMessage}</i>`,
+        icon: 'error',
+      })
+    };
+  };
+  
 export const addReviewToProduct =
   (review: ReviewData) => async (dispatch: Dispatch) => {
     try {

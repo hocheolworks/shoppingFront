@@ -23,6 +23,7 @@ import ManageCustomer from './ManageCustomer/ManageCustomer';
 import EditProduct from './EditProduct/EditProduct';
 import ManageCustomerOrder from './ManageCustomerOrder/ManageCustomerOrder';
 import './Account.css';
+import ConfrimPassword from './ConfirmPassword/ConfirmPassword';
 
 const Account: FC = () => {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const Account: FC = () => {
           ) : (
             <>
               <NavLink
-                to={'/account/customer/edit'}
+                to={'/account/customer/password/confirm'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
               >
@@ -101,7 +102,11 @@ const Account: FC = () => {
           <Route exact path="/account" component={() => <AccountItem />} />
           <Route path="/account/customer/info" component={() => <PersonalData />} />
           <Route
-            path="/account/customer/edit"
+            path="/account/customer/password/confirm"
+            component={() => <ConfrimPassword />}
+          />
+          <Route
+            path="/account/customer/password/change"
             component={() => <ChangePassword />}
           />
           <Route

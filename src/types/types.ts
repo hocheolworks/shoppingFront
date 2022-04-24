@@ -111,6 +111,11 @@ export type RegistrationEmailData = {
   customerName: string;
 };
 
+export type CustomerPasswordConfirmData = {
+  customerEmail: string | undefined;
+  customerPassword: string;
+}
+
 export type CustomerResetPasswordData = {
   email: string | undefined;
   password: string;
