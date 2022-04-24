@@ -14,10 +14,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ToastShow from '../../../component/Toasts/ToastShow';
 import { addProduct, formReset } from '../../../redux/thunks/admin-thunks';
 import { AppStateType } from '../../../redux/reducers/root-reducer';
-import { ProductErrors } from '../../../types/types';
+import { Customer, ProductErrors } from '../../../types/types';
 import { fetchProducts } from '../../../redux/thunks/product-thunks';
 import { isValidNumber } from '../../../utils/functions';
 import { addProductFailure } from '../../../redux/actions/admin-actions';
+import { useHistory } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 type InitialStateType = {
   productName: string;
@@ -29,6 +34,14 @@ type InitialStateType = {
 
 const AddProduct: FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
+  const customer: Partial<Customer> = useSelector(
+    (state: AppStateType) => state.customer.customer
+  );
+
+  const customerId: number = parseInt(localStorage.getItem('id') as string);
+
   const isProductAdded: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductAdded
   );
@@ -55,9 +68,21 @@ const AddProduct: FC = () => {
     productMinimumEAError,
     productDescriptionError,
     productPriceError,
+    productImageFileError,
+    customerRoleError,
   } = errors;
 
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (Boolean(customerRoleError)) {
+      MySwal.fire({
+        title: `<strong>상품 추가 실패</strong>`,
+        html: `<i>관리자 권한이 필요합니다.</i>`,
+        icon: 'error',
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (isProductAdded) {
@@ -81,16 +106,21 @@ const AddProduct: FC = () => {
     if (
       !Boolean(productName) ||
       !Boolean(productDescription) ||
+      !Boolean(productMinimumEA) ||
+      !Boolean(productPrice) ||
       !isValidNumber(productMinimumEA) ||
       productMinimumEA < 1 ||
       !isValidNumber(productPrice) ||
-      productPrice < 0
+      productPrice < 0 ||
+      !Boolean(file)
     ) {
       const productError: ProductErrors = {
         productNameError: '',
         productDescriptionError: '',
         productMinimumEAError: '',
         productPriceError: '',
+        productImageFileError: '',
+        customerRoleError: '',
       };
 
       if (!Boolean(productName)) {
@@ -101,17 +131,21 @@ const AddProduct: FC = () => {
         productError.productDescriptionError = '상품 설명은 필수 입니다.';
       }
 
-      if (!isValidNumber(productMinimumEA)) {
+      if (!Boolean(productMinimumEA) || !isValidNumber(productMinimumEA)) {
         productError.productMinimumEAError = '최소 주문 수량은 필수 입니다.';
       } else if (productMinimumEA < 1) {
         productError.productMinimumEAError =
           '최소 주문 수량은 0보다 큰 숫자여야 합니다.';
       }
 
-      if (!isValidNumber(productPrice)) {
+      if (!Boolean(productPrice) || !isValidNumber(productPrice)) {
         productError.productPriceError = '상품 가격은 필수 입니다.';
       } else if (productPrice < 0) {
         productError.productPriceError = '상품 가격은 0보다 작을 수 없습니다.';
+      }
+
+      if (!Boolean(file)) {
+        productError.productImageFileError = '상품 이미지는 필수 입니다.';
       }
 
       dispatch(addProductFailure(productError));
@@ -124,6 +158,9 @@ const AddProduct: FC = () => {
     bodyFormData.append('productMinimumEA', productMinimumEA.toString());
     bodyFormData.append('productDescription', productDescription);
     bodyFormData.append('productPrice', productPrice.toString());
+    if (customerId) {
+      bodyFormData.append('customerId', customerId.toString());
+    }
 
     dispatch(addProduct(bodyFormData));
   };
@@ -136,7 +173,6 @@ const AddProduct: FC = () => {
   };
 
   const handleFileChange = (event: any): void => {
-    console.log(event.target.files[0]);
     setState((prevState) => ({ ...prevState, file: event.target.files[0] }));
   };
 
@@ -224,10 +260,17 @@ const AddProduct: FC = () => {
             <div className="col" style={{ marginTop: '35px' }}>
               <input
                 type="file"
+                className={
+                  productImageFileError
+                    ? 'form-control is-invalid'
+                    : 'form-control'
+                }
+                style={{ height: '44px' }}
                 name="file"
                 ref={fileInput}
                 onChange={handleFileChange}
               />
+              <div className="invalid-feedback">{productImageFileError}</div>
             </div>
           </div>
           <button type="submit" className="btn btn-dark mt-3">

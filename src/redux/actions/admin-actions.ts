@@ -1,4 +1,4 @@
-import { Order, ProductErrors, Customer } from "../../types/types";
+import { Order, ProductErrors, Customer } from '../../types/types';
 import {
   FETCH_ALL_USERS_ORDERS_SUCCESS,
   FETCH_ALL_USERS_SUCCESS,
@@ -28,7 +28,11 @@ import {
   GetUserOrdersByQueryActionType,
   GetUserInfoByQueryActionType,
   LoadingDataActionType,
-} from "../action-types/admin-action-types";
+  DeleteProductFailureActionType,
+  PRODUCT_DELETE_FAILURE,
+  DeleteProductSuccessActionType,
+  PRODUCT_DELETE_SUCCESS,
+} from '../action-types/admin-action-types';
 
 export const loadingData = (): LoadingDataActionType => ({
   type: LOADING_DATA,
@@ -53,6 +57,17 @@ export const updateProductFailure = (
   error: ProductErrors
 ): UpdateProductFailureActionType => ({
   type: PRODUCT_UPDATED_FAILURE,
+  payload: error,
+});
+
+export const deleteProductSuccess = (): DeleteProductSuccessActionType => ({
+  type: PRODUCT_DELETE_SUCCESS,
+});
+
+export const deleteProductFailure = (
+  error: ProductErrors
+): DeleteProductFailureActionType => ({
+  type: PRODUCT_DELETE_FAILURE,
   payload: error,
 });
 

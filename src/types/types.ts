@@ -18,6 +18,8 @@ export type ProductErrors = {
   productDescriptionError: string;
   productPriceError: string;
   productMinimumEAError: string;
+  productImageFileError: string;
+  customerRoleError: string;
 };
 
 export type Customer = {

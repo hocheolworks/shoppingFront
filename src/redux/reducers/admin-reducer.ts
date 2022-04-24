@@ -13,9 +13,12 @@ import {
   FETCH_ALL_USERS_ORDERS_BY_QUERY_SUCCESS,
   FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
   LOADING_DATA,
-} from "../action-types/admin-action-types";
-import { Customer, Order, ProductErrors } from "../../types/types";
-import { AdminActionTypes } from "../action-types/admin-action-types";
+  PRODUCT_DELETE_FAILURE,
+  PRODUCT_DELETE_SUCCESS,
+} from '../action-types/admin-action-types';
+import { Customer, Order, ProductErrors } from '../../types/types';
+import { AdminActionTypes } from '../action-types/admin-action-types';
+import { isDoStatement } from 'typescript';
 
 export type InitialStateType = {
   orders: Array<Order>;
@@ -58,6 +61,22 @@ const reducer = (
 
     case PRODUCT_UPDATED_FAILURE:
       return { ...state, isProductEdited: false, errors: action.payload };
+
+    case PRODUCT_DELETE_FAILURE:
+      return {
+        ...state,
+        isProductAdded: false,
+        isProductEdited: false,
+        errors: action.payload,
+      };
+
+    case PRODUCT_DELETE_SUCCESS:
+      return {
+        ...state,
+        isProductAdded: false,
+        isProductEdited: false,
+        errors: {},
+      };
 
     case FETCH_USER_INFO_SUCCESS:
       return { ...state, customer: action.payload, isLoaded: false };

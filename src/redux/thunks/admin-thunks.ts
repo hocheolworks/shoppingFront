@@ -1,4 +1,4 @@
-import { Dispatch } from "redux";
+import { Dispatch } from 'redux';
 
 import {
   addProductFailure,
@@ -15,81 +15,109 @@ import {
   getUserInfoByQuery,
   getUserOrdersByQuery,
   loadingData,
-} from "../actions/admin-actions";
-import { fetchProductSuccess, getProducts } from "../actions/product-actions";
-import RequestService from "../../utils/request-service";
+  deleteProductFailure,
+  deleteProductSuccess,
+} from '../actions/admin-actions';
+import { fetchProductSuccess, getProducts } from '../actions/product-actions';
+import RequestService from '../../utils/request-service';
 import {
   userByQuery,
   usersByQuery,
-} from "../../utils/graphql-query/users-query";
+} from '../../utils/graphql-query/users-query';
 import {
   ordersByEmailQuery,
   ordersByQuery,
-} from "../../utils/graphql-query/orders-query";
+} from '../../utils/graphql-query/orders-query';
 
 export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
   try {
-    await RequestService.post(
-      "/product/new",
+    const response = await RequestService.post(
+      '/product/new',
       data,
       false,
-      "multipart/form-data"
+      'multipart/form-data'
     );
+
     dispatch(addProductSuccess());
+    dispatch(fetchProductSuccess(response.data));
   } catch (error: any) {
     if (error === undefined || error.response === undefined) {
-      console.log("error is undefined, wtf");
+      console.log('error is undefined, wtf');
       return;
     }
     dispatch(addProductFailure(error.response.data));
   }
 };
 
-export const updateProduct = (data: FormData) => async (dispatch: Dispatch) => {
-  try {
-    const response = await RequestService.post(
-      "/admin/edit",
-      data,
-      true,
-      "multipart/form-data"
-    );
-    dispatch(updateProductSuccess());
-    dispatch(fetchProductSuccess(response.data));
-  } catch (error: any) {
-    if (error === undefined) {
-      console.log("error is undefined, wtf");
-      return;
-    }
-    dispatch(updateProductFailure(error.response.data));
-  }
-};
+export const updateProduct =
+  (productId: number, customerId: number, data: FormData) =>
+  async (dispatch: Dispatch) => {
+    try {
+      const url: string = data.has('file')
+        ? `/product/${productId}/w/image?customerId=${customerId}`
+        : `/product/${productId}/w/o/image?customerId=${customerId}`;
 
-export const deleteProduct = (id?: number) => async (dispatch: Dispatch) => {
-  const response = await RequestService.delete("/admin/delete/" + id, true);
-  dispatch(getProducts(response.data));
-};
+      const bodyData = data.has('file')
+        ? data
+        : {
+            productName: data.get('productName'),
+            productDescription: data.get('productDescription'),
+            productMinimumEA: parseInt(data.get('productMinimumEA') as string),
+            productPrice: parseInt(data.get('productPrice') as string),
+          };
+
+      const response = await RequestService.put(
+        url,
+        bodyData,
+        false,
+        data.has('file') ? 'multipart/form-data' : 'application/json'
+      );
+
+      dispatch(updateProductSuccess());
+      dispatch(fetchProductSuccess(response.data));
+    } catch (error: any) {
+      if (error === undefined) {
+        console.log('error is undefined, wtf');
+        return;
+      }
+      dispatch(updateProductFailure(error.response.data));
+    }
+  };
+
+export const deleteProduct =
+  (productId: number, customerId: number) => async (dispatch: Dispatch) => {
+    try {
+      const response = await RequestService.delete(
+        `/product/${productId}?customerId=${customerId}`
+      );
+      dispatch(deleteProductSuccess());
+      dispatch(getProducts(response.data));
+    } catch (err: any) {
+      dispatch(deleteProductFailure(err.response.data.productError));
+    }
+  };
 
 export const fetchAllUsersOrders = () => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get("/order/all", true);
+  const response = await RequestService.get('/order/all', true);
   dispatch(getAllUsersOrders(response.data));
 };
 
 export const fetchUserOrders = (id: string) => async (dispatch: Dispatch) => {
-  const response = await RequestService.get("/order/" + id, true);
+  const response = await RequestService.get('/order/' + id, true);
   dispatch(getUserOrders(response.data));
 };
 
 export const fetchAllUsers = () => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get("/customer/all", true);
+  const response = await RequestService.get('/customer/all', true);
   console.log(response);
   dispatch(getAllUsers(response.data));
 };
 
 export const fetchUserInfo = (id: string) => async (dispatch: Dispatch) => {
   dispatch(loadingData());
-  const response = await RequestService.get("/customer/" + id, true);
+  const response = await RequestService.get('/customer/' + id, true);
   dispatch(getUserInfo(response.data));
 };
 

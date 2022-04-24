@@ -51,6 +51,13 @@ const Account: FC = () => {
           {localStorage.getItem('customerRole') === 'ADMIN' ? (
             <>
               <NavLink
+                to={'/account/customer/password/confirm'}
+                className="account-sidebar-link nav-link"
+                activeClassName="is-active"
+              >
+                비밀번호 변경
+              </NavLink>
+              <NavLink
                 to={'/account/admin/add'}
                 className="account-sidebar-link nav-link"
                 activeClassName="is-active"
@@ -100,7 +107,10 @@ const Account: FC = () => {
         </div>
         <div className="col-md-10">
           <Route exact path="/account" component={() => <AccountItem />} />
-          <Route path="/account/customer/info" component={() => <PersonalData />} />
+          <Route
+            path="/account/customer/info"
+            component={() => <PersonalData />}
+          />
           <Route
             path="/account/customer/password/confirm"
             component={() => <ConfrimPassword />}
