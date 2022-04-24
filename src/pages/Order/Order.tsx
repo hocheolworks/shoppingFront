@@ -23,6 +23,7 @@ import {
 import DaumPostcode from 'react-daum-postcode';
 import './Order.css';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
+import { API_BASE_URL } from '../../utils/constants/url';
 const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
 const Order: FC = () => {
@@ -70,7 +71,7 @@ const Order: FC = () => {
   );
   // hyeongwook add
   // const [customerId] = useState<number | undefined>(customersData.id);
-  const [customerId] = [localStorage.getItem("id")];
+  const [customerId] = [localStorage.getItem('id')];
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const postIndexRef = useRef(null);
@@ -272,7 +273,9 @@ const Order: FC = () => {
                     >
                       <div className="card mb-5">
                         <img
-                          src={`/image/product/${cartItem.product.productName}.jpeg`}
+                          src={`${API_BASE_URL.replace('api/v1', '')}${
+                            cartItem.product.productImageFilepath
+                          }`}
                           className="rounded mx-auto w-50"
                         />
                         <div className="card-body text-center">

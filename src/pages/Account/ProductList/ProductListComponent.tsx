@@ -6,7 +6,7 @@ import { faEdit, faList, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import usePagination from '../../../component/Pagination/usePagination';
-import { Customer, Product } from '../../../types/types';
+import { Customer, Product, ProductErrors } from '../../../types/types';
 import Modal from '../../../component/Modal/Modal';
 import SearchForm from '../../../component/SearchForm/SearchForm';
 import PaginationItem from '../../../component/Pagination/PaginationItem';
@@ -38,6 +38,12 @@ const ProductListComponent: FC<PropsType> = ({
     (state: AppStateType) => state.customer.customer
   );
 
+  const error: Partial<ProductErrors> = useSelector(
+    (state: AppStateType) => state.admin.errors
+  );
+
+  const customerId: number = parseInt(localStorage.getItem('id') as string);
+
   const [modalActive, setModalActive] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<Product>();
 
@@ -55,8 +61,12 @@ const ProductListComponent: FC<PropsType> = ({
     setModalActive(false);
   }, [data]);
 
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
+
   const deleteProductHandler = (id: number): void => {
-    dispatch(deleteProduct(id, customer.id as number));
+    dispatch(deleteProduct(id, customerId));
   };
 
   const showDeleteModalWindow = (product: Product): void => {

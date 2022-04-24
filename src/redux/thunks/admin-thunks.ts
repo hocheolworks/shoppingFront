@@ -15,6 +15,7 @@ import {
   getUserInfoByQuery,
   getUserOrdersByQuery,
   loadingData,
+  deleteProductFailure,
 } from '../actions/admin-actions';
 import { fetchProductSuccess, getProducts } from '../actions/product-actions';
 import RequestService from '../../utils/request-service';
@@ -74,7 +75,7 @@ export const deleteProduct =
       );
       dispatch(getProducts(response.data));
     } catch (err: any) {
-      console.log(err);
+      dispatch(deleteProductFailure(err.response.data.productError));
     }
   };
 
