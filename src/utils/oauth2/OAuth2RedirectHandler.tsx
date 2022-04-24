@@ -8,8 +8,12 @@ import { API_BASE_URL } from "../constants/url";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { login } from "../../redux/thunks/auth-thunks";
+import { loginSuccess } from "../../redux/actions/auth-actions";
+import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
 
 const OAuth2RedirectHandler = (props: any) => {
+  const dispatch = useDispatch();
   const history = useHistory();
   let loading: boolean = useSelector(
     (state: AppStateType) => state.order.loading
@@ -42,6 +46,13 @@ const OAuth2RedirectHandler = (props: any) => {
           const ACCESS_TOKEN = res.data.token;
 
           localStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
+          localStorage.setItem("customerEmail", res.data.customerEmail);
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("customerRole", res.data.customerRole);
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("id", res.data.id);
+          dispatch(loginSuccess(res.data.customerRole));
+          dispatch(fetchCustomerSuccess(res.data));
           history.push("/account");
         }
       })
