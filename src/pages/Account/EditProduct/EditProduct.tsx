@@ -1,26 +1,38 @@
-import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import { RouteComponentProps } from "react-router-dom";
+import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { RouteComponentProps } from 'react-router-dom';
 
 import {
   fetchProduct,
   fetchProducts,
-} from "../../../redux/thunks/product-thunks";
-import { formReset, updateProduct } from "../../../redux/thunks/admin-thunks";
-import { AppStateType } from "../../../redux/reducers/root-reducer";
-import { Product, ProductErrors } from "../../../types/types";
-import ToastShow from "../../../component/Toasts/ToastShow";
+} from '../../../redux/thunks/product-thunks';
+import { formReset, updateProduct } from '../../../redux/thunks/admin-thunks';
+import { AppStateType } from '../../../redux/reducers/root-reducer';
+import { Product } from '../../../types/types';
+import ToastShow from '../../../component/Toasts/ToastShow';
+
+type ProductErrors = {
+  productTitleError: string;
+  productrError: string;
+  yearError: string;
+  countryError: string;
+  typeError: string;
+  volumeError: string;
+  productGenderError: string;
+  fragranceTopNotesError: string;
+  fragranceMiddleNotesError: string;
+  fragranceBaseNotesError: string;
+  priceError: string;
+};
 
 const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
   const productData: Partial<Product> = useSelector(
     (state: AppStateType) => state.product.product
   );
-  const errors: Partial<ProductErrors> = useSelector(
-    (state: AppStateType) => state.admin.errors
-  );
+  const errors: Partial<ProductErrors> = {};
   const isProductEdited: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductEdited
   );
@@ -123,7 +135,7 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     <>
       <ToastShow
         showToast={showToast}
-        message={"Product successfully edited!"}
+        message={'Product successfully edited!'}
       />
       <div className="container">
         <h4>
@@ -135,15 +147,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <div className="col-md-6">
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Product title:{" "}
+                  Product title:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
                       productTitleError
-                        ? "form-control is-invalid"
-                        : "form-control"
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
                     name="productTitle"
                     // value={productTitle}
@@ -154,13 +166,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Brand:{" "}
+                  Brand:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      productrError ? "form-control is-invalid" : "form-control"
+                      productrError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="productr"
                     // value={productr}
@@ -171,13 +183,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Release year:{" "}
+                  Release year:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      yearError ? "form-control is-invalid" : "form-control"
+                      yearError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="year"
                     // value={year}
@@ -188,13 +200,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Country:{" "}
+                  Country:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      countryError ? "form-control is-invalid" : "form-control"
+                      countryError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="country"
                     // value={country}
@@ -206,13 +218,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Product type:{" "}
+                  Product type:{' '}
                 </label>
                 <div className="col-sm-8">
                   <select
                     name="type"
                     className={
-                      typeError ? "form-control is-invalid" : "form-control"
+                      typeError ? 'form-control is-invalid' : 'form-control'
                     }
                     onChange={handleInputChange}
                   >
@@ -237,13 +249,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Volume:{" "}
+                  Volume:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      volumeError ? "form-control is-invalid" : "form-control"
+                      volumeError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="volume"
                     // value={volume}
@@ -254,15 +266,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Gender:{" "}
+                  Gender:{' '}
                 </label>
                 <div className="col-sm-8">
                   <select
                     name="productGender"
                     className={
                       productGenderError
-                        ? "form-control is-invalid"
-                        : "form-control"
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
                     onChange={handleInputChange}
                   >
@@ -287,15 +299,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Top notes:{" "}
+                  Top notes:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
                       fragranceTopNotesError
-                        ? "form-control is-invalid"
-                        : "form-control"
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
                     name="fragranceTopNotes"
                     // value={fragranceTopNotes}
@@ -308,15 +320,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Heart notes:{" "}
+                  Heart notes:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
                       fragranceMiddleNotesError
-                        ? "form-control is-invalid"
-                        : "form-control"
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
                     name="fragranceMiddleNotes"
                     // value={fragranceMiddleNotes}
@@ -329,15 +341,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Base notes:{" "}
+                  Base notes:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
                       fragranceBaseNotesError
-                        ? "form-control is-invalid"
-                        : "form-control"
+                        ? 'form-control is-invalid'
+                        : 'form-control'
                     }
                     name="fragranceBaseNotes"
                     // value={fragranceBaseNotes}
@@ -350,13 +362,13 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               </div>
               <div className="form-group row">
                 <label className="col-sm-4 col-form-label font-weight-bold">
-                  Price:{" "}
+                  Price:{' '}
                 </label>
                 <div className="col-sm-8">
                   <input
                     type="text"
                     className={
-                      priceError ? "form-control is-invalid" : "form-control"
+                      priceError ? 'form-control is-invalid' : 'form-control'
                     }
                     name="price"
                     // value={price}

@@ -43,7 +43,7 @@ export const login =
       localStorage.setItem('customerRole', response.data.customerRole);
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('id', response.data.id);
-      dispatch(loginSuccess(response.data.userRole));
+      dispatch(loginSuccess(response.data.customerRole));
       dispatch(fetchCustomerSuccess(response.data));
 
       const cartResponse = await RequestService.get(
@@ -116,9 +116,9 @@ export const registration =
   };
 
 export const logout = () => async (dispatch: Dispatch) => {
-  localStorage.removeItem('email');
   localStorage.removeItem('token');
   localStorage.removeItem('customerRole');
+  localStorage.removeItem('customerEmail');
   localStorage.removeItem('isLoggedIn');
   localStorage.removeItem('id');
   dispatch(logoutSuccess());

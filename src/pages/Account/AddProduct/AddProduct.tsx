@@ -1,28 +1,30 @@
-import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import ToastShow from "../../../component/Toasts/ToastShow";
-import { addProduct, formReset } from "../../../redux/thunks/admin-thunks";
-import { AppStateType } from "../../../redux/reducers/root-reducer";
-import { ProductErrors } from "../../../types/types";
-import { fetchProducts } from "../../../redux/thunks/product-thunks";
+import ToastShow from '../../../component/Toasts/ToastShow';
+import { addProduct, formReset } from '../../../redux/thunks/admin-thunks';
+import { AppStateType } from '../../../redux/reducers/root-reducer';
+import { ProductErrors } from '../../../types/types';
+import { fetchProducts } from '../../../redux/thunks/product-thunks';
+import { isValidNumber } from '../../../utils/functions';
+import { addProductFailure } from '../../../redux/actions/admin-actions';
 
 type InitialStateType = {
-  productTitle: string;
-  productr: string;
-  year: string;
-  country: string;
-  type: string;
-  volume: string;
-  productGender: string;
-  fragranceTopNotes: string;
-  fragranceMiddleNotes: string;
-  fragranceBaseNotes: string;
-  price: string;
+  productName: string;
+  productMinimumEA: number;
+  productDescription: string;
+  productPrice: number;
   file: string | Blob;
-  productRating: number;
 };
 
 const AddProduct: FC = () => {
@@ -35,58 +37,34 @@ const AddProduct: FC = () => {
   );
 
   const initialState: InitialStateType = {
-    productTitle: "",
-    productr: "",
-    year: "",
-    country: "",
-    type: "",
-    volume: "",
-    productGender: "",
-    fragranceTopNotes: "",
-    fragranceMiddleNotes: "",
-    fragranceBaseNotes: "",
-    price: "",
-    file: "",
-    productRating: 0.0,
+    productName: '',
+    productMinimumEA: 0,
+    productDescription: '',
+    productPrice: 0,
+    file: '',
   };
 
   const [
-    {
-      productTitle,
-      productr,
-      year,
-      country,
-      type,
-      volume,
-      productGender,
-      fragranceTopNotes,
-      fragranceMiddleNotes,
-      fragranceBaseNotes,
-      price,
-      file,
-      productRating,
-    },
+    { productName, productMinimumEA, productDescription, productPrice, file },
     setState,
   ] = useState(initialState);
   const [showToast, setShowToast] = useState(false);
 
   const {
-    productTitleError,
-    productrError,
-    yearError,
-    countryError,
-    typeError,
-    volumeError,
-    productGenderError,
-    fragranceTopNotesError,
-    fragranceMiddleNotesError,
-    fragranceBaseNotesError,
-    priceError,
+    productNameError,
+    productMinimumEAError,
+    productDescriptionError,
+    productPriceError,
   } = errors;
+
+  const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isProductAdded) {
       setState({ ...initialState });
+
+      if (fileInput.current !== null) fileInput.current.value = '';
+
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -100,36 +78,54 @@ const AddProduct: FC = () => {
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
+    if (
+      !Boolean(productName) ||
+      !Boolean(productDescription) ||
+      !isValidNumber(productMinimumEA) ||
+      productMinimumEA < 1 ||
+      !isValidNumber(productPrice) ||
+      productPrice < 0
+    ) {
+      const productError: ProductErrors = {
+        productNameError: '',
+        productDescriptionError: '',
+        productMinimumEAError: '',
+        productPriceError: '',
+      };
+
+      if (!Boolean(productName)) {
+        productError.productNameError = '상품명은 필수 입니다.';
+      }
+
+      if (!Boolean(productDescription)) {
+        productError.productDescriptionError = '상품 설명은 필수 입니다.';
+      }
+
+      if (!isValidNumber(productMinimumEA)) {
+        productError.productMinimumEAError = '최소 주문 수량은 필수 입니다.';
+      } else if (productMinimumEA < 1) {
+        productError.productMinimumEAError =
+          '최소 주문 수량은 0보다 큰 숫자여야 합니다.';
+      }
+
+      if (!isValidNumber(productPrice)) {
+        productError.productPriceError = '상품 가격은 필수 입니다.';
+      } else if (productPrice < 0) {
+        productError.productPriceError = '상품 가격은 0보다 작을 수 없습니다.';
+      }
+
+      dispatch(addProductFailure(productError));
+      return;
+    }
+
     const bodyFormData: FormData = new FormData();
-    bodyFormData.append("file", file);
-    bodyFormData.append(
-      "product",
-      new Blob(
-        [
-          JSON.stringify({
-            productTitle,
-            productr,
-            year,
-            country,
-            type,
-            volume,
-            productGender,
-            fragranceTopNotes,
-            fragranceMiddleNotes,
-            fragranceBaseNotes,
-            price,
-            productRating,
-          }),
-        ],
-        { type: "application/json" }
-      )
-    );
+    bodyFormData.append('file', file as string);
+    bodyFormData.append('productName', productName);
+    bodyFormData.append('productMinimumEA', productMinimumEA.toString());
+    bodyFormData.append('productDescription', productDescription);
+    bodyFormData.append('productPrice', productPrice.toString());
 
     dispatch(addProduct(bodyFormData));
-  };
-
-  const handleFileChange = (event: any): void => {
-    setState((prevState) => ({ ...prevState, file: event.target.files[0] }));
   };
 
   const handleInputChange = (
@@ -139,198 +135,99 @@ const AddProduct: FC = () => {
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
+  const handleFileChange = (event: any): void => {
+    console.log(event.target.files[0]);
+    setState((prevState) => ({ ...prevState, file: event.target.files[0] }));
+  };
+
   return (
     <>
       <ToastShow
         showToast={showToast}
-        message={"Product successfully added!"}
+        message={'Product successfully added!'}
       />
       <div className="container">
         <h4>
           <FontAwesomeIcon className="mr-2" icon={faPlusSquare} />
-          Add product
+          상품 추가하기
         </h4>
         <br />
         <form onSubmit={onFormSubmit}>
           <div className="form row">
             <div className="col">
-              <label>Product title: </label>
+              <label>상품명: </label>
               <input
                 type="text"
                 className={
-                  productTitleError ? "form-control is-invalid" : "form-control"
+                  productNameError ? 'form-control is-invalid' : 'form-control'
                 }
-                name="productTitle"
-                value={productTitle}
-                placeholder="Enter the product title"
+                name="productName"
+                value={productName}
+                placeholder="상품명을 입력하세요"
                 onChange={handleInputChange}
               />
-              <div className="invalid-feedback">{productTitleError}</div>
+              <div className="invalid-feedback">{productNameError}</div>
             </div>
             <div className="col">
-              <label>Brand: </label>
+              <label>주문 최소 수량: </label>
               <input
-                type="text"
+                type="number"
                 className={
-                  productrError ? "form-control is-invalid" : "form-control"
+                  productMinimumEAError
+                    ? 'form-control is-invalid'
+                    : 'form-control'
                 }
-                name="productr"
-                value={productr}
-                placeholder="Enter the brand"
+                name="productMinimumEA"
+                value={productMinimumEA}
+                placeholder="최소 주문 수량을 입력하세요."
                 onChange={handleInputChange}
               />
-              <div className="invalid-feedback">{productrError}</div>
+              <div className="invalid-feedback">{productMinimumEAError}</div>
             </div>
           </div>
           <div className="form row mt-3">
             <div className="col">
-              <label>Release year: </label>
+              <label>설명: </label>
               <input
                 type="text"
                 className={
-                  yearError ? "form-control is-invalid" : "form-control"
+                  productDescriptionError
+                    ? 'form-control is-invalid'
+                    : 'form-control'
                 }
-                name="year"
-                value={year}
-                placeholder="Enter the release year"
+                name="productDescription"
+                value={productDescription}
+                placeholder="상품 설명을 입력하세요."
                 onChange={handleInputChange}
               />
-              <div className="invalid-feedback">{yearError}</div>
+              <div className="invalid-feedback">{productDescriptionError}</div>
             </div>
             <div className="col">
-              <label>Manufacturer country: </label>
+              <label>가격: </label>
               <input
-                type="text"
+                type="number"
                 className={
-                  countryError ? "form-control is-invalid" : "form-control"
+                  productPriceError ? 'form-control is-invalid' : 'form-control'
                 }
-                name="country"
-                value={country}
-                placeholder="Enter the manufacturer country"
+                name="productPrice"
+                value={productPrice}
+                placeholder="가격을 입력하세요."
                 onChange={handleInputChange}
               />
-              <div className="invalid-feedback">{countryError}</div>
+              <div className="invalid-feedback">{productPriceError}</div>
             </div>
           </div>
+          <div className="form row mt-3"></div>
+          <div className="form row mt-3"></div>
+          <div className="form row mt-3"></div>
           <div className="form row mt-3">
-            <div className="col">
-              <label>Product type: </label>
-              <select
-                name="type"
-                className={
-                  typeError ? "form-control is-invalid" : "form-control"
-                }
-                onChange={handleInputChange}
-              >
-                <option hidden={true} value=""></option>
-                <option value="Eau de Parfum">Eau de Parfum</option>
-                <option value="Eau de Toilette">Eau de Toilette</option>
-              </select>
-              <div className="invalid-feedback">{typeError}</div>
-            </div>
-            <div className="col">
-              <label>Volume: </label>
+            <div className="col" style={{ marginTop: '35px' }}>
               <input
-                type="text"
-                className={
-                  volumeError ? "form-control is-invalid" : "form-control"
-                }
-                name="volume"
-                value={volume}
-                placeholder="Enter the volume"
-                onChange={handleInputChange}
+                type="file"
+                name="file"
+                ref={fileInput}
+                onChange={handleFileChange}
               />
-              <div className="invalid-feedback">{volumeError}</div>
-            </div>
-          </div>
-          <div className="form row mt-3">
-            <div className="col">
-              <label>Gender: </label>
-              <select
-                name="productGender"
-                className={
-                  productGenderError
-                    ? "form-control is-invalid"
-                    : "form-control"
-                }
-                onChange={handleInputChange}
-              >
-                <option hidden={true} value=""></option>
-                <option value="male">male</option>
-                <option value="female">female</option>
-              </select>
-              <div className="invalid-feedback">{productGenderError}</div>
-            </div>
-            <div className="col">
-              <label>Top notes: </label>
-              <input
-                type="text"
-                className={
-                  fragranceTopNotesError
-                    ? "form-control is-invalid"
-                    : "form-control"
-                }
-                name="fragranceTopNotes"
-                value={fragranceTopNotes}
-                placeholder="Enter the top notes"
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">{fragranceTopNotesError}</div>
-            </div>
-          </div>
-          <div className="form row mt-3">
-            <div className="col">
-              <label>Heart notes: </label>
-              <input
-                type="text"
-                className={
-                  fragranceMiddleNotesError
-                    ? "form-control is-invalid"
-                    : "form-control"
-                }
-                name="fragranceMiddleNotes"
-                value={fragranceMiddleNotes}
-                placeholder="Enter the heart notes"
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">
-                {fragranceMiddleNotesError}
-              </div>
-            </div>
-            <div className="col">
-              <label>Base notes: </label>
-              <input
-                type="text"
-                className={
-                  fragranceBaseNotesError
-                    ? "form-control is-invalid"
-                    : "form-control"
-                }
-                name="fragranceBaseNotes"
-                value={fragranceBaseNotes}
-                placeholder="Enter the base notes"
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">{fragranceBaseNotesError}</div>
-            </div>
-          </div>
-          <div className="form row mt-3">
-            <div className="col">
-              <label>Price: </label>
-              <input
-                type="text"
-                className={
-                  priceError ? "form-control is-invalid" : "form-control"
-                }
-                name="price"
-                value={price}
-                placeholder="Enter the price"
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">{priceError}</div>
-            </div>
-            <div className="col" style={{ marginTop: "35px" }}>
-              <input type="file" name="file" onChange={handleFileChange} />
             </div>
           </div>
           <button type="submit" className="btn btn-dark mt-3">
