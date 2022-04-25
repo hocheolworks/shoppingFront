@@ -117,6 +117,7 @@ const Order: FC = () => {
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+<<<<<<< HEAD
     // if (cart === undefined || cart === null || cart.length === 0) return;
     // loadTossPayments(clientKey).then((tossPayments) => {
     //   tossPayments.requestPayment('카드', {
@@ -134,6 +135,36 @@ const Order: FC = () => {
     //   });
     // });
 
+=======
+    if (cart === undefined || cart === null || cart.length === 0) return;
+    loadTossPayments(clientKey).then((tossPayments) => {
+      tossPayments.requestPayment('카드', {
+        // 결제 수단 파라미터
+        // 결제 정보 파라미터
+        amount: orderTotalPrice,
+        orderId: '2dwadawdwadw-',
+        orderName:
+          cart.length === 1
+            ? cart[0].product.productName
+            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
+        customerName: customersData.customerName,
+        successUrl: 'http://localhost:3000/order/success',
+        failUrl: 'http://localhost:3000/order/fail',
+      });
+    });
+    
+    console.log(cart);
+    debugger;
+    let products = new Map();
+    for(let i=0;i<cart.length; i++) {
+      products.set(cart[i].id, cart[i].productCount);
+    }
+    const productsId = Object.fromEntries(
+      products
+    );
+
+    console.log(productsId.arguments);
+>>>>>>> 8de4b13246c52492bee66623c9742d8c50ddbf56
     const order = {
       customerId,
       orderCustomerName,
