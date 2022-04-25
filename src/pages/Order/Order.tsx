@@ -116,9 +116,15 @@ const Order: FC = () => {
         failUrl: 'http://localhost:3000/order/fail',
       });
     });
-
+    
+    console.log(cart);
+    debugger;
+    let products = new Map();
+    for(let i=0;i<cart.length; i++) {
+      products.set(cart[i].id, cart[i].productCount);
+    }
     const productsId = Object.fromEntries(
-      new Map(JSON.parse(localStorage.getItem('products') as string))
+      products
     );
 
     console.log(productsId.arguments);
