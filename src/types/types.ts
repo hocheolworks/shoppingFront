@@ -87,13 +87,11 @@ export type OrderItem = {
 };
 
 export type OrderError = {
-  emailError: string;
-  firstNameError: string;
-  lastNameError: string;
-  cityError: string;
-  addressError: string;
-  postIndexError: string;
-  phoneNumberError: string;
+  orderCustomerNameError: string;
+  orderPostIndexError: string;
+  orderAddressError: string;
+  orderAddressDetailError: string;
+  orderPhoneNumberError: string;
 };
 
 export type CustomerRegistration = {
@@ -116,7 +114,7 @@ export type RegistrationEmailData = {
 export type CustomerPasswordConfirmData = {
   customerEmail: string | undefined;
   customerPassword: string;
-}
+};
 
 export type CustomerResetPasswordData = {
   email: string | undefined;

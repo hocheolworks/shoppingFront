@@ -86,7 +86,7 @@ const Cart: FC = () => {
         <div>
           {cart.length === 0 ? (
             <div style={{ textAlign: 'center' }}>
-              <h2>Cart is empty</h2>
+              <h2>장바구니가 비었습니다.</h2>
             </div>
           ) : (
             <div>
