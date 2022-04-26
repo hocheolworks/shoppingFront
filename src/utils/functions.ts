@@ -1,3 +1,4 @@
+import { Order } from '../types/types';
 import { API_BASE_URL } from './constants/url';
 
 export function isValidNumber(numb: number): Boolean {
@@ -11,4 +12,8 @@ export function makeImageUrl(productImageFilepath: string) {
   return `${API_BASE_URL.replace('api/v1', '')}${productImageFilepath}`;
 }
 
-export default { isValidNumber };
+export function compareOrderByCreatedAt(a: Order, b: Order): number {
+  if (a.createdAt > b.createdAt) return -1;
+  else if (a.createdAt === b.createdAt) return 0;
+  else return 1;
+}

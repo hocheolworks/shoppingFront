@@ -72,6 +72,8 @@ export type Order = {
   orderAddressDetail: string;
   orderPhoneNumber: string;
   orderPostIndex: string;
+  orderStatus: string;
+  orderIsPaid: boolean;
   orderItems: Array<OrderItem>;
   createdAt: string;
 };
