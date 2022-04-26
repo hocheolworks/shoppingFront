@@ -21,8 +21,6 @@ const NavBar: FC = () => {
     (state: AppStateType) => state.auth.isLoggedIn
   );
 
-  console.log(isLoggedIn);
-
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );

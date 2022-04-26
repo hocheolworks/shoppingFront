@@ -16,6 +16,7 @@ import {
   PostCodeObject,
   Customer,
   CartItem,
+  Order,
 } from '../../types/types';
 
 import Swal from 'sweetalert2';
@@ -27,11 +28,12 @@ import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { API_BASE_URL } from '../../utils/constants/url';
 import { useHistory } from 'react-router-dom';
 import { fetchCart } from '../../redux/thunks/cart-thunks';
+import { orderAddedFailure } from '../../redux/actions/order-actions';
 const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
 const MySwal = withReactContent(Swal);
 
-const Order: FC = () => {
+const OrderPage: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -67,6 +69,10 @@ const Order: FC = () => {
     (state: AppStateType) => state.order.loading
   );
 
+  const order: Partial<Order> = useSelector(
+    (state: AppStateType) => state.order.order
+  );
+
   const isOrderAdded: boolean = useSelector(
     (state: AppStateType) => state.order.isOrderAdded
   );
@@ -95,6 +101,30 @@ const Order: FC = () => {
 
   const postIndexRef = useRef(null);
 
+  // 주문이 완료되었을 경우, 실행
+  useEffect(() => {
+    if (isOrderAdded) {
+      if (order === undefined || order === null) {
+        return;
+      }
+
+      loadTossPayments(clientKey).then((tossPayments) => {
+        sessionStorage.setItem('orderId', order.id!.toString());
+        tossPayments.requestPayment('카드', {
+          amount: order.orderTotalPrice as number,
+          orderId: `order-${order.id}-${Date.now()}`,
+          orderName:
+            cart.length === 1
+              ? cart[0].product.productName
+              : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
+          customerName: customersData.customerName,
+          successUrl: 'http://localhost:3000/order/success',
+          failUrl: 'http://localhost:3000/order/fail',
+        });
+      });
+    }
+  }, [order, isOrderAdded]);
+
   const onClickPostIndex = (): void => {
     setIsPopupOpen((prevState) => !prevState);
   };
@@ -117,54 +147,42 @@ const Order: FC = () => {
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-<<<<<<< HEAD
-    // if (cart === undefined || cart === null || cart.length === 0) return;
-    // loadTossPayments(clientKey).then((tossPayments) => {
-    //   tossPayments.requestPayment('카드', {
-    //     // 결제 수단 파라미터
-    //     // 결제 정보 파라미터
-    //     amount: orderTotalPrice,
-    //     orderId: `c${customerId}-`,
-    //     orderName:
-    //       cart.length === 1
-    //         ? cart[0].product.productName
-    //         : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-    //     customerName: customersData.customerName,
-    //     successUrl: 'http://localhost:3000/order/success',
-    //     failUrl: 'http://localhost:3000/order/fail',
-    //   });
-    // });
 
-=======
-    if (cart === undefined || cart === null || cart.length === 0) return;
-    loadTossPayments(clientKey).then((tossPayments) => {
-      tossPayments.requestPayment('카드', {
-        // 결제 수단 파라미터
-        // 결제 정보 파라미터
-        amount: orderTotalPrice,
-        orderId: '2dwadawdwadw-',
-        orderName:
-          cart.length === 1
-            ? cart[0].product.productName
-            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName: customersData.customerName,
-        successUrl: 'http://localhost:3000/order/success',
-        failUrl: 'http://localhost:3000/order/fail',
-      });
-    });
-    
-    console.log(cart);
-    debugger;
-    let products = new Map();
-    for(let i=0;i<cart.length; i++) {
-      products.set(cart[i].id, cart[i].productCount);
+    if (
+      !Boolean(orderCustomerName) ||
+      !Boolean(orderPostIndex) ||
+      !Boolean(orderAddress) ||
+      !Boolean(orderAddressDetail) ||
+      !Boolean(orderPhoneNumber)
+    ) {
+      const orderError: OrderError = {
+        orderCustomerNameError: '',
+        orderPostIndexError: '',
+        orderAddressError: '',
+        orderAddressDetailError: '',
+        orderPhoneNumberError: '',
+      };
+
+      if (!Boolean(orderCustomerName)) {
+        orderError.orderCustomerNameError = '수령인은 필수 입니다.';
+      }
+      if (!Boolean(orderPostIndex)) {
+        orderError.orderPostIndexError = '우편번호는 필수 입니다.';
+      }
+      if (!Boolean(orderAddress)) {
+        orderError.orderAddressError = '주소는 필수 입니다.';
+      }
+      if (!Boolean(orderAddressDetail)) {
+        orderError.orderAddressDetailError = '상세주소는 필수 입니다.';
+      }
+      if (!Boolean(orderPhoneNumber)) {
+        orderError.orderPhoneNumberError = '연락처는 필수 입니다.';
+      }
+
+      dispatch(orderAddedFailure(orderError));
+      return;
     }
-    const productsId = Object.fromEntries(
-      products
-    );
 
-    console.log(productsId.arguments);
->>>>>>> 8de4b13246c52492bee66623c9742d8c50ddbf56
     const order = {
       customerId,
       orderCustomerName,
@@ -385,4 +403,4 @@ const Order: FC = () => {
   );
 };
 
-export default Order;
+export default OrderPage;
