@@ -1,9 +1,9 @@
-import React, { FC, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Order } from "../../../types/types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
-import RequsetService from "../../../utils/request-service";
+import React, { FC, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Order } from '../../../types/types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import RequsetService from '../../../utils/request-service';
 
 const ManageUserOrder: FC = () => {
   const location = useLocation<Order>();
@@ -18,16 +18,18 @@ const ManageUserOrder: FC = () => {
     orderAddress,
     orderAddressDetail,
     orderItems,
+    orderStatus,
+    orderIsPaid,
   } = location.state;
 
   return (
     <>
-      <h4 style={{ textAlign: "center" }}>
+      <h4 style={{ textAlign: 'center' }}>
         <FontAwesomeIcon icon={faShoppingBag} /> 주문 #{id}
       </h4>
       <div className="row border my-5 px-5 py-3">
         <div className="col-md-6">
-          <h5 style={{ marginBottom: "30px" }}>
+          <h5 style={{ marginBottom: '30px' }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문자 정보
           </h5>
           <p className="personal_data_item">
@@ -52,7 +54,7 @@ const ManageUserOrder: FC = () => {
           </p>
         </div>
         <div className="col-md-6">
-          <h5 style={{ marginBottom: "30px" }}>
+          <h5 style={{ marginBottom: '30px' }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문 정보
           </h5>
           <p className="personal_data_item">
@@ -63,11 +65,21 @@ const ManageUserOrder: FC = () => {
             주문날짜:
             <span className="personal_data_text">{createdAt}</span>
           </p>
-          <h4 style={{ marginBottom: "30px", marginTop: "30px" }}>
+          <p className="personal_data_item">
+            주문상태:
+            <span className="personal_data_text">{orderStatus}</span>
+          </p>
+          <p className="personal_data_item">
+            결제여부:
+            <span className="personal_data_text">
+              {orderIsPaid ? 'O' : 'X'}
+            </span>
+          </p>
+          <h4 style={{ marginBottom: '30px', marginTop: '30px' }}>
             주문금액:
-            <span style={{ color: "green" }}>
-              {" "}
-              {orderTotalPrice.toLocaleString("ko-KR")} 원
+            <span style={{ color: 'green' }}>
+              {' '}
+              {orderTotalPrice.toLocaleString('ko-KR')} 원
             </span>
           </h4>
         </div>
@@ -94,10 +106,10 @@ const ManageUserOrder: FC = () => {
                 <th>{orderItem.product.productName}</th>
                 <th>{orderItem.orderItemEA}</th>
                 <th>
-                  {orderItem.product.productPrice.toLocaleString("ko-KR")}원
+                  {orderItem.product.productPrice.toLocaleString('ko-KR')}원
                 </th>
                 <th>
-                  {orderItem.orderItemTotalPrice.toLocaleString("ko-KR")}원
+                  {orderItem.orderItemTotalPrice.toLocaleString('ko-KR')}원
                 </th>
               </tr>
             );

@@ -18,7 +18,7 @@ import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
 const NavBar: FC = () => {
   const dispatch = useDispatch();
   const isLoggedIn: boolean = useSelector(
-    (state: AppStateType) => state.customer.isLoggedIn
+    (state: AppStateType) => state.auth.isLoggedIn
   );
 
   const cart: Array<CartItem> = useSelector(
@@ -32,7 +32,7 @@ const NavBar: FC = () => {
   let links;
   let signOut;
 
-  if (localStorage.getItem('isLoggedIn') || isLoggedIn) {
+  if (localStorage.getItem('isLoggedIn')) {
     links = (
       <li className="nav-item">
         <Link to={'/account'}>
@@ -107,7 +107,7 @@ const NavBar: FC = () => {
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {(localStorage.getItem('isLoggedIn') || isLoggedIn) && (
+              {localStorage.getItem('isLoggedIn') && (
                 <li className="nav-item">
                   <Link className="nav-link" to={'/cart'}>
                     <i

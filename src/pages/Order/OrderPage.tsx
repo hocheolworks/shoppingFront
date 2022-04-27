@@ -7,10 +7,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { addOrder, fetchOrder } from '../../redux/thunks/order-thunks';
-import { validateEmail } from '../../utils/input-validators';
 import PageLoader from '../../component/PageLoader/PageLoader';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { useHistory } from 'react-router-dom';
 import {
   OrderError,
   OrderItem,
@@ -18,17 +16,41 @@ import {
   PostCodeObject,
   Customer,
   CartItem,
+  Order,
 } from '../../types/types';
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import DaumPostcode from 'react-daum-postcode';
 import './Order.css';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { API_BASE_URL } from '../../utils/constants/url';
+import { useHistory } from 'react-router-dom';
+import { fetchCart } from '../../redux/thunks/cart-thunks';
+import { orderAddedFailure } from '../../redux/actions/order-actions';
 const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
-const Order: FC = () => {
+const MySwal = withReactContent(Swal);
+
+const OrderPage: FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    if (localStorage.getItem('id') === null) {
+      MySwal.fire({
+        title: `<strong>잘못된 접근</strong>`,
+        html: `<i>홈으로 이동합니다.</i>`,
+        icon: 'error',
+      }).then(() => {
+        history.push('/');
+      });
+    } else {
+      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+    }
+  }, []);
+
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
@@ -37,7 +59,6 @@ const Order: FC = () => {
     (state: AppStateType) => state.cart.cartItems
   );
 
-  // totalPricee --> orderTotalPrice로 변경
   const orderTotalPrice: number = useSelector(
     (state: AppStateType) => state.cart.totalPrice
   );
@@ -48,12 +69,18 @@ const Order: FC = () => {
     (state: AppStateType) => state.order.loading
   );
 
-  const [validateEmailError, setValidateEmailError] = useState<string>('');
+  const order: Partial<Order> = useSelector(
+    (state: AppStateType) => state.order.order
+  );
 
-  // hjlee define state for order--------------------------------------------
+  const isOrderAdded: boolean = useSelector(
+    (state: AppStateType) => state.order.isOrderAdded
+  );
+
   const [orderCustomerName, setOrderCustomerName] = useState<
     string | undefined
   >(customersData.customerName);
+
   const [orderPhoneNumber, setOrderPhoneNumber] = useState<string | undefined>(
     customersData.customerPhoneNumber
   );
@@ -66,15 +93,37 @@ const Order: FC = () => {
   const [orderAddressDetail, setOrderAddressDetail] = useState<
     string | undefined
   >(customersData.customerAddressDetail);
-  const [orderItems, setOrderItems] = useState<Array<OrderItem> | undefined>(
-    []
-  );
-  // hyeongwook add
-  // const [customerId] = useState<number | undefined>(customersData.id);
-  const [customerId] = [localStorage.getItem('id')];
+
+  const [orderMemo, setOrderMemo] = useState<string | undefined>('');
+
+  const customerId: number = parseInt(localStorage.getItem('id') as string);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const postIndexRef = useRef(null);
+
+  // 주문이 완료되었을 경우, 실행
+  useEffect(() => {
+    if (isOrderAdded) {
+      if (order === undefined || order === null) {
+        return;
+      }
+
+      loadTossPayments(clientKey).then((tossPayments) => {
+        sessionStorage.setItem('orderId', order.id!.toString());
+        tossPayments.requestPayment('카드', {
+          amount: order.orderTotalPrice as number,
+          orderId: `order-${order.id}-${Date.now()}`,
+          orderName:
+            cart.length === 1
+              ? cart[0].product.productName
+              : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
+          customerName: customersData.customerName,
+          successUrl: 'http://localhost:3000/order/success',
+          failUrl: 'http://localhost:3000/order/fail',
+        });
+      });
+    }
+  }, [order, isOrderAdded]);
 
   const onClickPostIndex = (): void => {
     setIsPopupOpen((prevState) => !prevState);
@@ -88,52 +137,64 @@ const Order: FC = () => {
     setIsPopupOpen(false);
   };
 
-  useEffect(() => {}, []);
-  // -------------------------------------------------------------------------
-
-  const { lastNameError, addressError, postIndexError, phoneNumberError } =
-    errors;
-
-  useEffect(() => {
-    dispatch(fetchOrder());
-  }, []);
+  const {
+    orderCustomerNameError,
+    orderPostIndexError,
+    orderAddressError,
+    orderAddressDetailError,
+    orderPhoneNumberError,
+  } = errors;
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (cart === undefined || cart === null || cart.length === 0) return;
-    loadTossPayments(clientKey).then((tossPayments) => {
-      tossPayments.requestPayment('카드', {
-        // 결제 수단 파라미터
-        // 결제 정보 파라미터
-        amount: orderTotalPrice,
-        orderId: '2dwadawdwadw-',
-        orderName:
-          cart.length === 1
-            ? cart[0].product.productName
-            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName: customersData.customerName,
-        successUrl: 'http://localhost:3000/order/success',
-        failUrl: 'http://localhost:3000/order/fail',
-      });
-    });
 
-    const productsId = Object.fromEntries(
-      new Map(JSON.parse(localStorage.getItem('products') as string))
-    );
+    if (
+      !Boolean(orderCustomerName) ||
+      !Boolean(orderPostIndex) ||
+      !Boolean(orderAddress) ||
+      !Boolean(orderAddressDetail) ||
+      !Boolean(orderPhoneNumber)
+    ) {
+      const orderError: OrderError = {
+        orderCustomerNameError: '',
+        orderPostIndexError: '',
+        orderAddressError: '',
+        orderAddressDetailError: '',
+        orderPhoneNumberError: '',
+      };
 
-    console.log(productsId.arguments);
+      if (!Boolean(orderCustomerName)) {
+        orderError.orderCustomerNameError = '수령인은 필수 입니다.';
+      }
+      if (!Boolean(orderPostIndex)) {
+        orderError.orderPostIndexError = '우편번호는 필수 입니다.';
+      }
+      if (!Boolean(orderAddress)) {
+        orderError.orderAddressError = '주소는 필수 입니다.';
+      }
+      if (!Boolean(orderAddressDetail)) {
+        orderError.orderAddressDetailError = '상세주소는 필수 입니다.';
+      }
+      if (!Boolean(orderPhoneNumber)) {
+        orderError.orderPhoneNumberError = '연락처는 필수 입니다.';
+      }
+
+      dispatch(orderAddedFailure(orderError));
+      return;
+    }
+
     const order = {
       customerId,
       orderCustomerName,
-      orderPhoneNumber,
       orderPostIndex,
       orderAddress,
       orderAddressDetail,
-      orderItems,
-      productsId,
+      orderPhoneNumber,
+      orderMemo,
       orderTotalPrice,
+      cart,
     };
-    dispatch(addOrder(order, history));
+    dispatch(addOrder(order));
   };
 
   let pageLoading;
@@ -157,14 +218,16 @@ const Order: FC = () => {
                 <input
                   type="text"
                   className={
-                    lastNameError ? 'form-control is-invalid' : 'form-control'
+                    orderCustomerNameError
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="lastName"
                   value={orderCustomerName}
-                  placeholder="Enter the last name"
+                  placeholder=""
                   onChange={(event) => setOrderCustomerName(event.target.value)}
                 />
-                <div className="invalid-feedback">{lastNameError}</div>
+                <div className="invalid-feedback">{orderCustomerNameError}</div>
               </div>
             </div>
             <div className="form-group row">
@@ -176,14 +239,16 @@ const Order: FC = () => {
                   readOnly
                   type="text"
                   className={
-                    postIndexError ? 'form-control is-invalid' : 'form-control'
+                    orderPostIndexError
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="postIndex"
                   value={orderPostIndex}
-                  placeholder="우편번호"
+                  placeholder="우편번호 검색"
                   onChange={(event) => setOrderPostIndex(event.target.value)}
                 />
-                <div className="invalid-feedback">{postIndexError}</div>
+                <div className="invalid-feedback">{orderPostIndexError}</div>
               </div>
             </div>
             <div className="form-group row">
@@ -193,13 +258,15 @@ const Order: FC = () => {
                   readOnly
                   type="text"
                   className={
-                    addressError ? 'form-control is-invalid' : 'form-control'
+                    orderAddressError
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="address"
                   value={orderAddress}
                   onChange={(event) => setOrderAddress(event.target.value)}
                 />
-                <div className="invalid-feedback">{addressError}</div>
+                <div className="invalid-feedback">{orderAddressError}</div>
               </div>
             </div>
             <div className="form-group row">
@@ -208,7 +275,9 @@ const Order: FC = () => {
                 <input
                   type="text"
                   className={
-                    addressError ? 'form-control is-invalid' : 'form-control'
+                    orderAddressDetailError
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="address"
                   value={orderAddressDetail}
@@ -216,7 +285,9 @@ const Order: FC = () => {
                     setOrderAddressDetail(event.target.value)
                   }
                 />
-                <div className="invalid-feedback">{addressError}</div>
+                <div className="invalid-feedback">
+                  {orderAddressDetailError}
+                </div>
               </div>
             </div>
             <div className="form-group row">
@@ -225,16 +296,31 @@ const Order: FC = () => {
                 <input
                   type="text"
                   className={
-                    phoneNumberError
+                    orderPhoneNumberError
                       ? 'form-control is-invalid'
                       : 'form-control'
                   }
                   name="phoneNumber"
                   value={orderPhoneNumber}
-                  placeholder="000-0000-0000"
+                  placeholder="01012341234"
+                  maxLength={11}
                   onChange={(event) => setOrderPhoneNumber(event.target.value)}
                 />
-                <div className="invalid-feedback">{phoneNumberError}</div>
+                <div className="invalid-feedback">{orderPhoneNumberError}</div>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">배송메모:</label>
+              <div className="col-sm-8">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="orderMemo"
+                  value={orderMemo}
+                  placeholder="30자 이내"
+                  maxLength={30}
+                  onChange={(event) => setOrderMemo(event.target.value)}
+                />
               </div>
             </div>
             {isPopupOpen && (
@@ -317,4 +403,4 @@ const Order: FC = () => {
   );
 };
 
-export default Order;
+export default OrderPage;
