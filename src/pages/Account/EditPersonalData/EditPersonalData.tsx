@@ -29,7 +29,13 @@ const EditPersonalData: FC = () => {
   );
   
   const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-
+  
+  if(Object.keys(customer).length === 0){
+    const customersInfo = sessionStorage.getItem('customerInfo');
+    if (customersInfo != null){
+      setCustomer(JSON.parse(String(customersInfo)));
+    }
+  }
   // ======= 주소 찾기 =====
   const [customerPostIndex, setCustomerPostIndex] = useState<string | undefined>(
     customersData.customerPostIndex

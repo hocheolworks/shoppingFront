@@ -13,7 +13,7 @@ const HomePage: FC = () => {
 
   useEffect(() => {
     const customerId: string = localStorage.getItem('id') as string;
-    const isLoggedIn: string = localStorage.getItem('isLoggedIn') as string;
+    const isLoggedIn: string = sessionStorage.getItem('isLoggedIn') as string;
     if (isLoggedIn === 'true') dispatch(fetchCart(parseInt(customerId)));
   }, []);
 
