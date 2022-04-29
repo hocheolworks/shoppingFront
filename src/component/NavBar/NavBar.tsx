@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FC, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,16 +10,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { logout } from '../../redux/thunks/auth-thunks';
-import './NavBar.css';
+// import './NavBar.css';
 import { AppStateType } from '../../redux/reducers/root-reducer';
 import { CartItem, Product } from '../../types/types';
 import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
-  const isLoggedIn: boolean = useSelector(
-    (state: AppStateType) => state.auth.isLoggedIn
-  );
+  // const isLoggedIn: boolean = useSelector(
+  //   (state: AppStateType) => state.auth.isLoggedIn
+  // );
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
@@ -29,44 +31,61 @@ const NavBar: FC = () => {
     dispatch(logout());
   };
 
+  useEffect(() => {
+    const isLoggedInLocalStorage: string | null =
+      window.localStorage.getItem('isLoggedIn');
+    if (isLoggedInLocalStorage) {
+      setIsLoggedIn(isLoggedInLocalStorage === 'true');
+    }
+  }, []);
+
   let links;
   let signOut;
-
-  if (localStorage.getItem('isLoggedIn')) {
-    links = (
-      <li className="nav-item">
-        <Link to={'/account'}>
-          <span className="nav-link pl-5 pr-5">
-            <FontAwesomeIcon className="mr-2" icon={faUser} />
-            마이페이지
-          </span>
+  if (typeof window != 'undefined') {
+    if (window.localStorage.getItem('isLoggedIn') === 'true') {
+      links = (
+        <li className="nav-item">
+          <Link href={'/account'}>
+            <a>
+              <span className="nav-link pl-5 pr-5">
+                <FontAwesomeIcon className="mr-2" icon={faUser} />
+                마이페이지
+              </span>
+            </a>
+          </Link>
+        </li>
+      );
+      signOut = (
+        <Link href={'/'}>
+          <a onClick={handleLogout}>
+            <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
+            로그아웃
+          </a>
         </Link>
-      </li>
-    );
-    signOut = (
-      <Link to={'/'} onClick={handleLogout}>
-        <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-        로그아웃
-      </Link>
-    );
-  } else {
-    links = (
-      <>
-        <li className="nav-item">
-          <Link to={'/login'} className="nav-link pl-5 pr-3">
-            <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
-            로그인
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link to={'/registration'} className="nav-link">
-            <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
-            회원가입
-          </Link>
-        </li>
-      </>
-    );
-    signOut = null;
+      );
+    } else {
+      links = (
+        <>
+          <li className="nav-item">
+            <Link href={'/login'}>
+              <a className="nav-link pl-5 pr-3">
+                <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
+                로그인
+              </a>
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link href={'/registration'}>
+              <a className="nav-link">
+                <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
+                회원가입
+              </a>
+            </Link>
+          </li>
+        </>
+      );
+      signOut = null;
+    }
   }
 
   return (
@@ -86,44 +105,49 @@ const NavBar: FC = () => {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto ">
               <li className="nav-item">
-                <Link to={'/'}>
-                  <span className="nav-link pl-5 pr-5">HOME</span>
+                <Link href={'/'}>
+                  <a>
+                    <span className="nav-link pl-5 pr-5">HOME</span>
+                  </a>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  to={{
-                    pathname: '/menu',
-                    state: { id: 'all' },
-                  }}
-                >
-                  <span className="nav-link pl-5 pr-5">PRODUCTS</span>
+                <Link href="/menu?id=all">
+                  <a>
+                    <span className="nav-link pl-5 pr-5">PRODUCTS</span>
+                  </a>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to={'/contacts'}>
-                  <span className="nav-link pl-5 pr-5">CONTACTS</span>
+                <Link href={'/contacts'}>
+                  <a>
+                    <span className="nav-link pl-5 pr-5">CONTACTS</span>
+                  </a>
                 </Link>
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {localStorage.getItem('isLoggedIn') && (
+              {isLoggedIn && (
                 <li className="nav-item">
-                  <Link className="nav-link" to={'/cart'}>
-                    <i
-                      className="fas fa-shopping-cart fa-lg pl-5"
-                      style={{ color: 'white' }}
-                    ></i>
-                    <h5
-                      className="d-inline"
-                      style={{
-                        position: 'relative',
-                        right: '15px',
-                        bottom: '8px',
-                      }}
-                    >
-                      <span className="badge badge-success">{cart.length}</span>
-                    </h5>
+                  <Link href={'/cart'}>
+                    <a className="nav-link">
+                      <i
+                        className="fas fa-shopping-cart fa-lg pl-5"
+                        style={{ color: 'white' }}
+                      ></i>
+                      <h5
+                        className="d-inline"
+                        style={{
+                          position: 'relative',
+                          right: '15px',
+                          bottom: '8px',
+                        }}
+                      >
+                        <span className="badge badge-success">
+                          {cart.length}
+                        </span>
+                      </h5>
+                    </a>
                   </Link>
                 </li>
               )}

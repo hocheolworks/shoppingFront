@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.3.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.13",
@@ -25,6 +24,7 @@
     "axios-mock-adapter": "^1.19.0",
     "bcrypt": "^5.0.1",
     "bootstrap": "^4.5.3",
+    "next": "^12.1.5",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
@@ -39,8 +39,6 @@
     "react-lazy-load-image-component": "^1.5.1",
     "react-list": "^0.8.16",
     "react-redux": "^7.2.2",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.4",
     "react-scroll-up": "^1.3.7",
     "react-spinners": "^0.11.0",
     "react-star-rating-component": "^1.4.1",
@@ -57,10 +55,9 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "jest",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "eslintConfig": {
     "extends": [

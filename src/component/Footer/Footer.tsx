@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import "./Footer.css";
+// import "./Footer.css";
 
 const Footer: FC = () => {
   return (
@@ -18,24 +18,24 @@ const Footer: FC = () => {
             <a href="https://www.linkedin.com/in/merikbest/">
               <i
                 className="fab fa-linkedin fa-2x mr-3"
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               ></i>
             </a>
             <a href="#">
               <i
                 className="fab fa-facebook-f fa-2x mr-3"
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               ></i>
             </a>
             <a href="#">
               <i
                 className="fab fa-twitter fa-2x mr-3"
-                style={{ color: "white" }}
+                style={{ color: 'white' }}
               ></i>
             </a>
           </div>
         </div>
-        <div className="mx-auto" style={{ width: "200px" }}>
+        <div className="mx-auto" style={{ width: '200px' }}>
           <p>© Copy right 일조유통</p>
         </div>
       </div>

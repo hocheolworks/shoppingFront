@@ -1,13 +1,11 @@
-import React, { FC, useEffect } from "react";
-import Carousel from "react-bootstrap/Carousel";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
-import { fetchProductsByIds } from "../../redux/thunks/product-thunks";
-import "./ProductCardsSlider.css";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import { Product } from "../../types/types";
-import StarRating from "../StarRating/StarRating";
+import React, { FC, useEffect } from 'react';
+import Carousel from 'react-bootstrap/Carousel';
+import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
+import { fetchProductsByIds } from '../../redux/thunks/product-thunks';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import { Product } from '../../types/types';
+import StarRating from '../StarRating/StarRating';
 
 const ProductCardsSlider: FC = () => {
   const dispatch = useDispatch();
@@ -29,10 +27,10 @@ const ProductCardsSlider: FC = () => {
                   <div className="card" key={product.id}>
                     <div
                       style={{
-                        height: "130px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
+                        height: '130px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                       }}
                     >
                       {/* <img style={{ width: "125px" }} src={product.filename} /> */}
@@ -42,7 +40,7 @@ const ProductCardsSlider: FC = () => {
                       <h6>{product.productr}</h6>
                       <StarRating productRating={product.productRating} /> */}
                       <h6>{/* $<span>{product.price}</span>.00 */}</h6>
-                      <Link to={`/product/${product.id}`}>
+                      <Link href={`/product/${product.id}`}>
                         <span className="btn btn-dark">SHOW MORE</span>
                       </Link>
                     </div>
