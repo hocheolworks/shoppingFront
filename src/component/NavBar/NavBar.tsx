@@ -68,17 +68,21 @@ const NavBar: FC = () => {
         <>
           <li className="nav-item">
             <Link href={'/login'}>
-              <a className="nav-link pl-5 pr-3">
-                <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
-                로그인
+              <a>
+                <span className="nav-link pl-5 pr-3">
+                  <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
+                  로그인
+                </span>
               </a>
             </Link>
           </li>
           <li className="nav-item">
             <Link href={'/registration'}>
-              <a className="nav-link">
-                <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
-                회원가입
+              <a>
+                <span className="nav-link">
+                  <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
+                  회원가입
+                </span>
               </a>
             </Link>
           </li>

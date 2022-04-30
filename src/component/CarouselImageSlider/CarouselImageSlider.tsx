@@ -19,7 +19,7 @@ const CarouselImageSlider: FC = () => {
   const settings = {
     indicators: false,
     fade: true,
-    infinite: true,
+    infinite: 'true',
     interval: 3000,
   };
 
