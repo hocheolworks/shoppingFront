@@ -34,13 +34,6 @@ const ConfrimPassword: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
   const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-  
-  if(Object.keys(customer).length === 0){
-    const customersInfo = sessionStorage.getItem('customerInfo');
-    if (customersInfo != null){
-      setCustomer(JSON.parse(String(customersInfo)));
-    }
-  }
   const [password, setPassword] = useState<string>("");
   
 

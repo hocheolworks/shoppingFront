@@ -42,13 +42,10 @@ export const login =
       localStorage.setItem('customerEmail', response.data.customerEmail);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('customerRole', response.data.customerRole);
+      localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('id', response.data.id);
-
-      sessionStorage.setItem('isLoggedIn', 'true');
-      sessionStorage.setItem('customerInfo', JSON.stringify(response.data));
       dispatch(loginSuccess(response.data.customerRole));
       dispatch(fetchCustomerSuccess(response.data));
-
 
       const cartResponse = await RequestService.get(
         `/customer/${response.data.id}/cart`
@@ -123,11 +120,8 @@ export const logout = () => async (dispatch: Dispatch) => {
   localStorage.removeItem('token');
   localStorage.removeItem('customerRole');
   localStorage.removeItem('customerEmail');
+  localStorage.removeItem('isLoggedIn');
   localStorage.removeItem('id');
-
-  // 'isLoggedIn' localstorage ==> session으로 변경
-  sessionStorage.removeItem('isLoggedIn');
-  sessionStorage.removeItem('customerInfo');
   dispatch(logoutSuccess());
 };
 

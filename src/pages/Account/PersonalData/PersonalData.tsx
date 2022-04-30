@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Link, Route, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,16 +17,6 @@ const PersonalData: FC = () => {
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
-
-  const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-
-  if(Object.keys(customer).length === 0){
-    const customersInfo = sessionStorage.getItem('customerInfo');
-    if (customersInfo != null){
-      setCustomer(JSON.parse(String(customersInfo)));
-    }
-  }
-
   const {
     id,
     customerEmail,
@@ -36,9 +26,7 @@ const PersonalData: FC = () => {
     customerAddress,
     customerAddressDetail,
     customerRole,
-  } = customer;
-
-
+  } = customersData;
   const location = useLocation();
 
   return (

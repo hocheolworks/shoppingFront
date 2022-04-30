@@ -51,19 +51,9 @@ const OrderPage: FC = () => {
     }
   }, []);
 
-  // 20220428 여기부터해야함@@@@@
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
-
-  const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-
-  if(Object.keys(customer).length === 0){
-    const customersInfo = sessionStorage.getItem('customerInfo');
-    if (customersInfo != null){
-      setCustomer(JSON.parse(String(customersInfo)));
-    }
-  }
 
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
