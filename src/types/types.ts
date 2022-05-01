@@ -52,7 +52,8 @@ export type Review = {
 };
 
 export type ReviewData = {
-  productId: number | string;
+  customerId: number | undefined;
+  productId: number;
   author: string;
   message: string;
   rating: number;

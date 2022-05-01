@@ -5,6 +5,7 @@ import {
     FETCH_PRODUCT_SUCCESS,
     FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS,
     ProductActionTypes,
+    FETCH_IS_PURCHASE_SUCCESS,
 } from '../action-types/product-action-types';
 
 export type InitialStateType = {
@@ -12,6 +13,7 @@ export type InitialStateType = {
     product: Partial<Product>;
     reviews: Array<Review>;
     isProductLoading: boolean;
+    isPurchased: boolean;
 };
 
 const initialState: InitialStateType = {
@@ -19,6 +21,7 @@ const initialState: InitialStateType = {
     product: {},
     reviews: [],
     isProductLoading: false,
+    isPurchased: false,
 };
 
 const reducer = (
@@ -49,6 +52,12 @@ const reducer = (
                 ...state,
                 products: action.payload,
                 isProductLoading: false,
+            };
+
+        case FETCH_IS_PURCHASE_SUCCESS:
+            return {
+                ...state,
+                isPurchased: action.payload,
             };
 
         default:

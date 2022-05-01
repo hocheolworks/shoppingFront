@@ -16,6 +16,7 @@ import {
 import { AppStateType } from "../../redux/reducers/root-reducer";
 import {
   CartItem,
+  Customer,
   Product,
   Review,
   ReviewData,
@@ -25,7 +26,7 @@ import halfStar from "../../img/star-half.svg";
 import Spinner from "../../component/Spinner/Spinner";
 import ProductReview from "./ProductReview";
 import ScrollButton from "../../component/ScrollButton/ScrollButton";
-import { fetchProduct } from "../../redux/thunks/product-thunks";
+import { fetchIsPurchased, fetchProduct } from "../../redux/thunks/product-thunks";
 import RequestService from "../../utils/request-service";
 import {
   fetchCart,
@@ -55,14 +56,24 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const loading: boolean = useSelector(
     (state: AppStateType) => state.product.isProductLoading
   );
-
+  
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
 
+  const customer: Partial<Customer> = useSelector(
+    (state: AppStateType) => state.customer.customer
+  );
+
+  const isPurchased: boolean = useSelector(
+    (state: AppStateType) => state.product.isPurchased
+  );
+
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
-  const [author, setAuthor] = useState<string>("");
+  const [author, setAuthor] = useState<string>(
+    String(customer.customerEmail).split('@')[0]
+  );
   const [message, setMessage] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const { authorError, messageError, ratingError } = errors;
@@ -70,6 +81,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   useEffect(() => {
     dispatch(fetchProduct(parseInt(match.params.id)));
     dispatch(resetForm());
+    dispatch(fetchIsPurchased(parseInt(match.params.id), customer.id));
     if (isLoggedIn) {
       dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
     }
@@ -88,7 +100,6 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   }, [cart]);
 
   useEffect(() => {
-    setAuthor("");
     setMessage("");
     setRating(0);
   }, [isReviewAdded]);
@@ -130,10 +141,11 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const addReview = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const review: ReviewData = {
-      productId: match.params.id as string,
+      productId: parseInt(match.params.id),
       author,
       message,
       rating,
+      customerId: customer.id,
     };
     dispatch(addReviewToProduct(review));
   };
@@ -251,6 +263,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 <ProductReview data={reviews} itemsPerPage={5} />
               )}
             />
+            {(isPurchased) && (
             <form onSubmit={addReview}>
               <div className="form-group border mt-5">
                 <div className="mx-3 my-3">
@@ -271,7 +284,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                         }
                         name="author"
                         value={author}
-                        onChange={(event) => setAuthor(event.target.value)}
+                        readOnly={true}
                       />
                       <div className="invalid-feedback">{authorError}</div>
                       <label>
@@ -322,6 +335,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 </div>
               </div>
             </form>
+            )}
           </div>
         </>
       )}

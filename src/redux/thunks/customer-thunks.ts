@@ -91,7 +91,7 @@ export const updateCustomerPassword =
 export const addReviewToProduct =
   (review: ReviewData) => async (dispatch: Dispatch) => {
     try {
-      const response = await RequestService.post('/customers/review', review);
+      const response = await RequestService.post('/customer/review/add', review);
       dispatch(fetchProductSuccess(response.data));
       dispatch(customerAddedReviewSuccess());
     } catch (error: any) {

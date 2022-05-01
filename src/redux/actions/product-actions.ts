@@ -8,6 +8,8 @@ import {
     FetchProductSuccessActionType,
     GetProductsActionType,
     LoadingProductActionType,
+    fetchIsPurchaseSuccessActionType,
+    FETCH_IS_PURCHASE_SUCCESS,
 } from '../action-types/product-action-types';
 
 export const loadingProduct = (): LoadingProductActionType => ({
@@ -33,4 +35,11 @@ export const fetchProductsByFilterParamsSuccess = (
 ): FetchProductsByFilterParamsSuccessActionType => ({
     type: FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS,
     payload: products,
+});
+
+export const fetchIsPurchaseSuccess = (
+    result: boolean
+): fetchIsPurchaseSuccessActionType => ({
+    type: FETCH_IS_PURCHASE_SUCCESS,
+    payload: result,
 });

@@ -5,6 +5,7 @@ import {
     fetchProductsByFilterParamsSuccess,
     fetchProductSuccess,
     loadingProduct,
+    fetchIsPurchaseSuccess,
 } from '../actions/product-actions';
 import { Product } from '../../types/types';
 
@@ -28,3 +29,20 @@ export const fetchProductsByIds =
         const response = await RequestService.post('/product/ids', ids);
         dispatch(getProducts(response.data));
     };
+
+export const fetchIsPurchased = 
+(productId: number, customerId: number | undefined ) => async (dispatch: Dispatch) => {
+    let result = false;
+    if (customerId != undefined) {
+        const response = await RequestService.post(
+            '/order/is-purchase',
+            {
+                'productId' : productId,
+                'customerId' : customerId
+            }
+        );
+        result = response.data;    
+    }
+
+    dispatch(fetchIsPurchaseSuccess(result));
+};
