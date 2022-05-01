@@ -41,7 +41,7 @@ const NavBar: FC = () => {
 
   let links;
   let signOut;
-  if (typeof window != 'undefined') {
+  if (typeof window !== 'undefined') {
     if (window.localStorage.getItem('isLoggedIn') === 'true') {
       links = (
         <li className="nav-item">
@@ -116,7 +116,7 @@ const NavBar: FC = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link href="/menu?id=all">
+                <Link href="/menu">
                   <a>
                     <span className="nav-link pl-5 pr-5">PRODUCTS</span>
                   </a>

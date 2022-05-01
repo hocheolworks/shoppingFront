@@ -55,6 +55,7 @@ const MenuCards: FC<PropsType> = ({
               {slicedData.map((product: Product) => {
                 return (
                   <ProductCardItem
+                    key={`ProductCardItem${product.id}`}
                     divKey={product.id}
                     product={product}
                     colSize={3}

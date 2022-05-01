@@ -10,13 +10,18 @@ import '../styles/Footer.css';
 import '../styles/index.css';
 import '../styles/ProductCardsSlider.css';
 import '../styles/SliderBrands.css';
+import '../styles/MenuStyle.css';
+import '../styles/Spinner.css';
+
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+config.autoAddCss = false;
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-        <script>Kakao.init('40f4470f980d6e35252349d5045c0700');</script>
         <meta charSet="utf-8" />
         {/* <meta name="viewport" content="width=device-width, initial-scale=1" /> */}
         <link
