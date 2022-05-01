@@ -40,7 +40,7 @@ const App: FC = () => {
         <Route
           path="/account"
           render={() =>
-            localStorage.getItem('token') ? (
+            sessionStorage.getItem('token') ? (
               <Route component={Account} />
             ) : (
               <Route component={Registration} />

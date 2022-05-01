@@ -45,12 +45,12 @@ const OAuth2RedirectHandler = (props: any) => {
           console.log(res); // 토큰이 넘어올 것임
           const ACCESS_TOKEN = res.data.token;
 
-          localStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
-          localStorage.setItem("customerEmail", res.data.customerEmail);
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("customerRole", res.data.customerRole);
-          localStorage.setItem("isLoggedIn", "true");
-          localStorage.setItem("id", res.data.id);
+          sessionStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
+          sessionStorage.setItem("customerEmail", res.data.customerEmail);
+          sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("customerRole", res.data.customerRole);
+          sessionStorage.setItem("isLoggedIn", "true");
+          sessionStorage.setItem("id", res.data.id);
           dispatch(loginSuccess(res.data.customerRole));
           dispatch(fetchCustomerSuccess(res.data));
           history.push("/account");

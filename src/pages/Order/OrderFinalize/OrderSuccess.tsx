@@ -16,7 +16,7 @@ const OrderSuccess: FC = () => {
 
   const orderId = sessionStorage.getItem('orderId');
 
-  const customerId = parseInt(localStorage.getItem('id') as string);
+  const customerId = parseInt(sessionStorage.getItem('id') as string);
   useEffect(() => {
     const query = qs.parse(location.search, { ignoreQueryPrefix: true });
     requestService

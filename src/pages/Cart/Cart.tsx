@@ -35,7 +35,7 @@ const Cart: FC = () => {
   );
 
   const customerId = useRef<number>(
-    parseInt(localStorage.getItem('id') as string)
+    parseInt(sessionStorage.getItem('id') as string)
   );
 
   useEffect(() => {

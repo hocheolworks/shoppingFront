@@ -38,7 +38,7 @@ const OrderPage: FC = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (localStorage.getItem('id') === null) {
+    if (sessionStorage.getItem('id') === null) {
       MySwal.fire({
         title: `<strong>잘못된 접근</strong>`,
         html: `<i>홈으로 이동합니다.</i>`,
@@ -47,7 +47,7 @@ const OrderPage: FC = () => {
         history.push('/');
       });
     } else {
-      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+      dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
     }
   }, []);
 
@@ -96,7 +96,7 @@ const OrderPage: FC = () => {
 
   const [orderMemo, setOrderMemo] = useState<string | undefined>('');
 
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const postIndexRef = useRef(null);

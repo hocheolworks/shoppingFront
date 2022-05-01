@@ -32,7 +32,7 @@ const NavBar: FC = () => {
   let links;
   let signOut;
 
-  if (localStorage.getItem('isLoggedIn')) {
+  if (sessionStorage.getItem('isLoggedIn')) {
     links = (
       <li className="nav-item">
         <Link to={'/account'}>
@@ -107,7 +107,7 @@ const NavBar: FC = () => {
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {localStorage.getItem('isLoggedIn') && (
+              {sessionStorage.getItem('isLoggedIn') && (
                 <li className="nav-item">
                   <Link className="nav-link" to={'/cart'}>
                     <i

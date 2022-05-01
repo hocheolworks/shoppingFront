@@ -40,7 +40,7 @@ const AddProduct: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
 
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
 
   const isProductAdded: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductAdded

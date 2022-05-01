@@ -43,7 +43,7 @@ const ProductListComponent: FC<PropsType> = ({
     (state: AppStateType) => state.admin.errors
   );
 
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
 
   const [modalActive, setModalActive] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<Product>();
