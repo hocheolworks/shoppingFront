@@ -39,11 +39,11 @@ export const login =
         customerData
       );
 
-      localStorage.setItem('customerEmail', response.data.customerEmail);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('customerRole', response.data.customerRole);
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('id', response.data.id);
+      sessionStorage.setItem('customerEmail', response.data.customerEmail);
+      sessionStorage.setItem('token', response.data.token);
+      sessionStorage.setItem('customerRole', response.data.customerRole);
+      sessionStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.setItem('id', response.data.id);
       dispatch(loginSuccess(response.data.customerRole));
       dispatch(fetchCustomerSuccess(response.data));
 
@@ -117,11 +117,11 @@ export const registration =
   };
 
 export const logout = () => async (dispatch: Dispatch) => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('customerRole');
-  localStorage.removeItem('customerEmail');
-  localStorage.removeItem('isLoggedIn');
-  localStorage.removeItem('id');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('customerRole');
+  sessionStorage.removeItem('customerEmail');
+  sessionStorage.removeItem('isLoggedIn');
+  sessionStorage.removeItem('id');
   dispatch(logoutSuccess());
 };
 

@@ -33,7 +33,7 @@ const createRequest = (method: Method, url: string, body: any, isAuthRequired: b
 
 const setHeader = (isAuthRequired: boolean, contentType: string) => {
     if (isAuthRequired) {
-        axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        axios.defaults.headers.common["Authorization"] = sessionStorage.getItem("token");
     } else {
         delete axios.defaults.headers.common['Authorization']
     }

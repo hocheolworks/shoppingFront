@@ -71,7 +71,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     dispatch(fetchProduct(parseInt(match.params.id)));
     dispatch(resetForm());
     if (isLoggedIn) {
-      dispatch(fetchCart(parseInt(localStorage.getItem("id") as string)));
+      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
     }
   }, []);
 
@@ -100,7 +100,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const addToCart = (): void => {
     const productId: number = product.id as number;
     const customerId: number | undefined = parseInt(
-      localStorage.getItem("id") as string
+      sessionStorage.getItem("id") as string
     );
 
     if (isCartExist) {
@@ -200,7 +200,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
                 </h4>
               </div>
-              {(localStorage.getItem("isLoggedIn") === "true" ||
+              {(sessionStorage.getItem("isLoggedIn") === "true" ||
                 isLoggedIn) && (
                 <div className="row ml-1" style={{ alignItems: "center" }}>
                   <span style={{ marginRight: "5px" }}>수량: </span>

@@ -29,9 +29,9 @@ const MySwal = withReactContent(Swal);
 export const fetchCustomerInfo = () => async (dispatch: Dispatch) => {
   dispatch(loadingCustomerInfo());
   const response = await RequestService.get('/customers/info', true);
-  localStorage.setItem('email', response.data.email);
-  localStorage.setItem('customerRole', response.data.roles);
-  localStorage.setItem('isLoggedIn', 'true');
+  sessionStorage.setItem('email', response.data.email);
+  sessionStorage.setItem('customerRole', response.data.roles);
+  sessionStorage.setItem('isLoggedIn', 'true');
   dispatch(fetchCustomerSuccess(response.data));
 };
 

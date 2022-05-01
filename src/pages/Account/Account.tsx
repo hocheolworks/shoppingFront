@@ -48,7 +48,7 @@ const Account: FC = () => {
           >
             내 정보
           </NavLink>
-          {localStorage.getItem('customerRole') === 'ADMIN' ? (
+          {sessionStorage.getItem('customerRole') === 'ADMIN' ? (
             <>
               <NavLink
                 to={'/account/customer/password/confirm'}
@@ -129,7 +129,7 @@ const Account: FC = () => {
             path="/account/user/orders/:id"
             component={() => <ManageCustomerOrder />}
           />
-          {localStorage.getItem('customerRole') === 'ADMIN' ? (
+          {sessionStorage.getItem('customerRole') === 'ADMIN' ? (
             <>
               <Route
                 path="/account/admin/add"

@@ -25,7 +25,7 @@ import Spinner from '../../../component/Spinner/Spinner';
 
 const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
   const productData: Partial<Product> = useSelector(
     (state: AppStateType) => state.product.product
   );

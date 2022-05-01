@@ -63,8 +63,8 @@ const Registration: FC = () => {
 
   const onClickVerifyEmail = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    localStorage.setItem("verifyNumber", randNumber(1000, 10000).toString());
-    const verifyNumber = localStorage.getItem("verifyNumber");
+    sessionStorage.setItem("verifyNumber", randNumber(1000, 10000).toString());
+    const verifyNumber = sessionStorage.getItem("verifyNumber");
     const userRegistrationData: CustomerRegistration = {
       customerEmail,
       customerName,
@@ -82,7 +82,7 @@ const Registration: FC = () => {
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    const verifyNumber = localStorage.getItem("verifyNumber");
+    const verifyNumber = sessionStorage.getItem("verifyNumber");
     if (verifyNumber === userInputVerifyNumber) {
       await MySwal.fire({
         title: `<strong>인증번호 일치</strong>`,
