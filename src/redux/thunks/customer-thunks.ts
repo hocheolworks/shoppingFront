@@ -1,26 +1,21 @@
 import { Dispatch } from 'redux';
 import * as H from 'history';
 
-import { fetchProductSuccess } from '../actions/product-actions';
 import {
   fetchCustomerSuccess,
   loadingCustomerInfo,
   resetInputForm,
-  customerAddedReviewFailure,
-  customerAddedReviewSuccess,
   customerUpdatedFailure,
   customerUpdatedPasswordFailure,
   customerUpdatedPasswordSuccess,
   customerUpdatedSuccess,
 } from '../actions/customer-actions';
 import {
-  ReviewData,
   CustomerEdit,
   CustomerResetPasswordData,
   CustomerPasswordConfirmData,
 } from '../../types/types';
 import RequestService from '../../utils/request-service';
-import ChangePassword from '../../pages/Account/ChangePassword/ChangePassword';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 
@@ -86,17 +81,6 @@ export const updateCustomerPassword =
         icon: 'error',
       })
     };
-  };
-  
-export const addReviewToProduct =
-  (review: ReviewData) => async (dispatch: Dispatch) => {
-    try {
-      const response = await RequestService.post('/customer/review/add', review);
-      dispatch(fetchProductSuccess(response.data));
-      dispatch(customerAddedReviewSuccess());
-    } catch (error: any) {
-      dispatch(customerAddedReviewFailure(error.response.data));
-    }
   };
 
 export const resetForm = () => (dispatch: Dispatch) => {

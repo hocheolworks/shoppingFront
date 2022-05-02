@@ -10,7 +10,6 @@ import {
 import StarRatingComponent from "react-star-rating-component";
 
 import {
-  addReviewToProduct,
   resetForm,
 } from "../../redux/thunks/customer-thunks";
 import { AppStateType } from "../../redux/reducers/root-reducer";
@@ -26,7 +25,7 @@ import halfStar from "../../img/star-half.svg";
 import Spinner from "../../component/Spinner/Spinner";
 import ProductReview from "./ProductReview";
 import ScrollButton from "../../component/ScrollButton/ScrollButton";
-import { fetchIsPurchased, fetchProduct } from "../../redux/thunks/product-thunks";
+import { addReviewToProduct, fetchIsPurchased, fetchProduct } from "../../redux/thunks/product-thunks";
 import RequestService from "../../utils/request-service";
 import {
   fetchCart,
@@ -99,6 +98,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     }
   }, [cart]);
 
+  // 20220502 리뷰는 등록되는데 등록된리뷰가 없습니다 뜸 뭐임
   useEffect(() => {
     setMessage("");
     setRating(0);

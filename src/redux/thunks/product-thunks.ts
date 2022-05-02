@@ -7,9 +7,10 @@ import {
     loadingProduct,
     fetchIsPurchaseSuccess,
 } from '../actions/product-actions';
-import { Product } from '../../types/types';
+import { Product, ReviewData } from '../../types/types';
 
 import RequestService from '../../utils/request-service';
+import { customerAddedReviewFailure, customerAddedReviewSuccess } from '../actions/customer-actions';
 
 export const fetchProducts = () => async (dispatch: Dispatch) => {
     dispatch(loadingProduct());
@@ -46,3 +47,16 @@ export const fetchIsPurchased =
 
     dispatch(fetchIsPurchaseSuccess(result));
 };
+
+export const addReviewToProduct =
+  (review: ReviewData) => async (dispatch: Dispatch) => {
+    try {
+      const response = await RequestService.post('/product/review/add', review);
+      console.log(response.data);
+      debugger;
+      dispatch(fetchProductSuccess(response.data));
+      dispatch(customerAddedReviewSuccess());
+    } catch (error: any) {
+      dispatch(customerAddedReviewFailure(error.response.data));
+    }
+  };
