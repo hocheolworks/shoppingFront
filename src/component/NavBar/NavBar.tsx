@@ -10,18 +10,17 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { logout } from '../../redux/thunks/auth-thunks';
-// import './NavBar.css';
 import { AppStateType } from '../../redux/reducers/root-reducer';
 import { CartItem, Product } from '../../types/types';
 import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
-  // const isLoggedIn: boolean = useSelector(
-  //   (state: AppStateType) => state.auth.isLoggedIn
-  // );
+  const isLoggedIn: boolean = useSelector(
+    (state: AppStateType) => state.auth.isLoggedIn
+  );
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedInState, setIsLoggedInState] = useState<boolean>(false);
 
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
@@ -35,7 +34,9 @@ const NavBar: FC = () => {
     const isLoggedInLocalStorage: string | null =
       window.localStorage.getItem('isLoggedIn');
     if (isLoggedInLocalStorage) {
-      setIsLoggedIn(isLoggedInLocalStorage === 'true');
+      setIsLoggedInState(isLoggedInLocalStorage === 'true');
+    } else {
+      setIsLoggedInState(false);
     }
   }, []);
 

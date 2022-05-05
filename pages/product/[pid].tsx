@@ -1,5 +1,4 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react';
-// import { Route, RouteComponentProps, useHistory } from 'react-router-dom';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -153,7 +152,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         <StarRatingComponent
           renderStarIconHalf={() => (
             <img
-              src="/images/star-half.svg"
+              src={'/image/star-half.svg'}
               alt="halfStar"
               style={{ width: '14.5px', marginBottom: '2px' }}
             />
@@ -198,9 +197,6 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   {renderStars(
                     product.productRating === 0 ? 0 : product.productRating
                   )}
-                  {/* <StarRating
-                    productRating={product.productRating}
-                  ></StarRating> */}
                 </div>
                 <div className="col-md-8">
                   <span style={{ paddingBottom: '50px' }}>
@@ -261,7 +257,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
           <div className="mt-5">
             <h3 className="text-center mb-5">리뷰</h3>
 
-            <ProductReview data={reviews} itemsPerPage={5} />
+            <ProductReview data={product.reviews} itemsPerPage={5} />
 
             <form onSubmit={addReview}>
               <div className="form-group border mt-5">

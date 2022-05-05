@@ -27,6 +27,9 @@ export const addOrder = (order: any) => async (dispatch: Dispatch) => {
 export const fetchUserOrders =
   (customerId: number | undefined) => async (dispatch: Dispatch) => {
     dispatch(showLoader());
-    const response = await RequestService.get(`/order/${customerId}`, false);
+    const response = await RequestService.get(
+      `/order/customer/${customerId}`,
+      false
+    );
     dispatch(fetchUserOrdersSuccess(response.data));
   };

@@ -104,7 +104,7 @@ export const fetchAllUsersOrders = () => async (dispatch: Dispatch) => {
 };
 
 export const fetchUserOrders = (id: string) => async (dispatch: Dispatch) => {
-  const response = await RequestService.get('/order/' + id, true);
+  const response = await RequestService.get('/order/customer/' + id, true);
   dispatch(getUserOrders(response.data));
 };
 

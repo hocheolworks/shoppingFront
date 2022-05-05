@@ -1,16 +1,16 @@
-import React, {FC} from 'react';
+import React, { FC } from 'react';
 
-import Spinner from "../Spinner/Spinner";
-import "./PageLoader.css";
+import Spinner from '../Spinner/Spinner';
+import styles from './PageLoader.module.css';
 
 const PageLoader: FC = () => {
-    return (
-        <div className="loader-container">
-            <div className="loader">
-                <Spinner/>
-            </div>
-        </div>
-    );
+  return (
+    <div className={styles.loaderContainer}>
+      <div className={styles.loader}>
+        <Spinner />
+      </div>
+    </div>
+  );
 };
 
 export default PageLoader;

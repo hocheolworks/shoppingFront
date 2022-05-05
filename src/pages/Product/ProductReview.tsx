@@ -1,12 +1,11 @@
-import React, { FC } from "react";
-import StarRatingComponent from "react-star-rating-component";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import halfStar from "../../img/star-half.svg";
+import React, { FC } from 'react';
+import StarRatingComponent from 'react-star-rating-component';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
-import { Review } from "../../types/types";
-import usePagination from "../../component/Pagination/usePagination";
-import PaginationItem from "../../component/Pagination/PaginationItem";
+import { Review } from '../../types/types';
+import usePagination from '../../component/Pagination/usePagination';
+import PaginationItem from '../../component/Pagination/PaginationItem';
 
 type PropType = {
   data: Array<Review>;
@@ -41,13 +40,13 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom }) => {
                       <p>
                         <b>
                           {review.customer.customerName.slice(0, 1) +
-                            "*" +
+                            '*' +
                             review.customer.customerName.slice(2)}
                         </b>
                       </p>
                       <p>
                         {new Date(review.createdAt).toLocaleDateString() +
-                          " " +
+                          ' ' +
                           new Date(review.createdAt).toLocaleTimeString()}
                       </p>
                       <StarRatingComponent

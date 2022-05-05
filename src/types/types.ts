@@ -1,3 +1,5 @@
+import { FC, FunctionComponent, ReactElement } from 'react';
+
 export type Product = {
   id: number;
   productName: string;
@@ -191,4 +193,8 @@ export type CartItem = {
   productId: number;
   product: Product;
   productCount: number;
+};
+
+export type FCinLayout<P = {}> = FC<P> & {
+  getLayout: (page: ReactElement) => JSX.Element;
 };

@@ -1,105 +1,32 @@
-import React, { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-// import {
-//   NavLink,
-//   Redirect,
-//   Route,
-//   RouteComponentProps,
-// } from 'react-router-dom';
+import React, { ReactElement } from 'react';
 
-import Link from 'next/link';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSelector } from 'react-redux';
 
-import { formReset } from '../../src/redux/thunks/admin-thunks';
-import { fetchCustomerInfo } from '../../src/redux/thunks/customer-thunks';
+import { Customer, FCinLayout } from '../../src/types/types';
+import { AppStateType } from '../../src/redux/reducers/root-reducer';
+import Spinner from '../../src/component/Spinner/Spinner';
+import AccountLayout from '../../src/component/AccountLayout/AccountLayout';
 
-const Account: FC = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(formReset());
-    // dispatch(fetchCustomerInfo());
-  }, []);
+const AccountItem: FCinLayout = () => {
+  const usersData: Partial<Customer> = useSelector(
+    (state: AppStateType) => state.customer.customer
+  );
+  const loading: boolean = useSelector(
+    (state: AppStateType) => state.customer.isLoaded
+  );
 
   return (
-    <div className="account-container container">
-      <div className="row mt-5">
-        <div className="col-md-2">
-          <h4>
-            <FontAwesomeIcon className="mr-2" icon={faUser} />
-            마이 페이지
-          </h4>
-          <NavLink
-            to={'/account/customer/info'}
-            className="account-sidebar-link nav-link"
-            activeClassName="is-active"
-          >
-            내 정보
-          </NavLink>
-          <Link href="/account/customer/info">
-            <a>내 정보</a>
-          </Link>
-          {localStorage.getItem('customerRole') === 'ADMIN' ? (
-            <>
-              <NavLink
-                to={'/account/customer/password/confirm'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                비밀번호 변경
-              </NavLink>
-              <NavLink
-                to={'/account/admin/add'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                상품 추가
-              </NavLink>
-              <NavLink
-                to={'/account/admin/products'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                상품 목록
-              </NavLink>
-              <NavLink
-                to={'/account/admin/orders'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                전체 주문 목록
-              </NavLink>
-              <NavLink
-                to={'/account/admin/users'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                전체 고객 목록
-              </NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink
-                to={'/account/customer/password/confirm'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                비밀번호 변경
-              </NavLink>
-              <NavLink
-                to={'/account/user/orders'}
-                className="account-sidebar-link nav-link"
-                activeClassName="is-active"
-              >
-                주문 목록
-              </NavLink>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <h4 style={{ display: 'flex', justifyContent: 'center' }}>Hello!</h4>
+      )}
+    </>
   );
 };
 
-export default Account;
+AccountItem.getLayout = function getLayout(page: ReactElement) {
+  return <AccountLayout>{page}</AccountLayout>;
+};
+export default AccountItem;

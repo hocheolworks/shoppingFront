@@ -1,30 +1,64 @@
 .account-container {
-    padding: 0;
-    min-height: 350px;
-
+  padding: 0;
+  min-height: 350px;
 }
 
 .account-sidebar-link {
-    margin: 10px 0 10px 0;
-    padding: 0;
-    color: black;
+  margin: 10px 0 10px 0;
+  padding: 0;
+  color: black;
 }
 
 .account-sidebar-link a {
-    font-weight: bold;
-    color: black;
-    transition: .3s;
+  font-weight: bold;
+  color: black;
+  transition: 0.3s;
 }
 
 .account-sidebar-link a:hover {
-    color: #00A1DF;
-    text-decoration: none;
+  color: #00a1df;
+  text-decoration: none;
 }
 
 .is-active {
-    color: #00A1DF;
-    text-decoration: none;
+  color: #00a1df;
+  text-decoration: none;
 }
 
+.personal_data {
+  padding-left: 50px;
+}
 
+.personal_data_title {
+  margin-bottom: 30px;
+}
 
+.personal_data_item {
+  font-weight: bold;
+}
+
+.personal_data_text {
+  margin-left: 10px;
+  font-weight: normal;
+}
+
+.personal_data_btn {
+  margin-top: 10px;
+}
+
+.edit_personal_data {
+  margin-top: 21px;
+}
+
+.password_reset {
+  padding-left: 50px;
+}
+
+.password-text {
+  margin-left: 10px;
+  font-weight: normal;
+}
+
+.password-item {
+  font-weight: bold;
+}

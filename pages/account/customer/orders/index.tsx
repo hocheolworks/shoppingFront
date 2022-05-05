@@ -1,16 +1,17 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, ReactElement, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Order, Customer } from '../../../types/types';
-import { AppStateType } from '../../../redux/reducers/root-reducer';
-import { fetchUserOrders } from '../../../redux/thunks/order-thunks';
-import OrdersTable from '../../../component/OrdersTable/OrdersTable';
-import Spinner from '../../../component/Spinner/Spinner';
-import { compareOrderByCreatedAt } from '../../../utils/functions';
+import { Order, Customer, FCinLayout } from '../../../../src/types/types';
+import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
+import { fetchUserOrders } from '../../../../src/redux/thunks/order-thunks';
+import OrdersTable from '../../../../src/component/OrdersTable/OrdersTable';
+import Spinner from '../../../../src/component/Spinner/Spinner';
+import { compareOrderByCreatedAt } from '../../../../src/utils/functions';
+import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
 
-const PersonalOrdersList: FC = () => {
+const PersonalOrdersList: FCinLayout = () => {
   const dispatch = useDispatch();
   const orders: Array<Order> = useSelector(
     (state: AppStateType) => state.order.orders
@@ -38,7 +39,6 @@ const PersonalOrdersList: FC = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                marginTop: '1rem',
               }}
             >
               <FontAwesomeIcon className="ml-2 mr-2" icon={faShoppingBag} />
@@ -51,6 +51,9 @@ const PersonalOrdersList: FC = () => {
       )}
     </>
   );
+};
+PersonalOrdersList.getLayout = function getLayout(page: ReactElement) {
+  return <AccountLayout>{page}</AccountLayout>;
 };
 
 export default PersonalOrdersList;
