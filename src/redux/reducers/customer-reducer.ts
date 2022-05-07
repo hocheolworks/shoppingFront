@@ -3,6 +3,7 @@ import {
   ReviewError,
   Customer,
   CustomerEditErrors,
+  CustomerEdit,
 } from '../../types/types';
 import { LOGOUT_SUCCESS } from '../action-types/auth-action-types';
 import {
@@ -21,6 +22,7 @@ import {
 
 export type InitialStateType = {
   customer: Partial<Customer>;
+  customerEdit: Partial<CustomerEdit>;
   isLoggedIn: boolean;
   isLoaded: boolean;
   successMessage: string;
@@ -32,6 +34,7 @@ export type InitialStateType = {
 
 const initialState: InitialStateType = {
   customer: {},
+  customerEdit: {},
   isLoggedIn: false,
   isLoaded: false,
   successMessage: '',

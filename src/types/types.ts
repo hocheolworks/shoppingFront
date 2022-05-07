@@ -162,13 +162,12 @@ export type PostCodeObject = {
 
 export type CustomerEdit = {
   id: number | undefined;
-  customerEmail: string | undefined;
-  customerName: string | undefined;
-  customerPassword: string | undefined;
-  customerPhoneNumber: string | undefined;
-  customerPostIndex: string | undefined;
-  customerAddress: string | undefined;
-  customerAddressDetail: string | undefined;
+  newCustomerEmail: string | undefined;
+  newCustomerName: string | undefined;
+  newCustomerPhoneNumber: string | undefined;
+  newCustomerPostIndex: string | undefined;
+  newCustomerAddress: string | undefined;
+  newCustomerAddressDetail: string | undefined;
   // customerRole: string | undefined;
 };
 
