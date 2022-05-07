@@ -42,13 +42,13 @@ export type Customer = {
 
 export type Review = {
   id: number;
-  customer: Customer;
+  author: string;
   productId: number;
   reviewMessage: string;
   reviewRating: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 };
 
 export type ReviewData = {

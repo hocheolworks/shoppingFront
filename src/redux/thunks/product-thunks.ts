@@ -53,8 +53,10 @@ export const addReviewToProduct =
     try {
       const response = await RequestService.post('/product/review/add', review);
       console.log(response.data);
-      debugger;
-      dispatch(fetchProductSuccess(response.data));
+      const product: Product = response.data.product;
+      product.reviews = response.data.reviews;
+      console.log(product);
+      dispatch(fetchProductSuccess(product));
       dispatch(customerAddedReviewSuccess());
     } catch (error: any) {
       dispatch(customerAddedReviewFailure(error.response.data));

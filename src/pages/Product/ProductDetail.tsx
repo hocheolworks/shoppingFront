@@ -33,6 +33,7 @@ import {
   updateCart,
 } from "../../redux/thunks/cart-thunks";
 import { API_BASE_URL } from "../../utils/constants/url";
+import ReactDOM from "react-dom";
 
 const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
@@ -98,14 +99,15 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     }
   }, [cart]);
 
-  // 20220502 리뷰는 등록되는데 등록된리뷰가 없습니다 뜸 뭐임
-  useEffect(() => {
-    setMessage("");
-    setRating(0);
-  }, [isReviewAdded]);
+  // useEffect(() => {
+  //   setMessage("");
+  //   setRating(0);
+  // }, [isReviewAdded]);
 
   useEffect(() => {
     setCount(product.productMinimumEA as number);
+    setMessage("");
+    setRating(0);
   }, [product]);
 
   const addToCart = (): void => {
