@@ -36,6 +36,14 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }
     dispatch(removeReviewToProduct(review, product.id));
   }
 
+  const authorSlice = (author: string | undefined) => {
+    if (author != undefined){
+      return author.slice(0, 1) + "*" + author.slice(author.length-2)
+    } else{
+      return '*****'
+    }
+  }
+
   const createDeleteButton = (review: Review) => {
     const author = String(customer.customerEmail).split('@')[0]
     if(author != review.author) {
@@ -72,9 +80,7 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }
                     <div className="col-md-3">
                       <p>
                         <b>
-                          {review.author.slice(0, 1) +
-                            "*" +
-                            review.author.slice(2)}
+                          {authorSlice(review.author)}
                         </b>
                       </p>
                       <p>
