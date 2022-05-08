@@ -1,18 +1,31 @@
-FROM node:13-alpine as build
-WORKDIR /app
-COPY package.json /app/package.json
-RUN npm install --only=prod
-COPY . /app
+# Base on offical Node.js Alpine image
+FROM node:alpine
+
+# Set working directory
+WORKDIR /usr/app
+
+# Install PM2 globally
+RUN npm install --global pm2
+
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY ./package*.json ./
+
+# Install dependencies
+RUN npm install --production
+
+# Copy all files
+COPY ./ ./
+
+# Build app
 RUN npm run build
 
-FROM nginx:stable-alpine
-RUN mkdir /usr/share/nginx/buffer
-COPY --from=build /app/.next /usr/share/nginx/buffer
-COPY --from=build /app/deploy.sh /usr/share/nginx/buffer
-RUN chmod +x /usr/share/nginx/buffer/deploy.sh
-RUN cd /usr/share/nginx/buffer && ./deploy.sh
-RUN mkdir /usr/share/nginx/log
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/conf.d
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Expose the listening port
+EXPOSE 3000
+
+# Run container as non-root (unprivileged) user
+# The node user is provided in the Node.js Alpine base image
+USER node
+
+# Run npm start script with PM2 when container starts
+CMD [ "pm2-runtime", "npm", "--", "start" ]
