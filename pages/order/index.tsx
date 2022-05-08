@@ -1,14 +1,14 @@
-import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faShoppingBag,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { addOrder, fetchOrder } from '../../src/redux/thunks/order-thunks';
-import PageLoader from '../../src/component/PageLoader/PageLoader';
-import { AppStateType } from '../../src/redux/reducers/root-reducer';
+import { addOrder, fetchOrder } from "../../src/redux/thunks/order-thunks";
+import PageLoader from "../../src/component/PageLoader/PageLoader";
+import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
   OrderError,
   OrderItem,
@@ -17,18 +17,18 @@ import {
   Customer,
   CartItem,
   Order,
-} from '../../src/types/types';
+} from "../../src/types/types";
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-import DaumPostcode from 'react-daum-postcode';
-import { loadTossPayments } from '@tosspayments/payment-sdk';
-import { API_BASE_URL } from '../../src/utils/constants/url';
-import { useRouter } from 'next/router';
-import { fetchCart } from '../../src/redux/thunks/cart-thunks';
-import { orderAddedFailure } from '../../src/redux/actions/order-actions';
-const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
+import DaumPostcode from "react-daum-postcode";
+import { loadTossPayments } from "@tosspayments/payment-sdk";
+import { API_BASE_URL } from "../../src/utils/constants/url";
+import { useRouter } from "next/router";
+import { fetchCart } from "../../src/redux/thunks/cart-thunks";
+import { orderAddedFailure } from "../../src/redux/actions/order-actions";
+const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
 
 const MySwal = withReactContent(Swal);
 
@@ -39,17 +39,17 @@ const OrderPage: FC = () => {
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
-    if (localStorage.getItem('id') === null) {
+    if (localStorage.getItem("id") === null) {
       MySwal.fire({
         title: `<strong>잘못된 접근</strong>`,
         html: `<i>홈으로 이동합니다.</i>`,
-        icon: 'error',
+        icon: "error",
       }).then(() => {
-        router.push('/');
+        router.push("/");
       });
     } else {
-      customerId.current = parseInt(localStorage.getItem('id') as string);
-      dispatch(fetchCart(parseInt(localStorage.getItem('id') as string)));
+      customerId.current = parseInt(localStorage.getItem("id") as string);
+      dispatch(fetchCart(parseInt(localStorage.getItem("id") as string)));
     }
   }, []);
 
@@ -96,7 +96,7 @@ const OrderPage: FC = () => {
     string | undefined
   >(customersData.customerAddressDetail);
 
-  const [orderMemo, setOrderMemo] = useState<string | undefined>('');
+  const [orderMemo, setOrderMemo] = useState<string | undefined>("");
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
@@ -110,7 +110,7 @@ const OrderPage: FC = () => {
       }
 
       loadTossPayments(clientKey).then((tossPayments) => {
-        tossPayments.requestPayment('카드', {
+        tossPayments.requestPayment("카드", {
           amount: order.orderTotalPrice as number,
           orderId: `order-${order.id}-${customerId.current}-${Date.now()}`,
           orderName:
@@ -118,8 +118,8 @@ const OrderPage: FC = () => {
               ? cart[0].product.productName
               : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
           customerName: customersData.customerName,
-          successUrl: 'http://localhost:3000/order/success',
-          failUrl: 'http://localhost:3000/order/fail',
+          successUrl: "http://13.125.77.19:3000/order/success",
+          failUrl: "http://13.125.77.19:3000/order/fail",
         });
       });
     }
@@ -131,7 +131,7 @@ const OrderPage: FC = () => {
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setOrderAddress(
-      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
+      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
     );
     setOrderPostIndex(data.zonecode);
     setIsPopupOpen(false);
@@ -156,27 +156,27 @@ const OrderPage: FC = () => {
       !Boolean(orderPhoneNumber)
     ) {
       const orderError: OrderError = {
-        orderCustomerNameError: '',
-        orderPostIndexError: '',
-        orderAddressError: '',
-        orderAddressDetailError: '',
-        orderPhoneNumberError: '',
+        orderCustomerNameError: "",
+        orderPostIndexError: "",
+        orderAddressError: "",
+        orderAddressDetailError: "",
+        orderPhoneNumberError: "",
       };
 
       if (!Boolean(orderCustomerName)) {
-        orderError.orderCustomerNameError = '수령인은 필수 입니다.';
+        orderError.orderCustomerNameError = "수령인은 필수 입니다.";
       }
       if (!Boolean(orderPostIndex)) {
-        orderError.orderPostIndexError = '우편번호는 필수 입니다.';
+        orderError.orderPostIndexError = "우편번호는 필수 입니다.";
       }
       if (!Boolean(orderAddress)) {
-        orderError.orderAddressError = '주소는 필수 입니다.';
+        orderError.orderAddressError = "주소는 필수 입니다.";
       }
       if (!Boolean(orderAddressDetail)) {
-        orderError.orderAddressDetailError = '상세주소는 필수 입니다.';
+        orderError.orderAddressDetailError = "상세주소는 필수 입니다.";
       }
       if (!Boolean(orderPhoneNumber)) {
-        orderError.orderPhoneNumberError = '연락처는 필수 입니다.';
+        orderError.orderPhoneNumberError = "연락처는 필수 입니다.";
       }
 
       dispatch(orderAddedFailure(orderError));
@@ -219,8 +219,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderCustomerNameError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="lastName"
                   value={orderCustomerName}
@@ -240,8 +240,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPostIndexError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="postIndex"
                   value={orderPostIndex}
@@ -259,8 +259,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="address"
                   value={orderAddress}
@@ -276,8 +276,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressDetailError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="address"
                   value={orderAddressDetail}
@@ -297,8 +297,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPhoneNumberError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="phoneNumber"
                   value={orderPhoneNumber}
@@ -330,7 +330,7 @@ const OrderPage: FC = () => {
                   <DaumPostcode
                     className="form-control"
                     style={{
-                      border: '1px solid black',
+                      border: "1px solid black",
                       padding: 0,
                     }}
                     onComplete={onCompletePostIndex}
@@ -340,8 +340,8 @@ const OrderPage: FC = () => {
             )}
             <hr
               style={{
-                margin: '0 0 10px 0',
-                maxWidth: '82.5%',
+                margin: "0 0 10px 0",
+                maxWidth: "82.5%",
               }}
             />
             {/* <div className="form-group row">
@@ -364,7 +364,7 @@ const OrderPage: FC = () => {
                     >
                       <div className="card mb-5">
                         <img
-                          src={`${API_BASE_URL.replace('api/v1', '')}${
+                          src={`${API_BASE_URL.replace("api/v1", "")}${
                             cartItem.product.productImageFilepath
                           }`}
                           className="rounded mx-auto w-50"
@@ -373,9 +373,9 @@ const OrderPage: FC = () => {
                           <h5>{cartItem.product.productName}</h5>
                           <h6>
                             <span>
-                              가격 :{' '}
+                              가격 :{" "}
                               {`${cartItem.product.productPrice.toLocaleString(
-                                'ko-KR'
+                                "ko-KR"
                               )} 원`}
                             </span>
                           </h6>
@@ -397,8 +397,8 @@ const OrderPage: FC = () => {
             </button>
             <div className="row">
               <h4>
-                주문 금액 :{' '}
-                <span>{`${orderTotalPrice.toLocaleString('ko-KR')} 원`}</span>
+                주문 금액 :{" "}
+                <span>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</span>
               </h4>
             </div>
           </div>
