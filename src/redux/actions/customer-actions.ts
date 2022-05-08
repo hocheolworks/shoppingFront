@@ -25,6 +25,8 @@ import {
   FetchCustomerSuccessActionType,
   FetchCustomerByQuerySuccessActionType,
   LoadingCustomerInfoActionType,
+  CustomerDeletedReviewSuccessActionType,
+  CUSTOMER_DELETED_REVIEW_SUCCESS,
 } from "../action-types/customer-actions-types";
 
 export const loadingCustomerInfo = (): LoadingCustomerInfoActionType => ({
@@ -88,3 +90,8 @@ export const fetchCustomerByQuerySuccess = (
   type: FETCH_CUSTOMER_BY_QUERY_SUCCESS,
   payload: customer,
 });
+
+export const customerDeletedReviewSuccess = 
+  (): CustomerDeletedReviewSuccessActionType => ({
+    type: CUSTOMER_DELETED_REVIEW_SUCCESS,
+  });

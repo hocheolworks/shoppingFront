@@ -53,6 +53,9 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const isReviewAdded: boolean = useSelector(
     (state: AppStateType) => state.customer.isReviewAdded
   );
+  const isReviewDeleted: boolean = useSelector(
+    (state: AppStateType) => state.customer.isReviewDeleted
+  );
   const loading: boolean = useSelector(
     (state: AppStateType) => state.product.isProductLoading
   );
@@ -99,15 +102,15 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     }
   }, [cart]);
 
-  // useEffect(() => {
-  //   setMessage("");
-  //   setRating(0);
-  // }, [isReviewAdded]);
+  useEffect(() => {
+    setMessage("");
+    setRating(5);
+  }, [isReviewAdded,isReviewDeleted]);
 
   useEffect(() => {
     setCount(product.productMinimumEA as number);
     setMessage("");
-    setRating(0);
+    setRating(5);
   }, [product]);
 
   const addToCart = (): void => {
@@ -262,7 +265,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <Route
               exact
               component={() => (
-                <ProductReview data={reviews} itemsPerPage={5} />
+                <ProductReview data={reviews} itemsPerPage={5} dispatch={dispatch} />
               )}
             />
             {(isPurchased) && (

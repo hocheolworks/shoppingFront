@@ -6,11 +6,16 @@ import {
     fetchProductSuccess,
     loadingProduct,
     fetchIsPurchaseSuccess,
+    deleteReviewSuccess,
 } from '../actions/product-actions';
-import { Product, ReviewData } from '../../types/types';
+import { Product, Review, ReviewData } from '../../types/types';
 
 import RequestService from '../../utils/request-service';
-import { customerAddedReviewFailure, customerAddedReviewSuccess } from '../actions/customer-actions';
+import { customerAddedReviewFailure, customerAddedReviewSuccess, customerDeletedReviewSuccess } from '../actions/customer-actions';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
+
+const MySwal = withReactContent(Swal);
 
 export const fetchProducts = () => async (dispatch: Dispatch) => {
     dispatch(loadingProduct());
@@ -52,13 +57,28 @@ export const addReviewToProduct =
   (review: ReviewData) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.post('/product/review/add', review);
-      console.log(response.data);
       const product: Product = response.data.product;
       product.reviews = response.data.reviews;
-      console.log(product);
       dispatch(fetchProductSuccess(product));
       dispatch(customerAddedReviewSuccess());
     } catch (error: any) {
       dispatch(customerAddedReviewFailure(error.response.data));
     }
   };
+
+export const removeReviewToProduct = 
+  (review: Partial<Review>, productId: number | undefined) => async (dispatch: Dispatch) => {
+    review.productId = productId;
+    const response = await RequestService.put('/product/review/delete', review);
+    if (response.data.result >= 1) {
+        dispatch(deleteReviewSuccess(response.data.reviews));
+        dispatch(customerDeletedReviewSuccess());
+    } 
+    else {
+        MySwal.fire({
+            title:`<strong>댓글 삭제 실패</strong>`,
+            html:`<i>서버에러로 인해 댓글 삭제에 실패했습니다.</i>`,
+            icon: 'error',
+          })
+    }
+  }

@@ -6,6 +6,7 @@ import {
     FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS,
     ProductActionTypes,
     FETCH_IS_PURCHASE_SUCCESS,
+    DELETED_REVIEW_SUCCESS,
 } from '../action-types/product-action-types';
 
 export type InitialStateType = {
@@ -59,7 +60,12 @@ const reducer = (
                 ...state,
                 isPurchased: action.payload,
             };
-
+        
+        case DELETED_REVIEW_SUCCESS:
+            return {
+                ...state,
+                reviews: action.payload,
+            }
         default:
             return state;
     }

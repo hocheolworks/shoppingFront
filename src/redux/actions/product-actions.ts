@@ -1,4 +1,4 @@
-import { Product } from '../../types/types';
+import { Product, Review } from '../../types/types';
 import {
     LOADING_PRODUCT,
     FETCH_PRODUCTS,
@@ -10,6 +10,8 @@ import {
     LoadingProductActionType,
     fetchIsPurchaseSuccessActionType,
     FETCH_IS_PURCHASE_SUCCESS,
+    deleteReveiwSuccessActionType,
+    DELETED_REVIEW_SUCCESS,
 } from '../action-types/product-action-types';
 
 export const loadingProduct = (): LoadingProductActionType => ({
@@ -43,3 +45,10 @@ export const fetchIsPurchaseSuccess = (
     type: FETCH_IS_PURCHASE_SUCCESS,
     payload: result,
 });
+
+export const deleteReviewSuccess = (
+    reviews: Array<Review>
+): deleteReveiwSuccessActionType => ({
+    type: DELETED_REVIEW_SUCCESS,
+    payload: reviews,
+})
