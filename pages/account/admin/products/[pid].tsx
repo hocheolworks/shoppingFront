@@ -35,7 +35,7 @@ const EditProduct: FCinLayout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { pid } = router.query;
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId = useRef<number>(-1);
   const productData: Partial<Product> = useSelector(
     (state: AppStateType) => state.product.product
   );
@@ -68,6 +68,7 @@ const EditProduct: FCinLayout = () => {
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    customerId.current = parseInt(localStorage.getItem('id') as string);
     dispatch(fetchProduct(parseInt(pid as string)));
   }, []);
 
@@ -107,7 +108,9 @@ const EditProduct: FCinLayout = () => {
     if (productPrice) {
       bodyFormData.append('productPrice', productPrice.toString());
     }
-    dispatch(updateProduct(parseInt(pid as string), customerId, bodyFormData));
+    dispatch(
+      updateProduct(parseInt(pid as string), customerId.current, bodyFormData)
+    );
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {

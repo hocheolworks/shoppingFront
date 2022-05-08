@@ -11,8 +11,8 @@ import {
 
 import { logout } from '../../redux/thunks/auth-thunks';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { CartItem, Product } from '../../types/types';
-import { fetchCustomerSuccess } from '../../redux/actions/customer-actions';
+import { CartItem } from '../../types/types';
+import {} from 'next';
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
@@ -132,7 +132,7 @@ const NavBar: FC = () => {
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {isLoggedIn && (
+              {isLoggedInState && (
                 <li className="nav-item">
                   <Link href={'/cart'}>
                     <a className="nav-link">

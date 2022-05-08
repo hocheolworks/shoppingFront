@@ -1,0 +1,7 @@
+#indicators .carousel-indicators {
+  margin: -50px;
+}
+
+.carousel-indicators li {
+  background-color: black;
+}

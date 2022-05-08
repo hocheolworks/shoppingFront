@@ -40,7 +40,7 @@ const AddProduct: FCinLayout = () => {
     (state: AppStateType) => state.customer.customer
   );
 
-  const customerId: number = parseInt(localStorage.getItem('id') as string);
+  const customerId = useRef<number>(-1);
 
   const isProductAdded: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductAdded
@@ -75,6 +75,8 @@ const AddProduct: FCinLayout = () => {
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    customerId.current = parseInt(localStorage.getItem('id') as string);
+
     if (Boolean(customerRoleError)) {
       MySwal.fire({
         title: `<strong>상품 추가 실패</strong>`,
@@ -158,8 +160,8 @@ const AddProduct: FCinLayout = () => {
     bodyFormData.append('productMinimumEA', productMinimumEA.toString());
     bodyFormData.append('productDescription', productDescription);
     bodyFormData.append('productPrice', productPrice.toString());
-    if (customerId) {
-      bodyFormData.append('customerId', customerId.toString());
+    if (customerId && customerId.current !== -1) {
+      bodyFormData.append('customerId', customerId.current.toString());
     }
 
     dispatch(addProduct(bodyFormData));

@@ -25,6 +25,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
     orderItems,
     orderStatus,
     orderIsPaid,
+    orderMemo,
   } = order;
 
   return (
@@ -56,6 +57,10 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
           <p className="personal_data_item">
             상세주소:
             <span className="personal_data_text">{orderAddressDetail}</span>
+          </p>
+          <p className="personal_data_item">
+            배송메모:
+            <span className="personal_data_text">{orderMemo}</span>
           </p>
         </div>
         <div className="col-md-6">
@@ -126,7 +131,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const response = await RequestService.get(`/order/${context.params.oid}`);
+  const response = await RequestService.get(`/order/${context.params?.oid}`);
   const order = response.data;
   return { props: { order } };
 };

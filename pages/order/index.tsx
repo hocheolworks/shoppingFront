@@ -36,7 +36,7 @@ const OrderPage: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const customerId = useRef<number>();
+  const customerId = useRef<number>(-1);
 
   useEffect(() => {
     if (localStorage.getItem('id') === null) {
@@ -110,10 +110,9 @@ const OrderPage: FC = () => {
       }
 
       loadTossPayments(clientKey).then((tossPayments) => {
-        sessionStorage.setItem('orderId', order.id!.toString());
         tossPayments.requestPayment('카드', {
           amount: order.orderTotalPrice as number,
-          orderId: `order-${order.id}-${Date.now()}`,
+          orderId: `order-${order.id}-${customerId.current}-${Date.now()}`,
           orderName:
             cart.length === 1
               ? cart[0].product.productName
@@ -339,7 +338,12 @@ const OrderPage: FC = () => {
                 </div>
               </div>
             )}
-            <hr />
+            <hr
+              style={{
+                margin: '0 0 10px 0',
+                maxWidth: '82.5%',
+              }}
+            />
             {/* <div className="form-group row">
                             <label className="col-sm-2 col-form-label">
                                 결제수단:

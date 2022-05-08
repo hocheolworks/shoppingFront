@@ -111,16 +111,24 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
       customerId = parseInt(localStorage.getItem('id') as string);
     }
 
+    if (!Boolean(customerId)) {
+      return;
+    }
+
     if (isCartExist) {
       const prevCartItem: CartItem = cart.find(
         (val: CartItem) => val.productId === parseInt(pid as string)
       ) as CartItem;
 
       dispatch(
-        updateCart(customerId, productId, prevCartItem.productCount + count)
+        updateCart(
+          customerId as number,
+          productId,
+          prevCartItem.productCount + count
+        )
       );
     } else {
-      dispatch(insertCart(customerId, productId, count));
+      dispatch(insertCart(customerId as number, productId, count));
     }
 
     router.push('/cart');
@@ -338,7 +346,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const response = await RequestService.get(`/product/${context.params.pid}`);
+  const response = await RequestService.get(`/product/${context.params?.pid}`);
   const product = response.data;
   return { props: { product } };
 };

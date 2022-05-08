@@ -43,7 +43,7 @@ const ProductListComponent: FC<PropsType> = ({
     (state: AppStateType) => state.admin.errors
   );
 
-  const customerId = useRef<number>();
+  const customerId = useRef<number>(-1);
 
   const [modalActive, setModalActive] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<Product>();

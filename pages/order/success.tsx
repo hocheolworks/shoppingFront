@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import qs from 'qs';
 import { clearCart } from '../../src/redux/thunks/cart-thunks';
 import { useRouter } from 'next/router';
@@ -8,6 +8,8 @@ import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
+import { AppStateType } from '../../src/redux/reducers/root-reducer';
+import { Order } from '../../src/types/types';
 
 const MySwal = withReactContent(Swal);
 
@@ -19,19 +21,19 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const orderId = useRef<number>();
+  const { orderId } = query;
 
-  const customerId = parseInt(localStorage.getItem('id') as string);
+  const customerId = useRef<number>(-1);
   useEffect(() => {
-    orderId.current = parseInt(sessionStorage.getItem('orderId') as string);
+    customerId.current = parseInt(localStorage.getItem('id') as string);
     requestService
       .post('/order/success', query)
       .then((res) => {
-        if (isNaN(customerId)) {
+        if (isNaN(customerId.current)) {
           return;
         }
 
-        dispatch(clearCart(customerId));
+        dispatch(clearCart(customerId.current));
       })
       .catch((err) => {
         console.log(err.response);
@@ -52,7 +54,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
     <div className="container text-center mt-5">
       <h2>주문이 완료되었습니다!</h2>
       <p>
-        주문번호: <span>{orderId}</span>
+        주문번호: <span>{(orderId as string).split('-')[1]}</span>
       </p>
     </div>
   );

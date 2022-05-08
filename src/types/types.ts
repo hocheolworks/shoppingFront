@@ -72,6 +72,7 @@ export type Order = {
   orderCustomerName: string;
   orderAddress: string;
   orderAddressDetail: string;
+  orderMemo: string;
   orderPhoneNumber: string;
   orderPostIndex: string;
   orderStatus: string;

@@ -7,15 +7,13 @@ import Footer from '../src/component/Footer/Footer';
 import store from '../src/store';
 import Head from 'next/head';
 import 'bootstrap/dist/css/bootstrap.css';
-import '../styles/NavBar.css';
-import '../styles/Footer.css';
 import '../styles/index.css';
-import '../styles/ProductCardsSlider.css';
-import '../styles/SliderBrands.css';
+// import '../styles/ProductCardsSlider.css';
+// import '../styles/SliderBrands.css';
+import '../styles/home.css';
 import '../styles/MenuStyle.css';
 import '../styles/Spinner.css';
 import '../styles/account.css';
-import '../styles/Order.css';
 import '../styles/admin.css';
 
 import { config } from '@fortawesome/fontawesome-svg-core';
