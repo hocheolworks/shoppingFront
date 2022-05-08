@@ -5,18 +5,18 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./proxy/nginx.conf:/etc/nginx/nginx.conf
-    container_name: iljo-proxy
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    container_name: myweb-proxy
     depends_on:
       - web
       - api
   web:
-    image: devops7503/iljo-web:latest
+    image: devops7503/front:latest
     ports:
       - 3000:3000
-    container_name: iljo-web
+    container_name: myweb-web
   api:
-    image: devops7503/iljo-api:latest
+    image: devops7503/back:latest
     ports:
       - 8080:8080
-    container_name: iljo-api
+    container_name: myweb-api
