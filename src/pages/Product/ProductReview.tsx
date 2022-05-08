@@ -47,16 +47,17 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }
 
   const createDeleteButton = (review: Review) => {
     const author = String(customer.customerEmail).split('@')[0]
-    if(author != review.author) {
-      return ""
+    if (customer.customerRole != 'ADMIN'){
+      if(author != review.author) {
+        return ""
+      }
     }
-    else {
-      return (
-        <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
-          <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
-        </button>
-      )
-    }
+    
+    return (
+      <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
+        <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
+      </button>
+    )
   }
 
   return (
