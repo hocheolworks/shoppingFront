@@ -37,8 +37,9 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }
   }
 
   const authorSlice = (author: string | undefined) => {
-    if (author != undefined){
-      return author.slice(0, 1) + "*" + author.slice(author.length-2)
+    if (author != undefined && author.length > 4){
+      let star = "*".repeat((author.length-4));
+      return author.slice(0, 2) + star + author.slice(author.length-2)
     } else{
       return '*****'
     }
