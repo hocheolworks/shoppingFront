@@ -73,7 +73,9 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
           </p>
           <p className="personal_data_item">
             주문날짜:
-            <span className="personal_data_text">{createdAt}</span>
+            <span className="personal_data_text">
+              {new Date(createdAt).toLocaleString('ko-kr')}
+            </span>
           </p>
           <p className="personal_data_item">
             주문상태:

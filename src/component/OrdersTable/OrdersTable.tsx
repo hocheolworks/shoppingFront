@@ -39,7 +39,7 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                 return (
                   <tr key={order.id}>
                     <th>{order.id}</th>
-                    <th>{order.createdAt}</th>
+                    <th>{new Date(order.createdAt).toLocaleString('ko-kr')}</th>
                     <th>{order.orderCustomerName}</th>
                     <th>{order.orderTotalPrice.toLocaleString('ko-KR')}원</th>
                     <th>{order.orderStatus}</th>
