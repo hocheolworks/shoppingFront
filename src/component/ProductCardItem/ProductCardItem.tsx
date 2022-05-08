@@ -50,7 +50,9 @@ const ProductCardItem: FC<PropsType> = ({
         </div>
         <div className="text-center align-items-end mb-3">
           <Link href={`${link}/${product.id}`}>
-            <span className="btn btn-dark">{btnName}</span>
+            <a className="btn btn-dark">
+              <span>{btnName}</span>
+            </a>
           </Link>
         </div>
       </div>
