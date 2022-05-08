@@ -3,6 +3,7 @@ import {
   ReviewError,
   Customer,
   CustomerEditErrors,
+  CustomerEdit,
 } from '../../types/types';
 import { LOGOUT_SUCCESS } from '../action-types/auth-action-types';
 import {
@@ -17,10 +18,12 @@ import {
   FETCH_CUSTOMER_BY_QUERY_SUCCESS,
   LOADING_CUSTOMER_INFO,
   CustomerActionsTypes,
+  CUSTOMER_DELETED_REVIEW_SUCCESS,
 } from '../action-types/customer-actions-types';
 
 export type InitialStateType = {
   customer: Partial<Customer>;
+  customerEdit: Partial<CustomerEdit>;
   isLoggedIn: boolean;
   isLoaded: boolean;
   successMessage: string;
@@ -28,10 +31,12 @@ export type InitialStateType = {
   customerResetPasswordErrors: Partial<AuthErrors>;
   reviewErrors: Partial<ReviewError>;
   isReviewAdded: boolean;
+  isReviewDeleted: boolean;
 };
 
 const initialState: InitialStateType = {
   customer: {},
+  customerEdit: {},
   isLoggedIn: false,
   isLoaded: false,
   successMessage: '',
@@ -39,6 +44,7 @@ const initialState: InitialStateType = {
   customerResetPasswordErrors: {},
   reviewErrors: {},
   isReviewAdded: false,
+  isReviewDeleted: false,
 };
 
 const reducer = (
@@ -84,6 +90,9 @@ const reducer = (
         isReviewAdded: false,
       };
 
+    case CUSTOMER_DELETED_REVIEW_SUCCESS:
+      return { ...state, reviewErrors: {}, isReviewDeleted: true};
+    
     case RESET_INPUT_FORM:
       return {
         ...state,
@@ -103,7 +112,7 @@ const reducer = (
         isLoggedIn: true,
         isLoaded: false,
       };
-
+    
     default:
       return state;
   }

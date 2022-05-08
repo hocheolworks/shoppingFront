@@ -1,22 +1,54 @@
-import React, { FC } from "react";
+import React, { Dispatch, FC, FormEvent, MouseEventHandler, useState } from "react";
 import StarRatingComponent from "react-star-rating-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import halfStar from "../../img/star-half.svg";
+import { faDeaf, faEraser, faStar } from "@fortawesome/free-solid-svg-icons";
 
-import { Review } from "../../types/types";
+import { Customer, Product, Review } from "../../types/types";
 import usePagination from "../../component/Pagination/usePagination";
 import PaginationItem from "../../component/Pagination/PaginationItem";
+
+import './ProductReview.css';
+import { removeReviewToProduct } from "../../redux/thunks/product-thunks";
+import { AppStateType } from "../../redux/reducers/root-reducer";
+import { useSelector } from "react-redux";
 
 type PropType = {
   data: Array<Review>;
   itemsPerPage: number;
   startFrom?: number;
+  dispatch : Dispatch<any>
 };
+// 20220507 리뷰 삭제 만들어야함
+const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }) => {
 
-const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom }) => {
+  const customer: Partial<Customer> = useSelector(
+    (state: AppStateType) => state.customer.customer
+  );
+  
+  const product: Partial<Product> = useSelector(
+    (state: AppStateType) => state.product.product
+  );
+
   const { slicedData, pagination, prevPage, nextPage, changePage } =
     usePagination({ itemsPerPage, data, startFrom });
+
+  const onClickHandler = (review: Review): void => {
+    dispatch(removeReviewToProduct(review, product.id));
+  }
+
+  const createDeleteButton = (review: Review) => {
+    const author = String(customer.customerEmail).split('@')[0]
+    if(author != review.author) {
+      return ""
+    }
+    else {
+      return (
+        <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
+          <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
+        </button>
+      )
+    }
+  }
 
   return (
     <div className="container">
@@ -40,9 +72,9 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom }) => {
                     <div className="col-md-3">
                       <p>
                         <b>
-                          {review.customer.customerName.slice(0, 1) +
+                          {review.author.slice(0, 1) +
                             "*" +
-                            review.customer.customerName.slice(2)}
+                            review.author.slice(2)}
                         </b>
                       </p>
                       <p>
@@ -60,8 +92,17 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom }) => {
                         value={review.reviewRating}
                       />
                     </div>
-                    <div className="col-md-9">
-                      <p>{review.reviewMessage}</p>
+                    <div className="col-md-9 review_container">
+                      <div>
+                        <p>{review.reviewMessage}</p>
+                      </div>
+                      <div className="items_btn">
+                        <div>
+                        </div>
+                        <div>
+                          {createDeleteButton(review)}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <hr />

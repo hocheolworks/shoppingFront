@@ -20,6 +20,7 @@ export const CUSTOMER_ADDED_REVIEW_FAILURE = 'CUSTOMER_ADDED_REVIEW_FAILURE';
 export const RESET_INPUT_FORM = 'RESET_INPUT_FORM';
 export const FETCH_CUSTOMER_BY_QUERY_SUCCESS =
   'FETCH_CUSTOMER_BY_QUERY_SUCCESS';
+export const CUSTOMER_DELETED_REVIEW_SUCCESS = 'CUSTOMER_DELETED_REVIEW_SUCCESS';
 
 export type LoadingCustomerInfoActionType = {
   type: typeof LOADING_CUSTOMER_INFO;
@@ -57,6 +58,10 @@ export type FetchCustomerByQuerySuccessActionType = {
   payload: Customer;
 };
 
+export type CustomerDeletedReviewSuccessActionType = {
+  type: typeof CUSTOMER_DELETED_REVIEW_SUCCESS;
+};
+
 export type CustomerActionsTypes =
   | LoadingCustomerInfoActionType
   | CustomerUpdatedSuccessActionType
@@ -68,4 +73,5 @@ export type CustomerActionsTypes =
   | CustomerAddedReviewFailureActionType
   | ResetInputFormActionType
   | LogoutSuccessActionType
-  | FetchCustomerByQuerySuccessActionType;
+  | FetchCustomerByQuerySuccessActionType
+  | CustomerDeletedReviewSuccessActionType;

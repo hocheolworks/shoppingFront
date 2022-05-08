@@ -1,4 +1,4 @@
-import { Product } from '../../types/types';
+import { Product, Review } from '../../types/types';
 import {
     LOADING_PRODUCT,
     FETCH_PRODUCTS,
@@ -8,6 +8,10 @@ import {
     FetchProductSuccessActionType,
     GetProductsActionType,
     LoadingProductActionType,
+    fetchIsPurchaseSuccessActionType,
+    FETCH_IS_PURCHASE_SUCCESS,
+    deleteReveiwSuccessActionType,
+    DELETED_REVIEW_SUCCESS,
 } from '../action-types/product-action-types';
 
 export const loadingProduct = (): LoadingProductActionType => ({
@@ -34,3 +38,17 @@ export const fetchProductsByFilterParamsSuccess = (
     type: FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS,
     payload: products,
 });
+
+export const fetchIsPurchaseSuccess = (
+    result: boolean
+): fetchIsPurchaseSuccessActionType => ({
+    type: FETCH_IS_PURCHASE_SUCCESS,
+    payload: result,
+});
+
+export const deleteReviewSuccess = (
+    reviews: Array<Review>
+): deleteReveiwSuccessActionType => ({
+    type: DELETED_REVIEW_SUCCESS,
+    payload: reviews,
+})

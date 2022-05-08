@@ -42,17 +42,18 @@ export type Customer = {
 
 export type Review = {
   id: number;
-  customer: Customer;
+  author: string;
   productId: number;
   reviewMessage: string;
   reviewRating: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 };
 
 export type ReviewData = {
-  productId: number | string;
+  customerId: number | undefined;
+  productId: number;
   author: string;
   message: string;
   rating: number;
@@ -161,13 +162,12 @@ export type PostCodeObject = {
 
 export type CustomerEdit = {
   id: number | undefined;
-  customerEmail: string | undefined;
-  customerName: string | undefined;
-  customerPassword: string | undefined;
-  customerPhoneNumber: string | undefined;
-  customerPostIndex: string | undefined;
-  customerAddress: string | undefined;
-  customerAddressDetail: string | undefined;
+  newCustomerEmail: string | undefined;
+  newCustomerName: string | undefined;
+  newCustomerPhoneNumber: string | undefined;
+  newCustomerPostIndex: string | undefined;
+  newCustomerAddress: string | undefined;
+  newCustomerAddressDetail: string | undefined;
   // customerRole: string | undefined;
 };
 
