@@ -56,7 +56,7 @@ export const fetchIsPurchased =
 export const addReviewToProduct =
   (review: ReviewData) => async (dispatch: Dispatch) => {
     try {
-      const response = await RequestService.post('/product/review/add', review);
+      const response = await RequestService.post('/product/review', review);
       const product: Product = response.data.product;
       product.reviews = response.data.reviews;
       dispatch(fetchProductSuccess(product));
@@ -69,7 +69,7 @@ export const addReviewToProduct =
 export const removeReviewToProduct = 
   (review: Partial<Review>, productId: number | undefined) => async (dispatch: Dispatch) => {
     review.productId = productId;
-    const response = await RequestService.put('/product/review/delete', review);
+    const response = await RequestService.put('/product/review', review);
     if (response.data.result >= 1) {
         dispatch(deleteReviewSuccess(response.data.reviews));
         dispatch(customerDeletedReviewSuccess());
