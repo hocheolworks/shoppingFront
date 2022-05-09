@@ -38,7 +38,7 @@ const NavBar: FC = () => {
     } else {
       setIsLoggedInState(false);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   let links;
   let signOut;

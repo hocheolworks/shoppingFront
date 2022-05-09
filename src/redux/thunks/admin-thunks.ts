@@ -32,7 +32,7 @@ import {
 export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
   try {
     const response = await RequestService.post(
-      '/product/new',
+      '/product',
       data,
       false,
       'multipart/form-data'

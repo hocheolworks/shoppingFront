@@ -9,7 +9,9 @@ import Swal from 'sweetalert2';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { AppStateType } from '../../src/redux/reducers/root-reducer';
-import { Order } from '../../src/types/types';
+import { InsertOrder, Order } from '../../src/types/types';
+import { clearCartSuccess } from '../../src/redux/actions/cart-actions';
+import { clearInsertOrderInformation } from '../../src/redux/actions/order-actions';
 
 const MySwal = withReactContent(Swal);
 
@@ -20,20 +22,25 @@ type OrderSuccessProps = {
 const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const insertOrder: Partial<InsertOrder> = useSelector(
+    (state: AppStateType) => state.order.insertOrder
+  );
 
   const { orderId } = query;
 
   const customerId = useRef<number>(-1);
+
   useEffect(() => {
-    customerId.current = parseInt(localStorage.getItem('id') as string);
+    customerId.current = parseInt(sessionStorage.getItem('id') as string);
     requestService
-      .post('/order/success', query)
+      .post('/order/payment', { ...query, insertOrder: insertOrder })
       .then((res) => {
         if (isNaN(customerId.current)) {
           return;
         }
 
-        dispatch(clearCart(customerId.current));
+        dispatch(clearInsertOrderInformation());
+        dispatch(clearCartSuccess());
       })
       .catch((err) => {
         console.log(err.response);
