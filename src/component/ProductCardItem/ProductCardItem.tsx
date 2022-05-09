@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
@@ -49,8 +49,10 @@ const ProductCardItem: FC<PropsType> = ({
           </h6>
         </div>
         <div className="text-center align-items-end mb-3">
-          <Link to={`${link}/${product.id}`}>
-            <span className="btn btn-dark">{btnName}</span>
+          <Link href={`${link}/${product.id}`}>
+            <a className="btn btn-dark">
+              <span>{btnName}</span>
+            </a>
           </Link>
         </div>
       </div>

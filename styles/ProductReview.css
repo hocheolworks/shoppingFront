@@ -1,0 +1,9 @@
+.review_container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.items_btn {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}

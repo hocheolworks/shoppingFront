@@ -118,8 +118,8 @@ const OrderPage: FC = () => {
               ? cart[0].product.productName
               : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
           customerName: customersData.customerName,
-          successUrl: "http://13.125.77.19:8080/order/success",
-          failUrl: "http://13.125.77.19:8080/order/fail",
+          successUrl: "http://13.125.77.19:3000/order/success",
+          failUrl: "http://13.125.77.19:3000/order/fail",
         });
       });
     }

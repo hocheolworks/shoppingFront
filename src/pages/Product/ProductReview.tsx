@@ -87,7 +87,7 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch }
                       </p>
                       <p>
                         {new Date(review.createdAt).toLocaleDateString() +
-                          " " +
+                          ' ' +
                           new Date(review.createdAt).toLocaleTimeString()}
                       </p>
                       <StarRatingComponent

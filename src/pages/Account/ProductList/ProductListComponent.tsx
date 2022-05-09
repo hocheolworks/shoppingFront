@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faList, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -43,7 +43,7 @@ const ProductListComponent: FC<PropsType> = ({
     (state: AppStateType) => state.admin.errors
   );
 
-  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
+  const customerId = useRef<number>(-1);
 
   const [modalActive, setModalActive] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<Product>();
@@ -59,11 +59,15 @@ const ProductListComponent: FC<PropsType> = ({
   } = usePagination({ itemsPerPage, data, startFrom });
 
   useEffect(() => {
+    customerId.current = parseInt(sessionStorage.getItem('id') as string);
+  }, []);
+
+  useEffect(() => {
     setModalActive(false);
   }, [data]);
 
   const deleteProductHandler = (id: number): void => {
-    dispatch(deleteProduct(id, customerId));
+    dispatch(deleteProduct(id, customerId.current));
   };
 
   const showDeleteModalWindow = (product: Product): void => {
@@ -132,13 +136,11 @@ const ProductListComponent: FC<PropsType> = ({
                         </h6>
                       </div>
                       <div className="btn-group text-center mb-3">
-                        <Link
-                          type="button"
-                          className="btn btn-dark ml-2"
-                          to={`/account/admin/products/${product.id}`}
-                        >
-                          <FontAwesomeIcon className="fa-xs" icon={faEdit} />{' '}
-                          수정
+                        <Link href={`/account/admin/products/${product.id}`}>
+                          <a className="btn btn-dark ml-2">
+                            <FontAwesomeIcon className="fa-xs" icon={faEdit} />{' '}
+                            수정
+                          </a>
                         </Link>
                         <button
                           className="btn btn-warning mr-2"

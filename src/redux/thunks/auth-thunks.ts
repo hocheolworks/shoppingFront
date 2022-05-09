@@ -32,7 +32,7 @@ import { fetchCartSuccess } from '../actions/cart-actions';
 const MySwal = withReactContent(Swal);
 
 export const login =
-  (customerData: CustomerData, history: any) => async (dispatch: Dispatch) => {
+  (customerData: CustomerData, router: any) => async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.post(
         '/customer/login',
@@ -52,7 +52,7 @@ export const login =
       );
       dispatch(fetchCartSuccess(cartResponse.data));
 
-      history.push('/account');
+      router.push('/account');
     } catch (error: any) {
       let errorMessage = error.response.data.message;
 

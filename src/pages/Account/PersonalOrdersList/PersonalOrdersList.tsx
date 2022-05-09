@@ -38,6 +38,7 @@ const PersonalOrdersList: FC = () => {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
+                marginTop: '1rem',
               }}
             >
               <FontAwesomeIcon className="ml-2 mr-2" icon={faShoppingBag} />
