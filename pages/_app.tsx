@@ -2,6 +2,8 @@ import type { AppProps } from 'next/app';
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import NavBar from '../src/component/NavBar/NavBar';
 import Footer from '../src/component/Footer/Footer';
 import store from '../src/store';
@@ -28,6 +30,8 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+const persistor = persistStore(store);
+
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
@@ -35,7 +39,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
-        {/* <meta name="viewport" content="width=device-width, initial-scale=1" /> */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
           rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -58,9 +62,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         />
       </Head>
       <Provider store={store}>
-        <NavBar />
-        {getLayout(<Component {...pageProps} />)}
-        <Footer />
+        <PersistGate loading={null} persistor={persistor}>
+          <NavBar />
+          {getLayout(<Component {...pageProps} />)}
+          <Footer />
+        </PersistGate>
       </Provider>
     </>
   );
