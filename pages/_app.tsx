@@ -63,9 +63,13 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <NavBar />
-          {getLayout(<Component {...pageProps} />)}
-          <Footer />
+          {() => (
+            <>
+              <NavBar />
+              {getLayout(<Component {...pageProps} />)}
+              <Footer />
+            </>
+          )}
         </PersistGate>
       </Provider>
     </>
