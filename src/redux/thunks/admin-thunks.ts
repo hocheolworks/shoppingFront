@@ -10,24 +10,12 @@ import {
   reset,
   updateProductFailure,
   updateProductSuccess,
-  getAllUsersByQuery,
-  getAllUsersOrdersByQuery,
-  getUserInfoByQuery,
-  getUserOrdersByQuery,
   loadingData,
   deleteProductFailure,
   deleteProductSuccess,
 } from '../actions/admin-actions';
 import { fetchProductSuccess, getProducts } from '../actions/product-actions';
 import RequestService from '../../utils/request-service';
-import {
-  userByQuery,
-  usersByQuery,
-} from '../../utils/graphql-query/users-query';
-import {
-  ordersByEmailQuery,
-  ordersByQuery,
-} from '../../utils/graphql-query/orders-query';
 
 export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
   try {

@@ -38,11 +38,7 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom }) => {
                   <div className="form row mt-5">
                     <div className="col-md-3">
                       <p>
-                        <b>
-                          {review.customer.customerName.slice(0, 1) +
-                            '*' +
-                            review.customer.customerName.slice(2)}
-                        </b>
+                        <b>{'****'}</b>
                       </p>
                       <p>
                         {new Date(review.createdAt).toLocaleDateString() +
