@@ -1,4 +1,4 @@
-import { OrderError, Order } from '../../types/types';
+import { OrderError, Order, InsertOrder } from '../../types/types';
 import { SHOW_LOADER } from '../action-types/auth-action-types';
 import {
   FETCH_ORDER_SUCCESS,
@@ -7,6 +7,8 @@ import {
   ORDER_ADDED_SUCCESS,
   FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
   OrderActionTypes,
+  SAVE_INSERT_ORDER_INFORMATION,
+  CLEAR_INSERT_ORDER_INFORMATION,
 } from '../action-types/order-action-types';
 
 export type InitialStateType = {
@@ -15,6 +17,7 @@ export type InitialStateType = {
   errors: Partial<OrderError>;
   loading: boolean;
   isOrderAdded: boolean;
+  insertOrder: Partial<InsertOrder>;
 };
 
 const initialState: InitialStateType = {
@@ -23,6 +26,7 @@ const initialState: InitialStateType = {
   errors: {},
   loading: false,
   isOrderAdded: false,
+  insertOrder: {},
 };
 
 const reducer = (
@@ -57,6 +61,12 @@ const reducer = (
 
     case FETCH_USER_ORDERS_BY_QUERY_SUCCESS:
       return { ...state, orders: action.payload, loading: false };
+
+    case SAVE_INSERT_ORDER_INFORMATION:
+      return { ...state, insertOrder: action.payload };
+
+    case CLEAR_INSERT_ORDER_INFORMATION:
+      return { ...state, insertOrder: {} };
 
     default:
       return state;

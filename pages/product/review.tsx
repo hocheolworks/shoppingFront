@@ -17,7 +17,7 @@ type PropType = {
   itemsPerPage: number;
   startFrom?: number;
   dispatch : Dispatch<any>
-  product : Product
+  product : Partial<Product>
 };
 // 20220507 리뷰 삭제 만들어야함
 const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, product }) => {

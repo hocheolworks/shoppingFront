@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect } from 'react';
+import React, { FC, ReactElement, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,12 +20,14 @@ const PersonalOrdersList: FCinLayout = () => {
     (state: AppStateType) => state.order.loading
   );
 
-  const customer: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.customer.customer
-  );
+  const customerId = useRef<number>(0);
 
   useEffect(() => {
-    dispatch(fetchUserOrders(customer.id));
+    const id = localStorage.getItem('id');
+    if (id) {
+      customerId.current = parseInt(id);
+      dispatch(fetchUserOrders(customerId.current));
+    }
   }, []);
 
   return (

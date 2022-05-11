@@ -2,6 +2,8 @@ import type { AppProps } from 'next/app';
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import NavBar from '../src/component/NavBar/NavBar';
 import Footer from '../src/component/Footer/Footer';
 import store from '../src/store';
@@ -20,9 +22,6 @@ import '../styles/ProductReview.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
-import { persistStore } from "redux-persist";
-import { PersistGate } from "redux-persist/integration/react";
-
 config.autoAddCss = false;
 
 type NextPageWithLayout = NextPage & {
@@ -32,6 +31,8 @@ type NextPageWithLayout = NextPage & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+const persistor = persistStore(store);
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -43,7 +44,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
-        {/* <meta name="viewport" content="width=device-width, initial-scale=1" /> */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
         <link
           rel="stylesheet"
@@ -67,11 +68,15 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         />
       </Head>
       <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <NavBar />
-          {getLayout(<Component {...pageProps} />)}
-          <Footer />
-        </PersistGate>        
+        <PersistGate loading={null} persistor={persistor}>
+          {() => (
+            <>
+              <NavBar />
+              {getLayout(<Component {...pageProps} />)}
+              <Footer />
+            </>
+          )}
+        </PersistGate>
       </Provider>
     </>
   );

@@ -120,7 +120,8 @@ const NavBar: FC = () => {
               </li>
             </ul>
             <ul className="navbar-nav ml-auto">
-              {sessionStorage.getItem('isLoggedIn') && (
+              {(typeof window !== 'undefined') &&
+                sessionStorage.getItem('isLoggedIn') && (
                 <li className="nav-item">
                   <Link href={'/cart'}>
                     <a className="nav-link">

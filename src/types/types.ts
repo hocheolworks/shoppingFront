@@ -92,6 +92,18 @@ export type OrderItem = {
   deletedAt: string;
 };
 
+export type InsertOrder = {
+  customerId: number;
+  orderCustomerName: string | undefined;
+  orderPostIndex: string | undefined;
+  orderAddress: string | undefined;
+  orderAddressDetail: string | undefined;
+  orderPhoneNumber: string | undefined;
+  orderMemo: string | undefined;
+  orderTotalPrice: number;
+  cart: CartItem[];
+};
+
 export type OrderError = {
   orderCustomerNameError: string;
   orderPostIndexError: string;

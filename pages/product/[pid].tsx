@@ -33,7 +33,8 @@ import {
 } from '../../src/redux/thunks/cart-thunks';
 import StarRating from '../../src/component/StarRating/StarRating';
 import { API_BASE_URL } from '../../src/utils/constants/url';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import axios from 'axios';
 
 type ProductDetailProps = {
   product: Product;
@@ -85,7 +86,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     String(customer.customerEmail).split('@')[0]
   );
   const [message, setMessage] = useState<string>('');
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number>(5);
   const { authorError, messageError, ratingError } = errors;
 
   useEffect(() => {
@@ -116,7 +117,6 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   // 왜 또 안되는건지 모르겠음 20220510
   useEffect(() => {
     setCount(product.productMinimumEA as number);
-    product.reviews = reviews;
     setMessage("");
     setRating(5);
   }, [reviews]);
@@ -283,7 +283,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
           <hr />
           <div className="mt-5">
             <h3 className="text-center mb-5">리뷰</h3>
-            <ProductReview data={product.reviews} itemsPerPage={5} dispatch={dispatch} product={product} />
+            <div id='review-table'>
+              <ProductReview data={product.reviews} itemsPerPage={5} dispatch={dispatch} product={product} />
+            </div>
             {(isPurchased) && (
             <form onSubmit={addReview}>
               <div className="form-group border mt-5">
@@ -369,5 +371,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const product = response.data;
   return { props: { product } };
 };
+
+// export const getStaticPaths: GetStaticPaths<{ pid: string }> = async () => {
+//   return {
+//       paths: [], //indicates that no page needs be created at build time
+//       fallback: 'blocking' //indicates the type of fallback
+//   }
+// }
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const response = await RequestService.get(`/product/${context.params?.pid}`);
+//   const product = response.data;
+//   return { props: { product } };
+// };
 
 export default ProductDetail;

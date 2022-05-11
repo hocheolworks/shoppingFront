@@ -1,37 +1,61 @@
-import {Order, OrderError} from "../../types/types";
+import { InsertOrder, Order, OrderError } from '../../types/types';
 import {
-    FETCH_ORDER_SUCCESS,
-    FETCH_USER_ORDERS_SUCCESS,
-    ORDER_ADDED_FAILURE,
-    ORDER_ADDED_SUCCESS,
-    FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
-    FetchOrderSuccessActionType,
-    FetchUserOrdersActionType,
-    OrderAddedFailureActionType,
-    OrderAddedSuccessActionType,
-    FetchUserOrdersByQueryActionType
-} from "../action-types/order-action-types";
+  FETCH_ORDER_SUCCESS,
+  FETCH_USER_ORDERS_SUCCESS,
+  ORDER_ADDED_FAILURE,
+  ORDER_ADDED_SUCCESS,
+  FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
+  FetchOrderSuccessActionType,
+  FetchUserOrdersActionType,
+  OrderAddedFailureActionType,
+  OrderAddedSuccessActionType,
+  FetchUserOrdersByQueryActionType,
+  SaveInsertOrderInformationActionType,
+  SAVE_INSERT_ORDER_INFORMATION,
+  ClearInsertOrderInformationActionType,
+  CLEAR_INSERT_ORDER_INFORMATION,
+} from '../action-types/order-action-types';
 
 export const fetchOrderSuccess = (): FetchOrderSuccessActionType => ({
-    type: FETCH_ORDER_SUCCESS
+  type: FETCH_ORDER_SUCCESS,
 });
 
-export const orderAddedSuccess = (order: Order): OrderAddedSuccessActionType => ({
-    type: ORDER_ADDED_SUCCESS,
-    payload: order
+export const orderAddedSuccess = (
+  order: Order
+): OrderAddedSuccessActionType => ({
+  type: ORDER_ADDED_SUCCESS,
+  payload: order,
 });
 
-export const orderAddedFailure = (errors: OrderError): OrderAddedFailureActionType => ({
-    type: ORDER_ADDED_FAILURE,
-    payload: errors
+export const orderAddedFailure = (
+  errors: Partial<OrderError>
+): OrderAddedFailureActionType => ({
+  type: ORDER_ADDED_FAILURE,
+  payload: errors,
 });
 
-export const fetchUserOrdersSuccess = (orders: Array<Order>): FetchUserOrdersActionType => ({
-    type: FETCH_USER_ORDERS_SUCCESS,
-    payload: orders
+export const fetchUserOrdersSuccess = (
+  orders: Array<Order>
+): FetchUserOrdersActionType => ({
+  type: FETCH_USER_ORDERS_SUCCESS,
+  payload: orders,
 });
 
-export const fetchUserOrdersByQuerySuccess = (orders: Array<Order>): FetchUserOrdersByQueryActionType => ({
-    type: FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
-    payload: orders
+export const fetchUserOrdersByQuerySuccess = (
+  orders: Array<Order>
+): FetchUserOrdersByQueryActionType => ({
+  type: FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
+  payload: orders,
 });
+
+export const saveInsertOrderInformation = (
+  insertOrder: Partial<InsertOrder>
+): SaveInsertOrderInformationActionType => ({
+  type: SAVE_INSERT_ORDER_INFORMATION,
+  payload: insertOrder,
+});
+
+export const clearInsertOrderInformation =
+  (): ClearInsertOrderInformationActionType => ({
+    type: CLEAR_INSERT_ORDER_INFORMATION,
+  });

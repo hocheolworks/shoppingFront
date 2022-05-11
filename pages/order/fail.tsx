@@ -1,13 +1,17 @@
 import React, { FC, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
+import { useDispatch } from 'react-redux';
+import { clearInsertOrderInformation } from '../../src/redux/actions/order-actions';
 
 type OrderFailProps = {
   query: ParsedUrlQuery;
 };
 
 const OrderFail: FC<OrderFailProps> = ({ query }) => {
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(clearInsertOrderInformation());
     console.log(query);
   }, []);
 
