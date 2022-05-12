@@ -50,9 +50,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
   );
-  // const product: Partial<Product> = useSelector(
-  //   (state: AppStateType) => state.product.product
-  // );
+
   const reviews: Array<Review> = useSelector(
     (state: AppStateType) => state.product.reviews
   );
@@ -93,7 +91,6 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const { authorError, messageError, ratingError } = errors;
 
   useEffect(() => {
-    // dispatch(fetchProduct(parseInt(pid as string)));
     dispatch(resetForm());
     dispatch(fetchIsPurchased(parseInt(pid as string), customer.id));
     if (isLoggedIn) {
@@ -121,7 +118,6 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
 
   }, [isReviewAdded, isReviewDeleted]);
 
-  // 왜 또 안되는건지 모르겠음 20220510
   useEffect(() => {
     setCount(product.productMinimumEA as number);
     setMessage("");
@@ -163,11 +159,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     const { value } = e.target;
     const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
     const num = parseInt(onlyNumber);
-    // if (num >= parseInt(e.target.min) && num <= parseInt(e.target.max))
     setCount(num);
   };
 
-  // 리뷰 남기기 기능은 나중에 개발
   const addReview = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const review: ReviewData = {
@@ -202,7 +196,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
       </>
     );
   };
-  
+
   return (
     <div className="container mt-5 pb-5">
       {loading ? (
@@ -378,18 +372,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const product = response.data;
   return { props: { product } };
 };
-
-// export const getStaticPaths: GetStaticPaths<{ pid: string }> = async () => {
-//   return {
-//       paths: [], //indicates that no page needs be created at build time
-//       fallback: 'blocking' //indicates the type of fallback
-//   }
-// }
-
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const response = await RequestService.get(`/product/${context.params?.pid}`);
-//   const product = response.data;
-//   return { props: { product } };
-// };
 
 export default ProductDetail;

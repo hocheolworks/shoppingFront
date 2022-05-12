@@ -91,14 +91,12 @@ const EditPersonalData: FCinLayout = () => {
     event.preventDefault();
     const customerEdit: Partial<CustomerEdit> = {
       id,
-      customerEmail,
-      customerName,
-      // customerPassword,
-      customerPhoneNumber,
-      customerPostIndex,
-      customerAddress,
-      customerAddressDetail,
-      // customerRole,
+      newCustomerEmail: customerEmail,
+      newCustomerName: customerName,
+      newCustomerPhoneNumber: customerPhoneNumber,
+      newCustomerPostIndex: customerPostIndex,
+      newCustomerAddress: customerAddress,
+      newCustomerAddressDetail: customerAddressDetail,
     };
     dispatch(updateCustomerInfo(customerEdit, router));
   };

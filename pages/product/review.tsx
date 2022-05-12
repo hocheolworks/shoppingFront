@@ -16,7 +16,7 @@ type PropType = {
   dispatch : Dispatch<any>
   product : Partial<Product>
 };
-// 20220507 리뷰 삭제 만들어야함
+
 const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, product }) => {
 
   const { slicedData, pagination, prevPage, nextPage, changePage } =
