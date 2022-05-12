@@ -19,6 +19,7 @@ import {
   LOADING_CUSTOMER_INFO,
   CustomerActionsTypes,
   CUSTOMER_DELETED_REVIEW_SUCCESS,
+  RELOAD_SUCCESS,
 } from '../action-types/customer-actions-types';
 
 export type InitialStateType = {
@@ -113,6 +114,12 @@ const reducer = (
         isLoaded: false,
       };
     
+    case RELOAD_SUCCESS:
+      return {
+        ...state,
+        isReviewAdded: false,
+        isReviewDeleted: false,
+      }
     default:
       return state;
   }

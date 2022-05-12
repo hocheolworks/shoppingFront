@@ -7,6 +7,7 @@ import {
     loadingProduct,
     fetchIsPurchaseSuccess,
     deleteReviewSuccess,
+    fetchReviewSuccess,
 } from '../actions/product-actions';
 import { Product, Review, ReviewData } from '../../types/types';
 
@@ -81,4 +82,11 @@ export const removeReviewToProduct =
             icon: 'error',
           })
     }
+  }
+
+export const getReviewToProduct = 
+  (productId: number) => async (dispatch: Dispatch) => {
+    const response = await RequestService.get('/review/'+productId);
+    
+    dispatch(fetchReviewSuccess(response.data.reveiws))
   }

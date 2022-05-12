@@ -1,16 +1,13 @@
 import React, { Dispatch, FC, FormEvent, MouseEventHandler, useState } from "react";
 import StarRatingComponent from "react-star-rating-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDeaf, faEraser, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faEraser, faStar } from "@fortawesome/free-solid-svg-icons";
 
-import { Customer, Product, Review } from "../../src/types/types";
+import { Product, Review } from "../../src/types/types";
 import usePagination from "../../src/component/Pagination/usePagination";
 import PaginationItem from "../../src/component/Pagination/PaginationItem";
 
 import { removeReviewToProduct } from "../../src/redux/thunks/product-thunks";
-import { AppStateType } from "../../src/redux/reducers/root-reducer";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 type PropType = {
   data: Array<Review>;
@@ -21,10 +18,6 @@ type PropType = {
 };
 // 20220507 리뷰 삭제 만들어야함
 const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, product }) => {
-
-  const customer: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.customer.customer
-  );
 
   const { slicedData, pagination, prevPage, nextPage, changePage } =
     usePagination({ itemsPerPage, data, startFrom });
@@ -43,18 +36,20 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, 
   }
 
   const createDeleteButton = (review: Review) => {
-    const author = String(customer.customerEmail).split('@')[0]
-    if (customer.customerRole != 'ADMIN'){
-      if(author != review.author) {
-        return ""
+    if (typeof window !== 'undefined') {
+      const author = String(window.sessionStorage.getItem('customerEmail')).split('@')[0]
+      if (window.sessionStorage.getItem('customerRole') != 'ADMIN'){
+        if(author != review.author) {
+          return ""
+        }
       }
+      
+      return (
+        <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
+          <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
+        </button>
+      )
     }
-    
-    return (
-      <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
-        <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
-      </button>
-    )
   }
 
   return (

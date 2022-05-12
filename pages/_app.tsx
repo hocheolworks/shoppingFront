@@ -37,8 +37,6 @@ const persistor = persistStore(store);
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
   
-  const persistor = persistStore(store);
-  
   return (
     <>
       <Head>

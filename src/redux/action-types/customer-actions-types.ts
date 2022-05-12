@@ -21,6 +21,7 @@ export const RESET_INPUT_FORM = 'RESET_INPUT_FORM';
 export const FETCH_CUSTOMER_BY_QUERY_SUCCESS =
   'FETCH_CUSTOMER_BY_QUERY_SUCCESS';
 export const CUSTOMER_DELETED_REVIEW_SUCCESS = 'CUSTOMER_DELETED_REVIEW_SUCCESS';
+export const RELOAD_SUCCESS = 'RELOAD_SUCCESS';
 
 export type LoadingCustomerInfoActionType = {
   type: typeof LOADING_CUSTOMER_INFO;
@@ -62,6 +63,10 @@ export type CustomerDeletedReviewSuccessActionType = {
   type: typeof CUSTOMER_DELETED_REVIEW_SUCCESS;
 };
 
+export type ReLoadSuccessActionType = {
+  type: typeof RELOAD_SUCCESS;
+};
+
 export type CustomerActionsTypes =
   | LoadingCustomerInfoActionType
   | CustomerUpdatedSuccessActionType
@@ -74,4 +79,5 @@ export type CustomerActionsTypes =
   | ResetInputFormActionType
   | LogoutSuccessActionType
   | FetchCustomerByQuerySuccessActionType
-  | CustomerDeletedReviewSuccessActionType;
+  | CustomerDeletedReviewSuccessActionType
+  | ReLoadSuccessActionType;

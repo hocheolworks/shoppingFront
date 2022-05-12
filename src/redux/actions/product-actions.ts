@@ -12,6 +12,8 @@ import {
     FETCH_IS_PURCHASE_SUCCESS,
     deleteReveiwSuccessActionType,
     DELETED_REVIEW_SUCCESS,
+    FETCH_REVIEW_SUCCESS,
+    fetchReviewSuccessActionType,
 } from '../action-types/product-action-types';
 
 export const loadingProduct = (): LoadingProductActionType => ({
@@ -51,4 +53,11 @@ export const deleteReviewSuccess = (
 ): deleteReveiwSuccessActionType => ({
     type: DELETED_REVIEW_SUCCESS,
     payload: reviews,
+})
+
+export const fetchReviewSuccess = (
+    reviews: Array<Review>
+): fetchReviewSuccessActionType => ({
+    type: FETCH_REVIEW_SUCCESS,
+    payload: reviews, 
 })

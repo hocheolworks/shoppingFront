@@ -27,6 +27,8 @@ import {
   LoadingCustomerInfoActionType,
   CustomerDeletedReviewSuccessActionType,
   CUSTOMER_DELETED_REVIEW_SUCCESS,
+  ReLoadSuccessActionType,
+  RELOAD_SUCCESS,
 } from "../action-types/customer-actions-types";
 
 export const loadingCustomerInfo = (): LoadingCustomerInfoActionType => ({
@@ -95,3 +97,8 @@ export const customerDeletedReviewSuccess =
   (): CustomerDeletedReviewSuccessActionType => ({
     type: CUSTOMER_DELETED_REVIEW_SUCCESS,
   });
+
+export const reloadSuccess =
+  (): ReLoadSuccessActionType => ({
+    type: RELOAD_SUCCESS,
+  })

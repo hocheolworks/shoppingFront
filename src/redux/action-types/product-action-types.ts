@@ -7,6 +7,8 @@ export const FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS =
     'FETCH_PRODUCTS_BY_FILTER_PARAMS_SUCCESS';
 export const FETCH_IS_PURCHASE_SUCCESS = 'FETCH_IS_PURCHASE_SUCCESS';
 export const DELETED_REVIEW_SUCCESS = 'DELETED_REVIEW_SUCCESS';
+export const FETCH_REVIEW_SUCCESS = 'FETCH_REVIEW_SUCCESS';
+export const RELOAD_SUCCESS = 'RELOAD_SUCCESS';
 
 export type LoadingProductActionType = { type: typeof LOADING_PRODUCT };
 export type GetProductsActionType = {
@@ -30,11 +32,22 @@ export type deleteReveiwSuccessActionType = {
     payload: Array<Review>;
 };
 
+export type fetchReviewSuccessActionType = {
+    type: typeof FETCH_REVIEW_SUCCESS;
+    payload: Array<Review>;
+};
+
+export type ReLoadSuccessActionType = {
+    type: typeof RELOAD_SUCCESS;
+};
+
 export type ProductActionTypes =
     | LoadingProductActionType
     | FetchProductSuccessActionType
     | GetProductsActionType
     | FetchProductsByFilterParamsSuccessActionType
     | fetchIsPurchaseSuccessActionType
-    | deleteReveiwSuccessActionType;
+    | deleteReveiwSuccessActionType
+    | fetchReviewSuccessActionType
+    | ReLoadSuccessActionType;
 

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCartPlus,
+  faEraser,
   faPaperPlane,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
@@ -24,7 +25,7 @@ import {
 import Spinner from '../../src/component/Spinner/Spinner';
 import ProductReview from './review';
 import ScrollButton from '../../src/component/ScrollButton/ScrollButton';
-import { addReviewToProduct, fetchIsPurchased, fetchProduct } from '../../src/redux/thunks/product-thunks';
+import { addReviewToProduct, fetchIsPurchased, fetchProduct, removeReviewToProduct } from '../../src/redux/thunks/product-thunks';
 import RequestService from '../../src/utils/request-service';
 import {
   fetchCart,
@@ -35,6 +36,7 @@ import StarRating from '../../src/component/StarRating/StarRating';
 import { API_BASE_URL } from '../../src/utils/constants/url';
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import axios from 'axios';
+import { reloadSuccess } from '../../src/redux/actions/customer-actions';
 
 type ProductDetailProps = {
   product: Product;
@@ -44,6 +46,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { pid } = router.query;
+
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
   );
@@ -110,10 +113,14 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     }
   }, [cart]);
 
-  // useEffect(() => {
-  //   setMessage("");
-  //   setRating(5);
-  // }, [isReviewAdded, isReviewDeleted]);
+  useEffect(() => {
+    if (isReviewAdded || isReviewDeleted) {
+      dispatch(reloadSuccess());
+      router.reload();
+    }
+
+  }, [isReviewAdded, isReviewDeleted]);
+
   // 왜 또 안되는건지 모르겠음 20220510
   useEffect(() => {
     setCount(product.productMinimumEA as number);
@@ -195,7 +202,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
       </>
     );
   };
-
+  
   return (
     <div className="container mt-5 pb-5">
       {loading ? (
@@ -284,7 +291,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
           <div className="mt-5">
             <h3 className="text-center mb-5">리뷰</h3>
             <div id='review-table'>
-              <ProductReview data={product.reviews} itemsPerPage={5} dispatch={dispatch} product={product} />
+              <ProductReview data={product.reviews} itemsPerPage={5} dispatch={dispatch} product={product}/>
             </div>
             {(isPurchased) && (
             <form onSubmit={addReview}>
