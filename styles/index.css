@@ -17,16 +17,59 @@ hr {
   background-color: black;
 }
 
+.nav-container {
+  display: grid;
+  grid-template-columns: 1fr 8fr 1fr;
+}
+
+#navbar-main {
+  width: 100%;
+  align-items: center;
+  max-width: 77vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5rem 1rem;
+}
+
 #navbar-main a {
-  font-size: 15px;
-  font-weight: bold;
-  color: white;
   transition: 0.3s;
+  color: white;
 }
 
 #navbar-main a:hover {
-  color: #00a1df;
+  color: white;
   text-decoration: none;
+}
+
+#navbarSupportedContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.nav-item {
+  font-size: 1vw;
+  font-weight: bold;
+  -webkit-text-size-adjust : none;  /* 크롬, 사파리, 오페라 신버전 */
+  -ms-text-size-adjust : none;  /* IE */
+  -moz-text-size-adjust : none;  /* 파이어폭스 */
+  -o-text-size-adjust : none;  /* 오페라 구버전 */
+}
+
+.left-items {
+  text-align: left;
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr;
+}
+
+.right-items {
+  text-align: right;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.nav-icon {
+  font-size: 1vw !important;
+  color: white;
 }
 
 #header {

@@ -33,39 +33,46 @@ const NavBar: FC = () => {
   if (typeof window !== 'undefined') {
     if (window.sessionStorage.getItem('isLoggedIn') === 'true') {
       links = (
-        <li className="nav-item">
+        <div className="nav-item right-item">
           <Link href={'/account'}>
             <a>
-              <span className="nav-link pl-5 pr-5">
-                <FontAwesomeIcon className="mr-2" icon={faUser} />
+              <span className="nav-link nav-icon">
+                <i
+                className="fas fa-user mr-2"
+                ></i>
                 마이페이지
               </span>
             </a>
           </Link>
-        </li>
+        </div>
       );
       signOut = (
-        <Link href={'/'}>
-          <a onClick={handleLogout}>
-            <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-            로그아웃
-          </a>
-        </Link>
+        <div className="nav-item right-item">
+          <Link href={'/'}>
+            <a onClick={handleLogout}>
+              <span className="nav-link nav-icon">
+                <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
+                로그아웃
+              </span>
+            </a>
+          </Link>
+        </div>
       );
     } else {
       links = (
         <>
-          <li className="nav-item">
+          <div className='nav-item'></div>
+          <div className="nav-item right-item">
             <Link href={'/login'}>
               <a>
-                <span className="nav-link pl-5 pr-3">
+                <span className="nav-link nav-icon">
                   <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
                   로그인
                 </span>
               </a>
             </Link>
-          </li>
-          <li className="nav-item">
+          </div>
+          <div className="nav-item right-item">
             <Link href={'/registration'}>
               <a>
                 <span className="nav-link">
@@ -74,7 +81,7 @@ const NavBar: FC = () => {
                 </span>
               </a>
             </Link>
-          </li>
+          </div>
         </>
       );
       signOut = null;
@@ -89,66 +96,54 @@ const NavBar: FC = () => {
       >
         <img src="/image/logo/main.png" className="rounded mx-auto d-block" />
       </div>
-      <div className="container-fluid bg-black">
-        <nav
-          id="navbar-main"
-          className={`container navbar navbar-expand-lg bg-black text-white `}
-          style={{ fontSize: '18px' }}
-        >
-          <div className="navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto ">
-              <li className="nav-item">
+      <div className="nav-container bg-black">
+        <div></div>
+        <nav id="navbar-main">
+          <div id="navbarSupportedContent">
+            <div className="navbar-nav left-items">
+              <div className="nav-item">
                 <Link href={'/'}>
                   <a>
-                    <span className="nav-link pl-5 pr-5">HOME</span>
+                    <span className="nav-link">홈</span>
                   </a>
                 </Link>
-              </li>
-              <li className="nav-item">
+              </div>
+              <div className="nav-item">
                 <Link href="/menu">
                   <a>
-                    <span className="nav-link pl-5 pr-5">PRODUCTS</span>
+                    <span className="nav-link">상품</span>
                   </a>
                 </Link>
-              </li>
-              <li className="nav-item">
+              </div>
+              <div className="nav-item">
                 <Link href={'/contacts'}>
                   <a>
-                    <span className="nav-link pl-5 pr-5">CONTACTS</span>
+                    <span className="nav-link">소개</span>
                   </a>
                 </Link>
-              </li>
-            </ul>
-            <ul className="navbar-nav ml-auto">
+              </div>
+            </div>
+            <div className="navbar-nav right-items">          
               {(typeof window !== 'undefined') &&
-                sessionStorage.getItem('isLoggedIn') && (
-                <li className="nav-item">
+                sessionStorage.getItem('isLoggedIn') && (                
+                <div className="nav-item">
                   <Link href={'/cart'}>
                     <a className="nav-link">
-                      <i
-                        className="fas fa-shopping-cart fa-lg pl-5"
-                        style={{ color: 'white' }}
-                      ></i>
                       <h5
-                        className="d-inline"
-                        style={{
-                          position: 'relative',
-                          right: '15px',
-                          bottom: '8px',
-                        }}
-                      >
-                        <span className="badge badge-success">
+                        className="d-inline nav-icon"                        
+                      >                        
+                        <i className="fas fa-shopping-cart"></i>
+                        <span className="badge badge-success ml-1">
                           {cart.length}
                         </span>
                       </h5>
                     </a>
                   </Link>
-                </li>
+                </div>
               )}
-
               {links}
-            </ul>
-            {signOut}
+              {signOut}
+            </div>
           </div>
         </nav>
       </div>
