@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { Product } from '../../types/types';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { API_BASE_URL } from '../../utils/constants/url';
+import React, { FC } from "react";
+import { Product } from "../../types/types";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { API_BASE_URL } from "../../utils/constants/url";
 
 type PropTypes = {
   product: Product;
@@ -17,7 +17,7 @@ const Modal: FC<PropTypes> = ({
   return (
     <>
       <div className="modal-open">
-        <div className="modal fade show" style={{ display: 'block' }}>
+        <div className="modal fade show" style={{ display: "block" }}>
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -34,17 +34,15 @@ const Modal: FC<PropTypes> = ({
                 <div className="col-md-4 d-flex justify-content-center">
                   <LazyLoadImage
                     effect="blur"
-                    style={{ width: '90px' }}
-                    src={`${API_BASE_URL.replace('api/v1', '')}${
-                      product.productImageFilepath
-                    }`}
+                    style={{ width: "90px" }}
+                    src={`${product.productImageFilepath}`}
                   />
                 </div>
                 <div className="col-md-6 text-center">
                   <h6>상품 번호 : {product.id}</h6>
                   <h6>
-                    {product.productName} |{' '}
-                    {product.productPrice.toLocaleString('ko-kr')} 원
+                    {product.productName} |{" "}
+                    {product.productPrice.toLocaleString("ko-kr")} 원
                   </h6>
                   <p>정말 삭제하시겠습니까?</p>
                 </div>

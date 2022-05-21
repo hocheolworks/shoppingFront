@@ -1,24 +1,24 @@
-import React, { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
 import {
   faChevronDown,
   faChevronUp,
   faMinusSquare,
   faShoppingBag,
   faShoppingCart,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Spinner from '../src/component/Spinner/Spinner';
+import Spinner from "../src/component/Spinner/Spinner";
 import {
   deleteCartItem,
   fetchCart,
   updateCart,
-} from '../src/redux/thunks/cart-thunks';
-import { AppStateType } from '../src/redux/reducers/root-reducer';
-import { CartItem } from '../src/types/types';
-import { API_BASE_URL } from '../src/utils/constants/url';
+} from "../src/redux/thunks/cart-thunks";
+import { AppStateType } from "../src/redux/reducers/root-reducer";
+import { CartItem } from "../src/types/types";
+import { API_BASE_URL } from "../src/utils/constants/url";
 
 const Cart: FC = () => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const Cart: FC = () => {
   const customerId = useRef<number>(0);
 
   useEffect(() => {
-    customerId.current = parseInt(sessionStorage.getItem('id') as string);
+    customerId.current = parseInt(sessionStorage.getItem("id") as string);
     if (
       customerId === undefined ||
       customerId === null ||
@@ -78,19 +78,19 @@ const Cart: FC = () => {
   };
 
   return (
-    <div className="container mt-5 pb-5" style={{ minHeight: '350px' }}>
+    <div className="container mt-5 pb-5" style={{ minHeight: "350px" }}>
       {loading ? (
         <Spinner />
       ) : (
         <div>
           {cart.length === 0 ? (
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: "center" }}>
               <h2>장바구니가 비었습니다.</h2>
             </div>
           ) : (
             <div>
               <p className="h4 mb-4 text-center">
-                <FontAwesomeIcon className="mr-2" icon={faShoppingCart} />{' '}
+                <FontAwesomeIcon className="mr-2" icon={faShoppingCart} />{" "}
                 장바구니
               </p>
               {cart.map((cartItem: CartItem) => {
@@ -98,14 +98,12 @@ const Cart: FC = () => {
                   <div
                     key={cartItem.product.id}
                     className="card mb-3 mx-auto"
-                    style={{ maxWidth: '940px' }}
+                    style={{ maxWidth: "940px" }}
                   >
                     <div className="row no-gutters">
                       <div className="col-2 mx-3 my-3">
                         <img
-                          src={`${API_BASE_URL.replace('api/v1', '')}${
-                            cartItem.product.productImageFilepath
-                          }`}
+                          src={`${cartItem.product.productImageFilepath}`}
                           className="img-fluid"
                         />
                       </div>
@@ -116,8 +114,8 @@ const Cart: FC = () => {
                           </h4>
                           <p className="card-text">
                             {cartItem.product.productPrice.toLocaleString(
-                              'ko-KR'
-                            )}{' '}
+                              "ko-KR"
+                            )}{" "}
                             원
                           </p>
                           <p className="card-text"></p>
@@ -140,7 +138,7 @@ const Cart: FC = () => {
                           type="text"
                           className="form-control input-number"
                           style={{
-                            width: '65px',
+                            width: "65px",
                           }}
                           value={cartItem.productCount}
                           onChange={(event) =>
@@ -167,7 +165,7 @@ const Cart: FC = () => {
                               {(
                                 cartItem.product.productPrice *
                                 cartItem.productCount
-                              ).toLocaleString('ko-KR')}{' '}
+                              ).toLocaleString("ko-KR")}{" "}
                               원
                             </span>
                           </h5>
@@ -178,7 +176,7 @@ const Cart: FC = () => {
                             <FontAwesomeIcon
                               className="mr-2"
                               icon={faMinusSquare}
-                            />{' '}
+                            />{" "}
                             Remove
                           </button>
                         </div>
@@ -190,17 +188,17 @@ const Cart: FC = () => {
               <div className="row">
                 <div className="col-9">
                   <p className="h5 text-right">
-                    합계: <span>{totalPrice.toLocaleString('ko-KR')} 원</span>
+                    합계: <span>{totalPrice.toLocaleString("ko-KR")} 원</span>
                   </p>
                 </div>
                 <div className="col-3">
                   <div className="form-row">
-                    <Link href={'/order'}>
+                    <Link href={"/order"}>
                       <button className="btn btn-success">
                         <FontAwesomeIcon
                           className="mr-2"
                           icon={faShoppingBag}
-                        />{' '}
+                        />{" "}
                         주문하기
                       </button>
                     </Link>
