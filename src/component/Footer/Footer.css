@@ -1,15 +1,15 @@
 html {
-    position: relative;
-    min-height: 100%;
+  position: relative;
+  min-height: 100%;
 }
 
 body {
-    margin-bottom: 400px;
+  margin-bottom: 400px;
 }
 
 footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    z-index: -1;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: -1;
 }
