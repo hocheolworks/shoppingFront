@@ -1,11 +1,11 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement } from "react";
 
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
-import { Customer, FCinLayout } from '../../src/types/types';
-import { AppStateType } from '../../src/redux/reducers/root-reducer';
-import Spinner from '../../src/component/Spinner/Spinner';
-import AccountLayout from '../../src/component/AccountLayout/AccountLayout';
+import { Customer, FCinLayout } from "../../src/types/types";
+import { AppStateType } from "../../src/redux/reducers/root-reducer";
+import Spinner from "../../src/component/Spinner/Spinner";
+import AccountLayout from "../../src/component/AccountLayout/AccountLayout";
 
 const AccountItem: FCinLayout = () => {
   const usersData: Partial<Customer> = useSelector(
@@ -20,7 +20,11 @@ const AccountItem: FCinLayout = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <h4 style={{ display: 'flex', justifyContent: 'center' }}>Hello!</h4>
+        <div>
+          <h4 style={{ display: "flex", justifyContent: "center" }}>
+            안녕하세요, 일조유통입니다!
+          </h4>
+        </div>
       )}
     </>
   );

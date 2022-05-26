@@ -1,7 +1,7 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
   faLock,
@@ -9,18 +9,18 @@ import {
   faUserPlus,
   faPhone,
   faCheck,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 import {
   formReset,
   registration,
   emailValidation,
-} from '../src/redux/thunks/auth-thunks';
-import PageLoader from '../src/component/PageLoader/PageLoader';
-import { AppStateType } from '../src/redux/reducers/root-reducer';
-import { AuthErrors, CustomerRegistration } from '../src/types/types';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+} from "../src/redux/thunks/auth-thunks";
+import PageLoader from "../src/component/PageLoader/PageLoader";
+import { AppStateType } from "../src/redux/reducers/root-reducer";
+import { AuthErrors, CustomerRegistration } from "../src/types/types";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
@@ -43,14 +43,14 @@ const Registration: FC = () => {
     password2Error,
     phoneNumberError,
   } = errors;
-  const [customerEmail, setEmail] = useState<string>('');
-  const [customerName, setName] = useState<string>('');
-  const [customerPhoneNumber, setPhoneNumber] = useState<string>('');
-  const [customerPassword, setPassword] = useState<string>('');
-  const [customerPassword2, setPassword2] = useState<string>('');
-  const [captchaValue, setCaptchaValue] = useState<string | null>('');
+  const [customerEmail, setEmail] = useState<string>("");
+  const [customerName, setName] = useState<string>("");
+  const [customerPhoneNumber, setPhoneNumber] = useState<string>("");
+  const [customerPassword, setPassword] = useState<string>("");
+  const [customerPassword2, setPassword2] = useState<string>("");
+  const [captchaValue, setCaptchaValue] = useState<string | null>("");
   const [userInputVerifyNumber, setUserInputVerifyNumber] =
-    useState<string>('');
+    useState<string>("");
 
   useEffect(() => {
     dispatch(formReset());
@@ -62,9 +62,9 @@ const Registration: FC = () => {
 
   const onClickVerifyEmail = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (typeof window === 'undefined') return;
-    sessionStorage.setItem('verifyNumber', randNumber(1000, 10000).toString());
-    const verifyNumber = sessionStorage.getItem('verifyNumber');
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("verifyNumber", randNumber(1000, 10000).toString());
+    const verifyNumber = sessionStorage.getItem("verifyNumber");
     const userRegistrationData: CustomerRegistration = {
       customerEmail,
       customerName,
@@ -82,14 +82,14 @@ const Registration: FC = () => {
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    const verifyNumber = sessionStorage.getItem('verifyNumber');
+    const verifyNumber = sessionStorage.getItem("verifyNumber");
     if (verifyNumber === userInputVerifyNumber) {
       await MySwal.fire({
         title: `<strong>인증번호 일치</strong>`,
         html: `<i>회원가입이 완료되었습니다!</i>`,
-        icon: 'success',
+        icon: "success",
       });
-      router.push('/login');
+      router.push("/login");
       const userRegistrationData: CustomerRegistration = {
         customerEmail,
         customerName,
@@ -105,7 +105,7 @@ const Registration: FC = () => {
       await MySwal.fire({
         title: `<strong>인증번호 불일치</strong>`,
         html: `<i>인증번호를 다시 입력해주세요!</i>`,
-        icon: 'error',
+        icon: "error",
       });
     }
   };
@@ -125,13 +125,13 @@ const Registration: FC = () => {
       {isRegistered ? (
         <div>
           <div className="alert alert-success col-6" role="alert">
-            인증 코드가 이메일로 전송되었습니다. 이메일을 확인해주세요
+            인증 코드가 전송되었습니다.
           </div>
           <form onSubmit={onClickFinishRegistration}>
             <div className="form-group row">
               <label className="col-sm-2 col-form-label">인증번호: </label>
               <FontAwesomeIcon
-                style={{ position: 'relative', top: '8px' }}
+                style={{ position: "relative", top: "8px" }}
                 icon={faEnvelope}
               />
               <div className="col-sm-4">
@@ -140,7 +140,7 @@ const Registration: FC = () => {
                   name="userInputVerifyNumber"
                   value={userInputVerifyNumber}
                   className={
-                    emailError ? 'form-control is-invalid' : 'form-control'
+                    emailError ? "form-control is-invalid" : "form-control"
                   }
                   onChange={(event) =>
                     setUserInputVerifyNumber(event.target.value)
@@ -162,7 +162,7 @@ const Registration: FC = () => {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">이메일: </label>
             <FontAwesomeIcon
-              style={{ position: 'relative', top: '8px' }}
+              style={{ position: "relative", top: "8px" }}
               icon={faEnvelope}
             />
             <div className="col-sm-4">
@@ -171,7 +171,7 @@ const Registration: FC = () => {
                 name="email"
                 value={customerEmail}
                 className={
-                  emailError ? 'form-control is-invalid' : 'form-control'
+                  emailError ? "form-control is-invalid" : "form-control"
                 }
                 onChange={(event) => setEmail(event.target.value)}
               />
@@ -181,7 +181,7 @@ const Registration: FC = () => {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">이름: </label>
             <FontAwesomeIcon
-              style={{ position: 'relative', top: '8px' }}
+              style={{ position: "relative", top: "8px" }}
               icon={faUser}
             />
             <div className="col-sm-4">
@@ -190,7 +190,7 @@ const Registration: FC = () => {
                 name="name"
                 value={customerName}
                 className={
-                  nameError ? 'form-control is-invalid' : 'form-control'
+                  nameError ? "form-control is-invalid" : "form-control"
                 }
                 onChange={(event) => setName(event.target.value)}
               />
@@ -200,7 +200,7 @@ const Registration: FC = () => {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">휴대폰번호: </label>
             <FontAwesomeIcon
-              style={{ position: 'relative', top: '8px' }}
+              style={{ position: "relative", top: "8px" }}
               icon={faPhone}
             />
             <div className="col-sm-4">
@@ -209,7 +209,7 @@ const Registration: FC = () => {
                 name="phoneNumber"
                 value={customerPhoneNumber}
                 className={
-                  phoneNumberError ? 'form-control is-invalid' : 'form-control'
+                  phoneNumberError ? "form-control is-invalid" : "form-control"
                 }
                 onChange={(event) => setPhoneNumber(event.target.value)}
               />
@@ -219,7 +219,7 @@ const Registration: FC = () => {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">비밀번호: </label>
             <FontAwesomeIcon
-              style={{ position: 'relative', top: '8px' }}
+              style={{ position: "relative", top: "8px" }}
               icon={faLock}
             />
             <div className="col-sm-4">
@@ -228,7 +228,7 @@ const Registration: FC = () => {
                 name="password"
                 value={customerPassword}
                 className={
-                  passwordError ? 'form-control is-invalid' : 'form-control'
+                  passwordError ? "form-control is-invalid" : "form-control"
                 }
                 onChange={(event) => setPassword(event.target.value)}
               />
@@ -238,7 +238,7 @@ const Registration: FC = () => {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">비밀번호 확인: </label>
             <FontAwesomeIcon
-              style={{ position: 'relative', top: '8px' }}
+              style={{ position: "relative", top: "8px" }}
               icon={faLock}
             />
             <div className="col-sm-4">
@@ -247,7 +247,7 @@ const Registration: FC = () => {
                 name="password2"
                 value={customerPassword2}
                 className={
-                  password2Error ? 'form-control is-invalid' : 'form-control'
+                  password2Error ? "form-control is-invalid" : "form-control"
                 }
                 onChange={(event) => setPassword2(event.target.value)}
               />
@@ -255,9 +255,9 @@ const Registration: FC = () => {
             </div>
           </div>
           <div className="form-group row">
-            <button type="submit" className="btn btn-dark mx-3">
+            <button type="submit" className="btn btn-dark mx-2  mb-5">
               <FontAwesomeIcon className="mr-2" icon={faCheck} />
-              이메일 인증
+              휴대폰 인증
             </button>
           </div>
         </form>
