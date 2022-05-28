@@ -22,6 +22,7 @@ import { addProductFailure } from '../../../src/redux/actions/admin-actions';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import AccountLayout from '../../../src/component/AccountLayout/AccountLayout';
+import TextEditor from '../../../src/component/TextEditor/TextEditor';
 
 const MySwal = withReactContent(Swal);
 
@@ -163,7 +164,7 @@ const AddProduct: FCinLayout = () => {
     if (customerId && customerId.current !== -1) {
       bodyFormData.append('customerId', customerId.current.toString());
     }
-
+    return;
     dispatch(addProduct(bodyFormData));
   };
 
@@ -206,6 +207,8 @@ const AddProduct: FCinLayout = () => {
               />
               <div className="invalid-feedback">{productNameError}</div>
             </div>
+          </div>
+          <div className="form row mt-3">
             <div className="col">
               <label>주문 최소 수량: </label>
               <input
@@ -222,24 +225,6 @@ const AddProduct: FCinLayout = () => {
               />
               <div className="invalid-feedback">{productMinimumEAError}</div>
             </div>
-          </div>
-          <div className="form row mt-3">
-            <div className="col">
-              <label>설명: </label>
-              <input
-                type="text"
-                className={
-                  productDescriptionError
-                    ? 'form-control is-invalid'
-                    : 'form-control'
-                }
-                name="productDescription"
-                value={productDescription}
-                placeholder="상품 설명을 입력하세요."
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">{productDescriptionError}</div>
-            </div>
             <div className="col">
               <label>가격: </label>
               <input
@@ -255,9 +240,25 @@ const AddProduct: FCinLayout = () => {
               <div className="invalid-feedback">{productPriceError}</div>
             </div>
           </div>
-          <div className="form row mt-3"></div>
-          <div className="form row mt-3"></div>
-          <div className="form row mt-3"></div>
+          <div className="form row mt-3">
+            <div className="col">
+              <label>설명: </label>
+              <TextEditor />
+              {/* <input
+                type="text"
+                className={
+                  productDescriptionError
+                    ? 'form-control is-invalid'
+                    : 'form-control'
+                }
+                name="productDescription"
+                value={productDescription}
+                placeholder="상품 설명을 입력하세요."
+                onChange={handleInputChange}
+              /> */}
+              <div className="invalid-feedback">{productDescriptionError}</div>
+            </div>
+          </div>
           <div className="form row mt-3">
             <div className="col" style={{ marginTop: '35px' }}>
               <input
@@ -277,7 +278,7 @@ const AddProduct: FCinLayout = () => {
           </div>
           <button type="submit" className="btn btn-dark mt-3">
             <FontAwesomeIcon className="mr-2" icon={faPlusSquare} />
-            Add
+            추가
           </button>
         </form>
       </div>

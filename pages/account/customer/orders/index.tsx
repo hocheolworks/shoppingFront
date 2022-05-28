@@ -16,6 +16,7 @@ const PersonalOrdersList: FCinLayout = () => {
   const orders: Array<Order> = useSelector(
     (state: AppStateType) => state.order.orders
   ).sort(compareOrderByCreatedAt);
+
   const loading: boolean = useSelector(
     (state: AppStateType) => state.order.loading
   );
@@ -23,7 +24,7 @@ const PersonalOrdersList: FCinLayout = () => {
   const customerId = useRef<number>(0);
 
   useEffect(() => {
-    const id = localStorage.getItem('id');
+    const id = sessionStorage.getItem('id');
     if (id) {
       customerId.current = parseInt(id);
       dispatch(fetchUserOrders(customerId.current));

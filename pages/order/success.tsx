@@ -45,11 +45,8 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
       .catch((err) => {
         console.log(err.response);
         MySwal.fire({
-          title: `<strong>결제 실패</strong>`,
-          html: `<i>${err.response.data.message}</i>
-                <br/>
-                <br/>
-                <i>오류 코드 : ${err.response.data.response.code}</i>`,
+          title: `<strong>오류</strong>`,
+          html: `<i>${err.response.data.message}</i>`,
           icon: 'error',
         }).then(() => {
           router.push('/');
