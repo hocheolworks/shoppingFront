@@ -173,6 +173,15 @@ const Registration: FC = () => {
               />
               <div className="invalid-feedback">{emailError}</div>
             </div>
+            {/* <div>
+              <a href="menu">
+                <img
+                  src="/image/logo/kakao_login_large_narrow.png"
+                  width="222"
+                  className="ml-5"
+                />
+              </a>
+            </div> */}
           </div>
           <div className="form-group row">
             <label className=" col-form-label">이름: </label>

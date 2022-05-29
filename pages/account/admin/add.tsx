@@ -7,22 +7,22 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import ToastShow from '../../../src/component/Toasts/ToastShow';
-import { addProduct, formReset } from '../../../src/redux/thunks/admin-thunks';
-import { AppStateType } from '../../../src/redux/reducers/root-reducer';
-import { Customer, FCinLayout, ProductErrors } from '../../../src/types/types';
-import { fetchProducts } from '../../../src/redux/thunks/product-thunks';
-import { isValidNumber } from '../../../src/utils/functions';
-import { addProductFailure } from '../../../src/redux/actions/admin-actions';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import AccountLayout from '../../../src/component/AccountLayout/AccountLayout';
-import TextEditor from '../../../src/component/TextEditor/TextEditor';
+import ToastShow from "../../../src/component/Toasts/ToastShow";
+import { addProduct, formReset } from "../../../src/redux/thunks/admin-thunks";
+import { AppStateType } from "../../../src/redux/reducers/root-reducer";
+import { Customer, FCinLayout, ProductErrors } from "../../../src/types/types";
+import { fetchProducts } from "../../../src/redux/thunks/product-thunks";
+import { isValidNumber } from "../../../src/utils/functions";
+import { addProductFailure } from "../../../src/redux/actions/admin-actions";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import AccountLayout from "../../../src/component/AccountLayout/AccountLayout";
+import TextEditor from "../../../src/component/TextEditor/TextEditor";
 
 const MySwal = withReactContent(Swal);
 
@@ -51,11 +51,11 @@ const AddProduct: FCinLayout = () => {
   );
 
   const initialState: InitialStateType = {
-    productName: '',
+    productName: "",
     productMinimumEA: 0,
-    productDescription: '',
+    productDescription: "",
     productPrice: 0,
-    file: '',
+    file: "",
   };
 
   const [
@@ -76,13 +76,13 @@ const AddProduct: FCinLayout = () => {
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    customerId.current = parseInt(sessionStorage.getItem('id') as string);
+    customerId.current = parseInt(sessionStorage.getItem("id") as string);
 
     if (Boolean(customerRoleError)) {
       MySwal.fire({
         title: `<strong>상품 추가 실패</strong>`,
         html: `<i>관리자 권한이 필요합니다.</i>`,
-        icon: 'error',
+        icon: "error",
       });
     }
   }, []);
@@ -91,7 +91,7 @@ const AddProduct: FCinLayout = () => {
     if (isProductAdded) {
       setState({ ...initialState });
 
-      if (fileInput.current !== null) fileInput.current.value = '';
+      if (fileInput.current !== null) fileInput.current.value = "";
 
       setShowToast(true);
       setTimeout(() => {
@@ -118,37 +118,37 @@ const AddProduct: FCinLayout = () => {
       !Boolean(file)
     ) {
       const productError: ProductErrors = {
-        productNameError: '',
-        productDescriptionError: '',
-        productMinimumEAError: '',
-        productPriceError: '',
-        productImageFileError: '',
-        customerRoleError: '',
+        productNameError: "",
+        productDescriptionError: "",
+        productMinimumEAError: "",
+        productPriceError: "",
+        productImageFileError: "",
+        customerRoleError: "",
       };
 
       if (!Boolean(productName)) {
-        productError.productNameError = '상품명은 필수 입니다.';
+        productError.productNameError = "상품명은 필수 입니다.";
       }
 
       if (!Boolean(productDescription)) {
-        productError.productDescriptionError = '상품 설명은 필수 입니다.';
+        productError.productDescriptionError = "상품 설명은 필수 입니다.";
       }
 
       if (!Boolean(productMinimumEA) || !isValidNumber(productMinimumEA)) {
-        productError.productMinimumEAError = '최소 주문 수량은 필수 입니다.';
+        productError.productMinimumEAError = "최소 주문 수량은 필수 입니다.";
       } else if (productMinimumEA < 1) {
         productError.productMinimumEAError =
-          '최소 주문 수량은 0보다 큰 숫자여야 합니다.';
+          "최소 주문 수량은 0보다 큰 숫자여야 합니다.";
       }
 
       if (!Boolean(productPrice) || !isValidNumber(productPrice)) {
-        productError.productPriceError = '상품 가격은 필수 입니다.';
+        productError.productPriceError = "상품 가격은 필수 입니다.";
       } else if (productPrice < 0) {
-        productError.productPriceError = '상품 가격은 0보다 작을 수 없습니다.';
+        productError.productPriceError = "상품 가격은 0보다 작을 수 없습니다.";
       }
 
       if (!Boolean(file)) {
-        productError.productImageFileError = '상품 이미지는 필수 입니다.';
+        productError.productImageFileError = "상품 이미지는 필수 입니다.";
       }
 
       dispatch(addProductFailure(productError));
@@ -156,13 +156,13 @@ const AddProduct: FCinLayout = () => {
     }
 
     const bodyFormData: FormData = new FormData();
-    bodyFormData.append('file', file as string);
-    bodyFormData.append('productName', productName);
-    bodyFormData.append('productMinimumEA', productMinimumEA.toString());
-    bodyFormData.append('productDescription', productDescription);
-    bodyFormData.append('productPrice', productPrice.toString());
+    bodyFormData.append("file", file as string);
+    bodyFormData.append("productName", productName);
+    bodyFormData.append("productMinimumEA", productMinimumEA.toString());
+    bodyFormData.append("productDescription", productDescription);
+    bodyFormData.append("productPrice", productPrice.toString());
     if (customerId && customerId.current !== -1) {
-      bodyFormData.append('customerId', customerId.current.toString());
+      bodyFormData.append("customerId", customerId.current.toString());
     }
     return;
     dispatch(addProduct(bodyFormData));
@@ -183,7 +183,7 @@ const AddProduct: FCinLayout = () => {
     <>
       <ToastShow
         showToast={showToast}
-        message={'Product successfully added!'}
+        message={"상품 추가가 완료되었습니다!"}
       />
       <div className="container">
         <h4>
@@ -198,7 +198,7 @@ const AddProduct: FCinLayout = () => {
               <input
                 type="text"
                 className={
-                  productNameError ? 'form-control is-invalid' : 'form-control'
+                  productNameError ? "form-control is-invalid" : "form-control"
                 }
                 name="productName"
                 value={productName}
@@ -215,8 +215,8 @@ const AddProduct: FCinLayout = () => {
                 type="number"
                 className={
                   productMinimumEAError
-                    ? 'form-control is-invalid'
-                    : 'form-control'
+                    ? "form-control is-invalid"
+                    : "form-control"
                 }
                 name="productMinimumEA"
                 value={productMinimumEA}
@@ -230,7 +230,7 @@ const AddProduct: FCinLayout = () => {
               <input
                 type="number"
                 className={
-                  productPriceError ? 'form-control is-invalid' : 'form-control'
+                  productPriceError ? "form-control is-invalid" : "form-control"
                 }
                 name="productPrice"
                 value={productPrice}
@@ -260,15 +260,15 @@ const AddProduct: FCinLayout = () => {
             </div>
           </div>
           <div className="form row mt-3">
-            <div className="col" style={{ marginTop: '35px' }}>
+            <div className="col" style={{ marginTop: "35px" }}>
               <input
                 type="file"
                 className={
                   productImageFileError
-                    ? 'form-control is-invalid'
-                    : 'form-control'
+                    ? "form-control is-invalid"
+                    : "form-control"
                 }
-                style={{ height: '44px' }}
+                style={{ height: "44px" }}
                 name="file"
                 ref={fileInput}
                 onChange={handleFileChange}
@@ -276,7 +276,7 @@ const AddProduct: FCinLayout = () => {
               <div className="invalid-feedback">{productImageFileError}</div>
             </div>
           </div>
-          <button type="submit" className="btn btn-dark mt-3">
+          <button type="submit" className="btn btn-dark mt-3 mb-5">
             <FontAwesomeIcon className="mr-2" icon={faPlusSquare} />
             추가
           </button>

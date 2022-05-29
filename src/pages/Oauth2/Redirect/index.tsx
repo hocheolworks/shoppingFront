@@ -46,6 +46,7 @@ const OAuth2RedirectHandler: NextPage = (props: any) => {
 
           sessionStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
           sessionStorage.setItem("customerEmail", res.data.customerEmail);
+          sessionStorage.setItem("customerName", res.data.customerName);
           sessionStorage.setItem("token", res.data.token);
           sessionStorage.setItem("customerRole", res.data.customerRole);
           sessionStorage.setItem("isLoggedIn", "true");

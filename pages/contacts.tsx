@@ -16,10 +16,11 @@ const Contacts: FC = () => {
         <b>E-mail:</b> iljotradingcompany@gmail.com
       </p>
       <br />
-      <h6>상담 가능 시간</h6>
+      <h6 style={{ fontWeight: "bold" }}>상담 가능 시간 : </h6>
       <p>
-        영업 제휴, 상품 각인, 배송 등 문의사항을 언제든지 문의주세요! <br />
         (평일) 9:00 - 18:00
+        <br />
+        영업 제휴, 상품 각인, 배송 등 문의사항을 언제든지 문의주세요!
       </p>
       <br />
     </div>

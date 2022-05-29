@@ -6,26 +6,26 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { RouteComponentProps } from 'react-router-dom';
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { RouteComponentProps } from "react-router-dom";
 
 import {
   fetchProduct,
   fetchProducts,
-} from '../../../redux/thunks/product-thunks';
-import { formReset, updateProduct } from '../../../redux/thunks/admin-thunks';
-import { AppStateType } from '../../../redux/reducers/root-reducer';
-import { Product, ProductErrors } from '../../../types/types';
-import ToastShow from '../../../component/Toasts/ToastShow';
-import { makeImageUrl } from '../../../utils/functions';
-import Spinner from '../../../component/Spinner/Spinner';
+} from "../../../redux/thunks/product-thunks";
+import { formReset, updateProduct } from "../../../redux/thunks/admin-thunks";
+import { AppStateType } from "../../../redux/reducers/root-reducer";
+import { Product, ProductErrors } from "../../../types/types";
+import ToastShow from "../../../component/Toasts/ToastShow";
+import { makeImageUrl } from "../../../utils/functions";
+import Spinner from "../../../component/Spinner/Spinner";
 
 const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const dispatch = useDispatch();
-  const customerId: number = parseInt(sessionStorage.getItem('id') as string);
+  const customerId: number = parseInt(sessionStorage.getItem("id") as string);
   const productData: Partial<Product> = useSelector(
     (state: AppStateType) => state.product.product
   );
@@ -72,7 +72,7 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   useEffect(() => {
     setProduct(productData);
     if (isProductEdited) {
-      if (fileInput.current !== null) fileInput.current.value = '';
+      if (fileInput.current !== null) fileInput.current.value = "";
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -87,19 +87,19 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
     event.preventDefault();
     const bodyFormData: FormData = new FormData();
     if (file) {
-      bodyFormData.append('file', file as string);
+      bodyFormData.append("file", file as string);
     }
     if (productName) {
-      bodyFormData.append('productName', productName);
+      bodyFormData.append("productName", productName);
     }
     if (productMinimumEA) {
-      bodyFormData.append('productMinimumEA', productMinimumEA.toString());
+      bodyFormData.append("productMinimumEA", productMinimumEA.toString());
     }
     if (productDescription) {
-      bodyFormData.append('productDescription', productDescription);
+      bodyFormData.append("productDescription", productDescription);
     }
     if (productPrice) {
-      bodyFormData.append('productPrice', productPrice.toString());
+      bodyFormData.append("productPrice", productPrice.toString());
     }
     dispatch(
       updateProduct(parseInt(match.params.id), customerId, bodyFormData)
@@ -135,7 +135,7 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
         <>
           <ToastShow
             showToast={showToast}
-            message={'Product successfully edited!'}
+            message={"Product successfully edited!"}
           />
           <div className="container">
             <h4>
@@ -147,15 +147,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                 <div className="col-md-7">
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label font-weight-bold">
-                      상품명:{' '}
+                      상품명:{" "}
                     </label>
                     <div className="col-sm-8">
                       <input
                         type="text"
                         className={
                           productNameError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
+                            ? "form-control is-invalid"
+                            : "form-control"
                         }
                         name="productName"
                         value={productName}
@@ -166,15 +166,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label font-weight-bold">
-                      최소 주문 수량:{' '}
+                      최소 주문 수량:{" "}
                     </label>
                     <div className="col-sm-8">
                       <input
                         type="number"
                         className={
                           productMinimumEAError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
+                            ? "form-control is-invalid"
+                            : "form-control"
                         }
                         name="productMinimumEA"
                         value={productMinimumEA}
@@ -187,15 +187,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label font-weight-bold">
-                      가격:{' '}
+                      가격:{" "}
                     </label>
                     <div className="col-sm-8">
                       <input
                         type="number"
                         className={
                           productPriceError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
+                            ? "form-control is-invalid"
+                            : "form-control"
                         }
                         name="productPrice"
                         value={productPrice}
@@ -208,15 +208,15 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label font-weight-bold">
-                      상품 설명:{' '}
+                      상품 설명:{" "}
                     </label>
                     <div className="col-sm-8">
                       <input
                         type="text"
                         className={
                           productDescriptionError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
+                            ? "form-control is-invalid"
+                            : "form-control"
                         }
                         name="productDescription"
                         value={productDescription}
@@ -237,16 +237,16 @@ const EditProduct: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                         : makeImageUrl(productImageFilepath as string)
                     }
                     className="rounded mx-auto w-100 mb-2"
-                    style={{ width: '180px' }}
+                    style={{ width: "180px" }}
                   />
                   <input
                     type="file"
                     className={
                       productImageFileError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
+                        ? "form-control is-invalid"
+                        : "form-control"
                     }
-                    style={{ height: '44px' }}
+                    style={{ height: "44px" }}
                     name="file"
                     ref={fileInput}
                     onChange={handleFileChange}
