@@ -10,10 +10,7 @@ function KakaoLogin() {
   return (
     <div>
       <a id="custom-login-btn" href={url}>
-        <img
-          src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg"
-          width="222"
-        />
+        <img src="/image/logo/kakao_login_large_narrow (2).png" width="222" />
       </a>
     </div>
   );

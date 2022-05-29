@@ -37,6 +37,7 @@ const OAuth2RedirectHandler: NextPage = (props: any) => {
       .get(`${API_BASE_URL}/customer/kakao/login?code = ${code}`)
       .then((res) => {
         if (res.data === false) {
+          console.log(res.data);
           const MySwal = withReactContent(Swal);
           MySwal.fire({
             title: `<strong>로그인 실패</strong>`,
