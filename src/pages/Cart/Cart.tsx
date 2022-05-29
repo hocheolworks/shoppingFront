@@ -178,7 +178,7 @@ const Cart: FC = () => {
                               className="mr-2"
                               icon={faMinusSquare}
                             />{" "}
-                            Remove
+                            삭제
                           </button>
                         </div>
                       </div>
