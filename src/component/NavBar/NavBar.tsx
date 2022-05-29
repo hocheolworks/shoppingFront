@@ -1,18 +1,18 @@
-import React, { FC, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, useEffect, useState } from "react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSignInAlt,
   faSignOutAlt,
   faUser,
   faUserPlus,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { logout } from '../../redux/thunks/auth-thunks';
-import { AppStateType } from '../../redux/reducers/root-reducer';
-import { CartItem } from '../../types/types';
-import {} from 'next';
+import { logout } from "../../redux/thunks/auth-thunks";
+import { AppStateType } from "../../redux/reducers/root-reducer";
+import { CartItem } from "../../types/types";
+import {} from "next";
 
 const NavBar: FC = () => {
   const dispatch = useDispatch();
@@ -30,8 +30,8 @@ const NavBar: FC = () => {
 
   let links;
   let signOut;
-  if (typeof window !== 'undefined') {
-    if (window.sessionStorage.getItem('isLoggedIn') === 'true') {
+  if (typeof window !== "undefined") {
+    if (window.sessionStorage.getItem("isLoggedIn") === "true") {
       links = (
         <div className="nav-item right-item">
           <Link href={'/account'}>
@@ -92,33 +92,33 @@ const NavBar: FC = () => {
     <div>
       <div
         id="header"
-        className="container-fluid header-top d-none d-md-block pb-5 pt-5"
+        className="container-fluid header-top pb-5 pt-5"
       >
-        <img src="/image/logo/main.png" className="rounded mx-auto d-block" />
+        <img src="/image/logo/1x.png" className="rounded mx-auto d-block" />
       </div>
-      <div className="nav-container bg-black">
-        <div></div>
+      <div className="container-fluid bg-black">
+      <div></div>
         <nav id="navbar-main">
           <div id="navbarSupportedContent">
             <div className="navbar-nav left-items">
               <div className="nav-item">
                 <Link href={'/'}>
                   <a>
-                    <span className="nav-link">홈</span>
+                    <span className="nav-link">HOME</span>
                   </a>
                 </Link>
               </div>
               <div className="nav-item">
                 <Link href="/menu">
                   <a>
-                    <span className="nav-link">상품</span>
+                    <span className="nav-link">PRODUCT</span>
                   </a>
                 </Link>
               </div>
               <div className="nav-item">
                 <Link href={'/contacts'}>
                   <a>
-                    <span className="nav-link">소개</span>
+                    <span className="nav-link">CONTACT</span>
                   </a>
                 </Link>
               </div>

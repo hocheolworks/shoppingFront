@@ -46,9 +46,9 @@ const Login: FC = () => {
   };
 
   return (
-    <div id="container" className="container mt-5">
+    <div id="container" className="container mt-5  login-contatiner">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 login-container">
           <h4>
             <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
             로그인

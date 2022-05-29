@@ -25,7 +25,7 @@ import withReactContent from "sweetalert2-react-content";
 import DaumPostcode from "react-daum-postcode";
 import "./Order.css";
 import { loadTossPayments } from "@tosspayments/payment-sdk";
-import { API_BASE_URL } from "../../utils/constants/url";
+import { API_BASE_URL, FRONT_BASE_URL } from "../../utils/constants/url";
 import { useHistory } from "react-router-dom";
 import { fetchCart } from "../../redux/thunks/cart-thunks";
 import { orderAddedFailure } from "../../redux/actions/order-actions";
@@ -118,8 +118,8 @@ const OrderPage: FC = () => {
               ? cart[0].product.productName
               : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
           customerName: customersData.customerName,
-          successUrl: "http://13.125.77.19:3000/order/success",
-          failUrl: "http://13.125.77.19:3000/order/fail",
+          successUrl: `${FRONT_BASE_URL}order/success`,
+          failUrl: `${FRONT_BASE_URL}/order/fail`,
         });
       });
     }

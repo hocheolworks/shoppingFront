@@ -1,5 +1,5 @@
-import { Order } from '../types/types';
-import { API_BASE_URL } from './constants/url';
+import { Order } from "../types/types";
+import { API_BASE_URL } from "./constants/url";
 
 export function isValidNumber(numb: number): Boolean {
   if (numb === undefined) return false;
@@ -9,7 +9,7 @@ export function isValidNumber(numb: number): Boolean {
 }
 
 export function makeImageUrl(productImageFilepath: string) {
-  return `${API_BASE_URL.replace('api/v1', '')}${productImageFilepath}`;
+  return `${productImageFilepath}`;
 }
 
 export function compareOrderByCreatedAt(a: Order, b: Order): number {

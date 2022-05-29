@@ -1,27 +1,25 @@
 import axios from "axios";
-import React, { FC, useEffect } from "react";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PageLoader from "../../component/PageLoader/PageLoader";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import requestService from "../request-service";
-import { API_BASE_URL } from "../constants/url";
-import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { login } from "../../redux/thunks/auth-thunks";
-import { loginSuccess } from "../../redux/actions/auth-actions";
-import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
-import { NextPage } from "next";
+import PageLoader from "../../../src/component/PageLoader/PageLoader";
+import { loginSuccess } from "../../../src/redux/actions/auth-actions";
+import { fetchCustomerSuccess } from "../../../src/redux/actions/customer-actions";
+import { AppStateType } from "../../../src/redux/reducers/root-reducer";
+import { API_BASE_URL } from "../../../src/utils/constants/url";
 
 const OAuth2RedirectHandler: NextPage = (props: any) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useRouter();
   let loading: boolean = useSelector(
     (state: AppStateType) => state.order.loading
   );
 
-  let code = new URL(window.location.href).searchParams.get("code");
-  console.log(code);
+  // let code = new URL(window.location.href).searchParams.get("code");
+  // console.log(code);
 
   let pageLoading;
   loading = true;
@@ -30,10 +28,16 @@ const OAuth2RedirectHandler: NextPage = (props: any) => {
   }
 
   useEffect(() => {
+    let code;
+    if (window !== undefined) {
+      code = new URL(window.location.href).searchParams.get("code");
+      console.log(code);
+    }
     axios
       .get(`${API_BASE_URL}/customer/kakao/login?code = ${code}`)
       .then((res) => {
         if (res.data === false) {
+          console.log(res.data);
           const MySwal = withReactContent(Swal);
           MySwal.fire({
             title: `<strong>로그인 실패</strong>`,

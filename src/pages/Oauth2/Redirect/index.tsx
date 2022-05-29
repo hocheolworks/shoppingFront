@@ -1,17 +1,15 @@
 import axios from "axios";
-import React, { FC, useEffect } from "react";
+import { NextPage } from "next";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PageLoader from "../../component/PageLoader/PageLoader";
-import { AppStateType } from "../../redux/reducers/root-reducer";
-import requestService from "../request-service";
-import { API_BASE_URL } from "../constants/url";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { login } from "../../redux/thunks/auth-thunks";
-import { loginSuccess } from "../../redux/actions/auth-actions";
-import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
-import { NextPage } from "next";
+import PageLoader from "../../../component/PageLoader/PageLoader";
+import { loginSuccess } from "../../../redux/actions/auth-actions";
+import { fetchCustomerSuccess } from "../../../redux/actions/customer-actions";
+import { AppStateType } from "../../../redux/reducers/root-reducer";
+import { API_BASE_URL } from "../../../utils/constants/url";
 
 const OAuth2RedirectHandler: NextPage = (props: any) => {
   const dispatch = useDispatch();
@@ -48,6 +46,7 @@ const OAuth2RedirectHandler: NextPage = (props: any) => {
 
           sessionStorage.setItem("token", ACCESS_TOKEN); //예시로 로컬에 저장함
           sessionStorage.setItem("customerEmail", res.data.customerEmail);
+          sessionStorage.setItem("customerName", res.data.customerName);
           sessionStorage.setItem("token", res.data.token);
           sessionStorage.setItem("customerRole", res.data.customerRole);
           sessionStorage.setItem("isLoggedIn", "true");
