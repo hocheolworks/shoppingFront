@@ -38,7 +38,7 @@ export const login =
         "/customer/login",
         customerData
       );
-
+      sessionStorage.setItem("customerName", response.data.customerName);
       sessionStorage.setItem("customerEmail", response.data.customerEmail);
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("customerRole", response.data.customerRole);
@@ -122,6 +122,7 @@ export const logout = () => async (dispatch: Dispatch) => {
   sessionStorage.removeItem("customerEmail");
   sessionStorage.removeItem("isLoggedIn");
   sessionStorage.removeItem("id");
+  sessionStorage.removeItem("customerName");
   dispatch(logoutSuccess());
 };
 

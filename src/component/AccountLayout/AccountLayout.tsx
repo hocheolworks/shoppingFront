@@ -25,7 +25,7 @@ const Account: FC = ({ children }) => {
             <a className="account-sidebar-link nav-link mb-4">내 정보</a>
           </ActiveLink>
           {typeof window !== "undefined" &&
-          window.sessionStorage.getItem("customerName") === undefined ? (
+          window.sessionStorage.getItem("customerName") ? (
             <ActiveLink
               activeClassName="is-active"
               href="/account/customer/password/confirm"
