@@ -116,10 +116,10 @@ const Registration: FC = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 regist-container">
       {pageLoading}
       <h4>
-        <FontAwesomeIcon className="mr-2" icon={faUserPlus} /> 회원가입
+        <FontAwesomeIcon className="mr-2 mb-2" icon={faUserPlus} /> 회원가입
       </h4>
       <hr />
       {isRegistered ? (
@@ -129,12 +129,9 @@ const Registration: FC = () => {
           </div>
           <form onSubmit={onClickFinishRegistration}>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">인증번호: </label>
-              <FontAwesomeIcon
-                style={{ position: "relative", top: "8px" }}
-                icon={faEnvelope}
-              />
-              <div className="col-sm-4">
+              <label className=" col-form-label">인증번호: </label>
+              <FontAwesomeIcon icon={faEnvelope} />
+              <div className="form-input">
                 <input
                   type="userInputVerifyNumber"
                   name="userInputVerifyNumber"
@@ -160,12 +157,11 @@ const Registration: FC = () => {
       ) : (
         <form onSubmit={onClickVerifyEmail}>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label">이메일: </label>
-            <FontAwesomeIcon
-              style={{ position: "relative", top: "8px" }}
-              icon={faEnvelope}
-            />
-            <div className="col-sm-4">
+            <label className=" col-form-label">이메일: </label>
+            <div className="form-icon">
+              <FontAwesomeIcon icon={faEnvelope} />
+            </div>
+            <div className="form-input">
               <input
                 type="email"
                 name="email"
@@ -179,12 +175,11 @@ const Registration: FC = () => {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label">이름: </label>
-            <FontAwesomeIcon
-              style={{ position: "relative", top: "8px" }}
-              icon={faUser}
-            />
-            <div className="col-sm-4">
+            <label className=" col-form-label">이름: </label>
+            <div className="form-icon">
+              <FontAwesomeIcon icon={faUser} />
+            </div>
+            <div className="form-input">
               <input
                 type="text"
                 name="name"
@@ -198,12 +193,11 @@ const Registration: FC = () => {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label">휴대폰번호: </label>
-            <FontAwesomeIcon
-              style={{ position: "relative", top: "8px" }}
-              icon={faPhone}
-            />
-            <div className="col-sm-4">
+            <label className=" col-form-label">휴대폰번호: </label>
+            <div className="form-icon">
+              <FontAwesomeIcon icon={faPhone} />
+            </div>
+            <div className="form-input">
               <input
                 type="text"
                 name="phoneNumber"
@@ -217,12 +211,11 @@ const Registration: FC = () => {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label">비밀번호: </label>
-            <FontAwesomeIcon
-              style={{ position: "relative", top: "8px" }}
-              icon={faLock}
-            />
-            <div className="col-sm-4">
+            <label className=" col-form-label">비밀번호: </label>
+            <div className="form-icon">
+              <FontAwesomeIcon icon={faLock} />
+            </div>
+            <div className="form-input">
               <input
                 type="password"
                 name="password"
@@ -236,12 +229,11 @@ const Registration: FC = () => {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-2 col-form-label">비밀번호 확인: </label>
-            <FontAwesomeIcon
-              style={{ position: "relative", top: "8px" }}
-              icon={faLock}
-            />
-            <div className="col-sm-4">
+            <label className=" col-form-label">비밀번호 확인: </label>
+            <div className="form-icon">
+              <FontAwesomeIcon icon={faLock} />
+            </div>
+            <div className="form-input">
               <input
                 type="password"
                 name="password2"
@@ -254,7 +246,7 @@ const Registration: FC = () => {
               <div className="invalid-feedback">{password2Error}</div>
             </div>
           </div>
-          <div className="form-group row">
+          <div className="row">
             <button type="submit" className="btn btn-dark mx-2  mb-5">
               <FontAwesomeIcon className="mr-2" icon={faCheck} />
               휴대폰 인증

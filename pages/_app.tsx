@@ -18,6 +18,7 @@ import "../styles/Spinner.css";
 import "../styles/Account.css";
 import "../styles/admin.css";
 import "../styles/ProductReview.css";
+import "../styles/Login.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -42,7 +43,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Head>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
         <script src="http://code.jquery.com/jquery-latest.min.js"></script>
         <link
           rel="stylesheet"
