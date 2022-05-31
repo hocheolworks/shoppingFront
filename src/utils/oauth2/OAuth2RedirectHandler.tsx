@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PageLoader from "../../component/PageLoader/PageLoader";
 import { AppStateType } from "../../redux/reducers/root-reducer";
@@ -11,8 +11,9 @@ import withReactContent from "sweetalert2-react-content";
 import { login } from "../../redux/thunks/auth-thunks";
 import { loginSuccess } from "../../redux/actions/auth-actions";
 import { fetchCustomerSuccess } from "../../redux/actions/customer-actions";
+import { NextPage } from "next";
 
-const OAuth2RedirectHandler = (props: any) => {
+const OAuth2RedirectHandler: NextPage = (props: any) => {
   const dispatch = useDispatch();
   const history = useHistory();
   let loading: boolean = useSelector(
