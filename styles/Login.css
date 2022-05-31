@@ -27,11 +27,18 @@
 }
 
 .login-contatiner {
-    transform: scale(90%);
+  margin: 10%;
 }
 
-.regist-container {
-    transform: scale(90%);
+@media (max-width: 769px) {
+  .login-contatiner {
+    margin: 10%;
+    transform: scale(80%);
+  }
+
+  .regist-container {
+      transform: scale(90%);
+  }
 }
 
 @media (max-width: 719px) {
@@ -45,6 +52,7 @@
       text-align: right !important;
       margin-right: 10%;
   }
+
 }
 
 @media (min-width: 720px) {

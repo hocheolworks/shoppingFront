@@ -72,7 +72,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             <>
               <NavBar />
               {getLayout(<Component {...pageProps} />)}
-              <Footer />
             </>
           )}
         </PersistGate>

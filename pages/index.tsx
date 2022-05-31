@@ -21,14 +21,13 @@ const HomePage: FC = () => {
 
   return (
     <>
-    <div>
+    <div id="wrapper">
       <ScrollButton />
       <CarouselImageSlider />
       {/* <SliderBrands />
       <HomePageTheme />
       <SliderCards /> */}
     </div>
-    <div className="abcdefu">abcd</div>
     </>
   );
 };
