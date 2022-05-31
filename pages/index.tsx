@@ -20,6 +20,7 @@ const HomePage: FC = () => {
   }, []);
 
   return (
+    <>
     <div>
       <ScrollButton />
       <CarouselImageSlider />
@@ -27,6 +28,8 @@ const HomePage: FC = () => {
       <HomePageTheme />
       <SliderCards /> */}
     </div>
+    <div className="abcdefu">abcd</div>
+    </>
   );
 };
 
