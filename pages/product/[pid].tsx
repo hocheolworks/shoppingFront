@@ -1,45 +1,51 @@
-import React, { FC, FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCartPlus,
   faEraser,
   faPaperPlane,
   faStar,
-} from "@fortawesome/free-solid-svg-icons";
-import StarRatingComponent from "react-star-rating-component";
+} from '@fortawesome/free-solid-svg-icons';
+import StarRatingComponent from 'react-star-rating-component';
 
-import { resetForm } from "../../src/redux/thunks/customer-thunks";
-import { AppStateType } from "../../src/redux/reducers/root-reducer";
+import { resetForm } from '../../src/redux/thunks/customer-thunks';
+import { AppStateType } from '../../src/redux/reducers/root-reducer';
 import {
   CartItem,
+  CartItemNonMember,
   Customer,
   Product,
   Review,
   ReviewData,
   ReviewError,
-} from "../../src/types/types";
-import Spinner from "../../src/component/Spinner/Spinner";
-import ProductReview from "./review";
-import ScrollButton from "../../src/component/ScrollButton/ScrollButton";
+} from '../../src/types/types';
+import Spinner from '../../src/component/Spinner/Spinner';
+import ProductReview from './review';
+import ScrollButton from '../../src/component/ScrollButton/ScrollButton';
 import {
   addReviewToProduct,
   fetchIsPurchased,
   fetchProduct,
   removeReviewToProduct,
-} from "../../src/redux/thunks/product-thunks";
-import RequestService from "../../src/utils/request-service";
+} from '../../src/redux/thunks/product-thunks';
+import RequestService from '../../src/utils/request-service';
 import {
   fetchCart,
   insertCart,
   updateCart,
-} from "../../src/redux/thunks/cart-thunks";
-import StarRating from "../../src/component/StarRating/StarRating";
-import { API_BASE_URL } from "../../src/utils/constants/url";
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
-import axios from "axios";
-import { reloadSuccess } from "../../src/redux/actions/customer-actions";
+} from '../../src/redux/thunks/cart-thunks';
+import StarRating from '../../src/component/StarRating/StarRating';
+import { API_BASE_URL } from '../../src/utils/constants/url';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import axios from 'axios';
+import { reloadSuccess } from '../../src/redux/actions/customer-actions';
+import {
+  addCartItem,
+  fetchCartSuccess,
+  updateCartItem,
+} from '../../src/redux/actions/cart-actions';
 
 type ProductDetailProps = {
   product: Product;
@@ -72,7 +78,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     (state: AppStateType) => state.product.isProductLoading
   );
 
-  const cart: Array<CartItem> = useSelector(
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
 
@@ -87,9 +93,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [author, setAuthor] = useState<string>(
-    String(customer.customerEmail).split("@")[0]
+    String(customer.customerEmail).split('@')[0]
   );
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>('');
   const [rating, setRating] = useState<number>(5);
   const { authorError, messageError, ratingError } = errors;
 
@@ -97,7 +103,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     dispatch(resetForm());
     dispatch(fetchIsPurchased(parseInt(pid as string), customer.id));
     if (isLoggedIn) {
-      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
+      dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
     }
   }, []);
 
@@ -107,7 +113,8 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     else {
       setIsCartExist(
         cart.findIndex(
-          (value: CartItem) => value.productId === parseInt(pid as string)
+          (value: CartItem | CartItemNonMember) =>
+            value.productId === parseInt(pid as string)
         ) !== -1
       );
     }
@@ -122,7 +129,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
 
   useEffect(() => {
     setCount(product.productMinimumEA as number);
-    setMessage("");
+    setMessage('');
     setRating(5);
   }, [reviews]);
 
@@ -130,36 +137,61 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     const productId: number = product.id as number;
     let customerId: number | undefined;
 
-    if (typeof window !== "undefined") {
-      customerId = parseInt(sessionStorage.getItem("id") as string);
+    if (typeof window !== 'undefined') {
+      customerId = parseInt(sessionStorage.getItem('id') as string);
     }
 
     if (!Boolean(customerId)) {
-      return;
-    }
+      // 비회원일 경우,
+      if (isCartExist) {
+        // 카트에 이미 해당 상품이 담겨있다면,
+        const prevCartItem: CartItem | CartItemNonMember = cart.find(
+          (val: CartItem | CartItemNonMember) =>
+            val.productId === parseInt(pid as string)
+        ) as CartItem | CartItemNonMember;
 
-    if (isCartExist) {
-      const prevCartItem: CartItem = cart.find(
-        (val: CartItem) => val.productId === parseInt(pid as string)
-      ) as CartItem;
-
-      dispatch(
-        updateCart(
-          customerId as number,
-          productId,
-          prevCartItem.productCount + count
-        )
-      );
+        dispatch(
+          updateCartItem(
+            parseInt(pid as string),
+            prevCartItem.productCount + count
+          )
+        );
+      } else {
+        dispatch(
+          addCartItem({
+            productId: product.id,
+            product: product,
+            productCount: count,
+          })
+        );
+      }
     } else {
-      dispatch(insertCart(customerId as number, productId, count));
+      // 로그인되어 있을 경우
+      if (isCartExist) {
+        // 카트에 이미 해당 상품이 담겨있다면,
+        const prevCartItem: CartItem | CartItemNonMember = cart.find(
+          (val: CartItem | CartItemNonMember) =>
+            val.productId === parseInt(pid as string)
+        ) as CartItem | CartItemNonMember;
+
+        dispatch(
+          updateCart(
+            customerId as number,
+            productId,
+            prevCartItem.productCount + count
+          )
+        );
+      } else {
+        dispatch(insertCart(customerId as number, productId, count));
+      }
     }
 
-    router.push("/cart");
+    router.push('/cart');
   };
 
   const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const onlyNumber = value.replace(/[^0-9]/g, "").substring(0, 4);
+    const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
     const num = parseInt(onlyNumber);
     setCount(num);
   };
@@ -182,15 +214,15 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         <StarRatingComponent
           renderStarIconHalf={() => (
             <img
-              src={"/image/star-half.svg"}
+              src={'/image/star-half.svg'}
               alt="halfStar"
-              style={{ width: "14.5px", marginBottom: "2px" }}
+              style={{ width: '14.5px', marginBottom: '2px' }}
             />
           )}
           renderStarIcon={() => (
             <FontAwesomeIcon className="fa-sm" icon={faStar} />
           )}
-          name={"star"}
+          name={'star'}
           starCount={5}
           editing={false}
           value={productRating}
@@ -227,45 +259,41 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   )}
                 </div>
                 <div className="col-md-8">
-                  <span style={{ paddingBottom: "50px" }}>
+                  <span style={{ paddingBottom: '50px' }}>
                     {product.productRatingCount}개의 리뷰
                   </span>
                 </div>
               </div>
-              <p style={{ color: "#54C0A1" }}>재고 있음</p>
+              <p style={{ color: '#54C0A1' }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
+                  <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
                 </h4>
               </div>
-              {((typeof window !== "undefined" &&
-                sessionStorage.getItem("isLoggedIn") === "true") ||
-                isLoggedIn) && (
-                <div className="row ml-1" style={{ alignItems: "center" }}>
-                  <span style={{ marginRight: "5px" }}>수량: </span>
-                  <input
-                    type="number"
-                    min={product.productMinimumEA}
-                    max="1000"
-                    step="10"
-                    maxLength={4}
-                    style={{
-                      width: "60px",
-                      height: "30px",
-                    }}
-                    value={count}
-                    onChange={countOnChange}
-                  ></input>
-                  <button
-                    type="submit"
-                    className="btn btn-success mx-3"
-                    onClick={addToCart}
-                  >
-                    <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
-                    장바구니 담기
-                  </button>
-                </div>
-              )}
+              <div className="row ml-1" style={{ alignItems: 'center' }}>
+                <span style={{ marginRight: '5px' }}>수량: </span>
+                <input
+                  type="number"
+                  min={product.productMinimumEA}
+                  max="1000"
+                  step="10"
+                  maxLength={4}
+                  style={{
+                    width: '60px',
+                    height: '30px',
+                  }}
+                  value={count}
+                  onChange={countOnChange}
+                ></input>
+                <button
+                  type="submit"
+                  className="btn btn-success mx-3"
+                  onClick={addToCart}
+                >
+                  <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{' '}
+                  장바구니 담기
+                </button>
+              </div>
               <br />
               <table className="table">
                 <tbody>
@@ -301,15 +329,15 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{" "}
+                          </span>{' '}
                           작성자
                         </label>
                         <input
                           type="text"
                           className={
                             authorError
-                              ? "form-control is-invalid"
-                              : "form-control"
+                              ? 'form-control is-invalid'
+                              : 'form-control'
                           }
                           name="author"
                           value={author}
@@ -319,7 +347,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{" "}
+                          </span>{' '}
                           내용
                         </label>
                       </div>
@@ -327,7 +355,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{" "}
+                          </span>{' '}
                           별점
                         </label>
                         <div>
@@ -353,12 +381,12 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                       rows={4}
                       className={
                         messageError
-                          ? "form-control is-invalid"
-                          : "form-control"
+                          ? 'form-control is-invalid'
+                          : 'form-control'
                       }
                       name="message"
                       value={message}
-                      style={{ resize: "none" }}
+                      style={{ resize: 'none' }}
                       onChange={(event) => setMessage(event.target.value)}
                     />
                     <div className="invalid-feedback">{messageError}</div>

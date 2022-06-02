@@ -208,6 +208,12 @@ export type CartItem = {
   productCount: number;
 };
 
+export type CartItemNonMember = {
+  productId: number;
+  product: Product;
+  productCount: number;
+};
+
 export type FCinLayout<P = {}> = FC<P> & {
   getLayout: (page: ReactElement) => JSX.Element;
 };
