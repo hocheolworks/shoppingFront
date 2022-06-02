@@ -381,8 +381,8 @@ const OrderPage: FC = () => {
               }}
             />
             <div className="form-group row mb-0">
-              <label className="col-sm-2 col-form-label">결제수단:</label>
-              <div className="col-sm-6 d-flex align-items-center justify-content-between">
+              <label className="col-sm-3 col-form-label">결제수단:</label>
+              <div className="col-sm-8 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (
                   <div key={`payment-method-radio-${i}`}>
                     <input

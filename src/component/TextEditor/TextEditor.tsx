@@ -1,61 +1,96 @@
 import axios, { AxiosError } from 'axios';
-import { useRef, useState, useMemo } from 'react';
-import ReactQuill from 'react-quill';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
+import { API_BASE_URL } from '../../utils/constants/url';
+import ReactQuill from 'react-quill';
+import { FileInQuill } from '../../types/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppStateType } from '../../redux/reducers/root-reducer';
+import {
+  clearAddProductEditor,
+  setProductContent,
+  pushProductImage,
+} from '../../redux/actions/admin-actions';
+
+const ReactQuillWrapper = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill');
+
+    return function comp({ forwardedRef, ...props }: any) {
+      return <RQ ref={forwardedRef} {...props} />;
+    };
+  },
+  { ssr: false, loading: () => <p>Loading ...</p> }
+);
 
 const EditorComponent = () => {
-  const QuillWrapper = dynamic(() => import('react-quill'), {
-    ssr: false,
-    loading: () => <p>Loading ...</p>,
-  });
+  const dispatch = useDispatch();
   const QuillRef = useRef<ReactQuill>();
+  const isMounted = useRef<boolean>(false);
+
+  const addProductImages: Array<FileInQuill> = useSelector(
+    (state: AppStateType) => state.admin.addProductImages
+  );
+
+  useEffect(() => {
+    if (!isMounted.current) {
+      console.log('wrong');
+      dispatch(clearAddProductEditor());
+      isMounted.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      console.log(addProductImages);
+    }
+  }, [addProductImages]);
+
   const [contents, setContents] = useState('');
+  const [timer, setTimer] = useState<NodeJS.Timeout>(); // 디바운싱 타이머
+
+  const onChangeHandler = (value: string) => {
+    setContents(value);
+
+    // 디바운싱
+    if (timer) {
+      clearTimeout(timer);
+    }
+    const newTimer = setTimeout(() => {
+      dispatch(setProductContent(value));
+    }, 800);
+    setTimer(newTimer);
+  };
 
   // 이미지를 업로드 하기 위한 함수
   const imageHandler = () => {
     // 파일을 업로드 하기 위한 input 태그 생성
-    const input = document.createElement('input');
-    const formData = new FormData();
-    let url = '';
+    const input = window.document.createElement('input');
 
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
     input.click();
 
     // 파일이 input 태그에 담기면 실행 될 함수
-    input.onchange = async () => {
-      const file = input.files;
-      if (file !== null) {
-        formData.append('image', file[0]);
+    input.onchange = async (event: any) => {
+      const file: File = event.target.files[0];
 
-        // // 저의 경우 파일 이미지를 서버에 저장했기 때문에
-        // // 백엔드 개발자분과 통신을 통해 이미지를 저장하고 불러왔습니다.
-        // try {
-        //   const res =
-        //     (// 백엔드 개발자 분이 통신 성공시에 보내주는 이미지 url을 변수에 담는다.
-        //     axios.url = res.data.url);
+      const fileReader = new FileReader();
+      fileReader.onload = function (event: any) {
+        const baseData: string = event.target.result;
 
-        //   // 커서의 위치를 알고 해당 위치에 이미지 태그를 넣어주는 코드
-        //   // 해당 DOM의 데이터가 필요하기에 useRef를 사용한다.
-        //   const range = QuillRef.current?.getEditor().getSelection()?.index;
-        //   if (range !== null && range !== undefined) {
-        //     let quill = QuillRef.current?.getEditor();
-
-        //     quill?.setSelection(range, 1);
-
-        //     quill?.clipboard.dangerouslyPasteHTML(
-        //       range,
-        //       `<img src=${url} alt="이미지 태그가 삽입됩니다." />`
-        //     );
-        //   }
-
-        //   return { ...res, success: true };
-        // } catch (error) {
-        //   const err = error as AxiosError;
-        //   return { ...err.response, success: false };
-        // }
-      }
+        QuillRef.current
+          ?.getEditor()
+          .insertEmbed(
+            QuillRef.current.getEditor().getSelection()?.index as number,
+            'image',
+            baseData
+          );
+        const newImage: FileInQuill = { base64: baseData, file: file };
+        dispatch(pushProductImage(newImage));
+      };
+      fileReader.readAsDataURL(file);
     };
   };
 
@@ -87,15 +122,11 @@ const EditorComponent = () => {
 
   return (
     <>
-      <ReactQuill
-        ref={(element) => {
-          if (element !== null) {
-            QuillRef.current = element;
-          }
-        }}
-        style={{ height: '480px' }}
+      <ReactQuillWrapper
+        forwardedRef={QuillRef}
+        style={{ minHeight: '480px' }}
         value={contents}
-        onChange={setContents}
+        onChange={onChangeHandler}
         modules={modules}
         theme="snow"
         placeholder="내용을 입력해주세요."

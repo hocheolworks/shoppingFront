@@ -211,3 +211,8 @@ export type CartItem = {
 export type FCinLayout<P = {}> = FC<P> & {
   getLayout: (page: ReactElement) => JSX.Element;
 };
+
+export type FileInQuill = {
+  base64: string;
+  file: File;
+};

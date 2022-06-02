@@ -1,4 +1,4 @@
-import { Order, ProductErrors, Customer } from '../../types/types';
+import { Order, ProductErrors, Customer, FileInQuill } from '../../types/types';
 
 export const LOADING_DATA = 'LOADING_DATA';
 export const FETCH_ALL_USERS_ORDERS_SUCCESS = 'FETCH_ALL_USERS_ORDERS_SUCCESS';
@@ -21,6 +21,10 @@ export const FETCH_ALL_USERS_ORDERS_BY_QUERY_SUCCESS =
 export const FETCH_USER_ORDERS_BY_QUERY_SUCCESS =
   'FETCH_USER_ORDERS_BY_QUERY_SUCCESS';
 export const EMAIL_VALIDATION_SUCCESS = 'EMAIL_VALIDATION_SUCCESS';
+
+export const SET_PRODUCT_CONTENT = 'SET_PRODUCT_CONTENT';
+export const PUSH_PRODUCT_IMAGE = 'PUSH_PRODUCT_IMAGE';
+export const CLEAR_ADD_PRODUCT_EDITOR = 'CLEAR_ADD_PRODUCT_EDITOR';
 
 export type LoadingDataActionType = { type: typeof LOADING_DATA };
 export type AddProductSuccessActionType = {
@@ -84,6 +88,19 @@ export type GetUserOrdersByQueryActionType = {
   payload: Array<Order>;
 };
 
+export type SetProductContentActionType = {
+  type: typeof SET_PRODUCT_CONTENT;
+  payload: string;
+};
+
+export type PushProductImageActionType = {
+  type: typeof PUSH_PRODUCT_IMAGE;
+  payload: FileInQuill;
+};
+export type ClearAddProductEditorActionType = {
+  type: typeof CLEAR_ADD_PRODUCT_EDITOR;
+};
+
 export type AdminActionTypes =
   | LoadingDataActionType
   | AddProductSuccessActionType
@@ -100,4 +117,7 @@ export type AdminActionTypes =
   | GetUserInfoByQueryActionType
   | GetAllUsersByQueryActionType
   | GetAllUsersOrdersByQueryActionType
-  | GetUserOrdersByQueryActionType;
+  | GetUserOrdersByQueryActionType
+  | SetProductContentActionType
+  | PushProductImageActionType
+  | ClearAddProductEditorActionType;

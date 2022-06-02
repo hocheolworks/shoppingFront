@@ -4,6 +4,7 @@ import React, {
   FormEvent,
   ReactElement,
   RefObject,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -15,7 +16,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ToastShow from '../../../src/component/Toasts/ToastShow';
 import { addProduct, formReset } from '../../../src/redux/thunks/admin-thunks';
 import { AppStateType } from '../../../src/redux/reducers/root-reducer';
-import { Customer, FCinLayout, ProductErrors } from '../../../src/types/types';
+import {
+  Customer,
+  FCinLayout,
+  FileInQuill,
+  ProductErrors,
+} from '../../../src/types/types';
 import { fetchProducts } from '../../../src/redux/thunks/product-thunks';
 import { isValidNumber } from '../../../src/utils/functions';
 import { addProductFailure } from '../../../src/redux/actions/admin-actions';
@@ -37,8 +43,11 @@ type InitialStateType = {
 const AddProduct: FCinLayout = () => {
   const dispatch = useDispatch();
 
-  const customer: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.customer.customer
+  const addProductContent: string = useSelector(
+    (state: AppStateType) => state.admin.addProductContent
+  );
+  const addProductImages: Array<FileInQuill> = useSelector(
+    (state: AppStateType) => state.admin.addProductImages
   );
 
   const customerId = useRef<number>(-1);
@@ -108,7 +117,7 @@ const AddProduct: FCinLayout = () => {
 
     if (
       !Boolean(productName) ||
-      !Boolean(productDescription) ||
+      // !Boolean(productDescription) ||
       !Boolean(productMinimumEA) ||
       !Boolean(productPrice) ||
       !isValidNumber(productMinimumEA) ||
@@ -164,7 +173,15 @@ const AddProduct: FCinLayout = () => {
     if (customerId && customerId.current !== -1) {
       bodyFormData.append('customerId', customerId.current.toString());
     }
-    return;
+
+    if (addProductImages && addProductContent) {
+      const finalImages = addProductImages.filter((value) =>
+        addProductContent.includes(value.base64)
+      );
+      console.log(finalImages);
+    }
+
+    return; // debug
     dispatch(addProduct(bodyFormData));
   };
 
@@ -242,25 +259,7 @@ const AddProduct: FCinLayout = () => {
           </div>
           <div className="form row mt-3">
             <div className="col">
-              <label>설명: </label>
-              <TextEditor />
-              {/* <input
-                type="text"
-                className={
-                  productDescriptionError
-                    ? 'form-control is-invalid'
-                    : 'form-control'
-                }
-                name="productDescription"
-                value={productDescription}
-                placeholder="상품 설명을 입력하세요."
-                onChange={handleInputChange}
-              /> */}
-              <div className="invalid-feedback">{productDescriptionError}</div>
-            </div>
-          </div>
-          <div className="form row mt-3">
-            <div className="col" style={{ marginTop: '35px' }}>
+              <label>상품 대표 이미지:</label>
               <input
                 type="file"
                 className={
@@ -276,7 +275,14 @@ const AddProduct: FCinLayout = () => {
               <div className="invalid-feedback">{productImageFileError}</div>
             </div>
           </div>
-          <button type="submit" className="btn btn-dark mt-3">
+          <div className="form row mt-3">
+            <div className="col">
+              <label>설명: </label>
+              <TextEditor />
+              <div className="invalid-feedback">{productDescriptionError}</div>
+            </div>
+          </div>
+          <button type="submit" className="btn btn-dark mt-3 mb-3">
             <FontAwesomeIcon className="mr-2" icon={faPlusSquare} />
             추가
           </button>
