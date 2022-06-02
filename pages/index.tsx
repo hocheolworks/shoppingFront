@@ -20,13 +20,15 @@ const HomePage: FC = () => {
   }, []);
 
   return (
-    <div>
+    <>
+    <div id="wrapper">
       <ScrollButton />
       <CarouselImageSlider />
       {/* <SliderBrands />
       <HomePageTheme />
       <SliderCards /> */}
     </div>
+    </>
   );
 };
 

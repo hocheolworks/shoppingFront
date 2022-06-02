@@ -37,7 +37,7 @@ const MenuCards: FC<PropsType> = ({
   } = usePagination({ itemsPerPage, data, startFrom });
 
   return (
-    <div className="container">
+    <div className="container mb-5">
       <div className="container-fluid mt-5 ml-2">
         {/* <SearchForm
                     data={data}

@@ -46,9 +46,9 @@ const Login: FC = () => {
   };
 
   return (
-    <div id="container" className="container mt-5">
+    <div id="container" className="container mt-5 mb-5">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 login-container">
           <h4>
             <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
             로그인
@@ -68,7 +68,7 @@ const Login: FC = () => {
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">이메일: </label>
               <FontAwesomeIcon
-                style={{ position: 'relative', top: '8px' }}
+                style={{ position: 'relative'}}
                 icon={faEnvelope}
               />
               <div className="col-sm-7">
@@ -84,7 +84,7 @@ const Login: FC = () => {
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">비밀번호: </label>
               <FontAwesomeIcon
-                style={{ position: 'relative', top: '8px' }}
+                style={{ position: 'relative'}}
                 icon={faLock}
               />
               <div className="col-sm-7">
@@ -97,13 +97,13 @@ const Login: FC = () => {
                 />
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row">
               <button type="submit" className="btn btn-dark mx-3">
                 <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
                 로그인
               </button>
               <Link href={'/forgot'}>
-                <a style={{ position: 'relative', top: '8px' }}>
+                <a style={{ position: 'relative'}}>
                   비밀번호 찾기
                 </a>
               </Link>

@@ -26,5 +26,53 @@
     margin-left: 3px;
 }
 
+.login-contatiner {
+  margin: 10%;
+}
 
+@media (max-width: 769px) {
+  .login-contatiner {
+    margin: 10%;
+    transform: scale(80%);
+  }
 
+  .regist-container {
+      transform: scale(90%);
+  }
+}
+
+@media (max-width: 719px) {
+  .form-group {
+      align-items: center;
+      display: grid;
+      grid-template-columns: 2fr 1fr 5fr;
+  }
+
+  .form-group .form-icon {
+      text-align: right !important;
+      margin-right: 10%;
+  }
+
+}
+
+@media (min-width: 720px) {
+  .form-group {
+    align-items: center;
+    display: flex;
+  }
+
+  .form-group label{
+    display: block;
+    width: 130px;
+  }
+  
+  .form-group .form-icon {
+    text-align: right !important;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .form-group .form-input {
+    width: 300px;
+  }
+}

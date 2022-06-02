@@ -24,12 +24,19 @@ const Account: FC = ({ children }) => {
           <ActiveLink activeClassName="is-active" href="/account/customer/info">
             <a className="account-sidebar-link nav-link mb-4">내 정보</a>
           </ActiveLink>
-          <ActiveLink
-            activeClassName="is-active"
-            href="/account/customer/password/confirm"
-          >
-            <a className="account-sidebar-link nav-link mb-4">비밀번호 변경</a>
-          </ActiveLink>
+          {typeof window !== "undefined" &&
+          window.sessionStorage.getItem("customerName") ? (
+            <ActiveLink
+              activeClassName="is-active"
+              href="/account/customer/password/confirm"
+            >
+              <a className="account-sidebar-link nav-link mb-4">
+                비밀번호 변경
+              </a>
+            </ActiveLink>
+          ) : (
+            <div></div>
+          )}
           {typeof window !== "undefined" &&
           window.sessionStorage.getItem("customerRole") === "ADMIN" ? (
             <>

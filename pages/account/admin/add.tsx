@@ -200,7 +200,7 @@ const AddProduct: FCinLayout = () => {
     <>
       <ToastShow
         showToast={showToast}
-        message={'Product successfully added!'}
+        message={'상품 추가가 완료되었습니다!'}
       />
       <div className="container">
         <h4>
@@ -259,7 +259,25 @@ const AddProduct: FCinLayout = () => {
           </div>
           <div className="form row mt-3">
             <div className="col">
-              <label>상품 대표 이미지:</label>
+              <label>설명: </label>
+              <TextEditor />
+              {/* <input
+                type="text"
+                className={
+                  productDescriptionError
+                    ? 'form-control is-invalid'
+                    : 'form-control'
+                }
+                name="productDescription"
+                value={productDescription}
+                placeholder="상품 설명을 입력하세요."
+                onChange={handleInputChange}
+              /> */}
+              <div className="invalid-feedback">{productDescriptionError}</div>
+            </div>
+          </div>
+          <div className="form row mt-3">
+            <div className="col" style={{ marginTop: '35px' }}>
               <input
                 type="file"
                 className={
@@ -275,14 +293,7 @@ const AddProduct: FCinLayout = () => {
               <div className="invalid-feedback">{productImageFileError}</div>
             </div>
           </div>
-          <div className="form row mt-3">
-            <div className="col">
-              <label>설명: </label>
-              <TextEditor />
-              <div className="invalid-feedback">{productDescriptionError}</div>
-            </div>
-          </div>
-          <button type="submit" className="btn btn-dark mt-3 mb-3">
+          <button type="submit" className="btn btn-dark mt-3 mb-5">
             <FontAwesomeIcon className="mr-2" icon={faPlusSquare} />
             추가
           </button>
