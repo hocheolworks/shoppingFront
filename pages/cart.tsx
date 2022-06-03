@@ -24,9 +24,14 @@ import {
   removeCartItem,
   updateCartItem,
 } from '../src/redux/actions/cart-actions';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { useRouter } from 'next/router';
+const MySwal = withReactContent(Swal);
 
 const Cart: FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
@@ -39,7 +44,7 @@ const Cart: FC = () => {
     (state: AppStateType) => state.cart.loading
   );
 
-  const customerId = useRef<number>(0);
+  const customerId = useRef<number>(-1);
 
   useEffect(() => {
     customerId.current = parseInt(sessionStorage.getItem('id') as string);
@@ -112,6 +117,31 @@ const Cart: FC = () => {
     }
   };
 
+  const onClickHandler = (): void => {
+    if (isNaN(customerId.current) || customerId.current === -1) {
+      // 비로그인 상태 : 비회원
+      MySwal.fire({
+        title: `<strong>비회원 주문</strong>`,
+        html: `<i>비회원 주문으로 계속 진행하시겠습니까?</i>`,
+        icon: 'question',
+        showConfirmButton: true,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: '계속',
+        denyButtonText: '로그인',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/order');
+        } else if (result.isDenied) {
+          router.push('/login');
+        }
+      });
+    } else {
+      router.push('/order');
+    }
+  };
+
   return (
     <div className="container mt-5 pb-5" style={{ minHeight: '350px' }}>
       {loading ? (
@@ -138,7 +168,7 @@ const Cart: FC = () => {
                     <div className="row no-gutters">
                       <div className="col-2 mx-3 my-3">
                         <img
-                          src={`${cartItem.product.productImageFilepath}`}
+                          src={`http://localhost:8080/${cartItem.product.productImageFilepath}`}
                           className="img-fluid"
                         />
                       </div>
@@ -228,15 +258,13 @@ const Cart: FC = () => {
                 </div>
                 <div className="col-3">
                   <div className="form-row">
-                    <Link href={'/order'}>
-                      <button className="btn btn-success">
-                        <FontAwesomeIcon
-                          className="mr-2"
-                          icon={faShoppingBag}
-                        />{' '}
-                        주문하기
-                      </button>
-                    </Link>
+                    <button
+                      className="btn btn-success"
+                      onClick={onClickHandler}
+                    >
+                      <FontAwesomeIcon className="mr-2" icon={faShoppingBag} />{' '}
+                      주문하기
+                    </button>
                   </div>
                 </div>
               </div>

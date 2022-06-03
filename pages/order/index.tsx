@@ -1,14 +1,14 @@
-import React, { FC, FormEvent, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faShoppingBag,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
-import { addOrder, fetchOrder } from "../../src/redux/thunks/order-thunks";
-import PageLoader from "../../src/component/PageLoader/PageLoader";
-import { AppStateType } from "../../src/redux/reducers/root-reducer";
+import { addOrder, fetchOrder } from '../../src/redux/thunks/order-thunks';
+import PageLoader from '../../src/component/PageLoader/PageLoader';
+import { AppStateType } from '../../src/redux/reducers/root-reducer';
 import {
   OrderError,
   OrderItem,
@@ -17,48 +17,51 @@ import {
   Customer,
   CartItem,
   Order,
-} from "../../src/types/types";
+  CartItemNonMember,
+} from '../../src/types/types';
 
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-import DaumPostcode from "react-daum-postcode";
-import { loadTossPayments } from "@tosspayments/payment-sdk";
-import { API_BASE_URL } from "../../src/utils/constants/url";
-import { useRouter } from "next/router";
-import { fetchCart } from "../../src/redux/thunks/cart-thunks";
+import DaumPostcode from 'react-daum-postcode';
+import { loadTossPayments } from '@tosspayments/payment-sdk';
+import { API_BASE_URL } from '../../src/utils/constants/url';
+import { useRouter } from 'next/router';
+import { fetchCart } from '../../src/redux/thunks/cart-thunks';
 import {
   orderAddedFailure,
   saveInsertOrderInformation,
-} from "../../src/redux/actions/order-actions";
-import { FRONT_BASE_URL } from "../../src/utils/constants/url";
-const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
+} from '../../src/redux/actions/order-actions';
+import { FRONT_BASE_URL } from '../../src/utils/constants/url';
+const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
 
 const MySwal = withReactContent(Swal);
 
-type PaymentMethodType = "카드" | "계좌이체" | "가상계좌";
+type PaymentMethodType = '카드' | '계좌이체' | '가상계좌';
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   const customerId = useRef<number>(-1);
-  const paymentMethodList = ["카드", "계좌이체", "가상계좌"];
+  const paymentMethodList = ['카드', '계좌이체', '가상계좌'];
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('카드');
 
   useEffect(() => {
-    if (sessionStorage.getItem("id") === null) {
-      MySwal.fire({
-        title: `<strong>잘못된 접근</strong>`,
-        html: `<i>홈으로 이동합니다.</i>`,
-        icon: "error",
-      }).then(() => {
-        router.push("/");
-      });
+    if (sessionStorage.getItem('id') === null) {
+      // 비로그인 상태 : 비회원 주문
+      // MySwal.fire({
+      //   title: `<strong>잘못된 접근</strong>`,
+      //   html: `<i>홈으로 이동합니다.</i>`,
+      //   icon: "error",
+      // }).then(() => {
+      //   router.push("/");
+      // });
     } else {
-      customerId.current = parseInt(sessionStorage.getItem("id") as string);
-      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
+      // 로그인 상태 : 회원 주문
+      customerId.current = parseInt(sessionStorage.getItem('id') as string);
+      dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
     }
 
     dispatch(orderAddedFailure({}));
@@ -68,7 +71,7 @@ const OrderPage: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
 
-  const cart: Array<CartItem> = useSelector(
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
 
@@ -99,7 +102,7 @@ const OrderPage: FC = () => {
     string | undefined
   >(customersData.customerAddressDetail);
 
-  const [orderMemo, setOrderMemo] = useState<string | undefined>("");
+  const [orderMemo, setOrderMemo] = useState<string | undefined>('');
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
@@ -111,7 +114,7 @@ const OrderPage: FC = () => {
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setOrderAddress(
-      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
+      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
     );
     setOrderPostIndex(data.zonecode);
     setIsPopupOpen(false);
@@ -135,27 +138,27 @@ const OrderPage: FC = () => {
       !Boolean(orderPhoneNumber)
     ) {
       const orderError: OrderError = {
-        orderCustomerNameError: "",
-        orderPostIndexError: "",
-        orderAddressError: "",
-        orderAddressDetailError: "",
-        orderPhoneNumberError: "",
+        orderCustomerNameError: '',
+        orderPostIndexError: '',
+        orderAddressError: '',
+        orderAddressDetailError: '',
+        orderPhoneNumberError: '',
       };
 
       if (!Boolean(orderCustomerName)) {
-        orderError.orderCustomerNameError = "수령인은 필수 입니다.";
+        orderError.orderCustomerNameError = '수령인은 필수 입니다.';
       }
       if (!Boolean(orderPostIndex)) {
-        orderError.orderPostIndexError = "우편번호는 필수 입니다.";
+        orderError.orderPostIndexError = '우편번호는 필수 입니다.';
       }
       if (!Boolean(orderAddress)) {
-        orderError.orderAddressError = "주소는 필수 입니다.";
+        orderError.orderAddressError = '주소는 필수 입니다.';
       }
       if (!Boolean(orderAddressDetail)) {
-        orderError.orderAddressDetailError = "상세주소는 필수 입니다.";
+        orderError.orderAddressDetailError = '상세주소는 필수 입니다.';
       }
       if (!Boolean(orderPhoneNumber)) {
-        orderError.orderPhoneNumberError = "연락처는 필수 입니다.";
+        orderError.orderPhoneNumberError = '연락처는 필수 입니다.';
       }
       dispatch(orderAddedFailure(orderError));
       return;
@@ -215,8 +218,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderCustomerNameError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="lastName"
                   value={orderCustomerName}
@@ -236,8 +239,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPostIndexError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="postIndex"
                   value={orderPostIndex}
@@ -255,8 +258,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="address"
                   value={orderAddress}
@@ -272,8 +275,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressDetailError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="address"
                   value={orderAddressDetail}
@@ -293,8 +296,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPhoneNumberError
-                      ? "form-control is-invalid"
-                      : "form-control"
+                      ? 'form-control is-invalid'
+                      : 'form-control'
                   }
                   name="phoneNumber"
                   value={orderPhoneNumber}
@@ -326,7 +329,7 @@ const OrderPage: FC = () => {
                   <DaumPostcode
                     className="form-control"
                     style={{
-                      border: "1px solid black",
+                      border: '1px solid black',
                       padding: 0,
                     }}
                     onComplete={onCompletePostIndex}
@@ -336,15 +339,15 @@ const OrderPage: FC = () => {
             )}
             <hr
               style={{
-                margin: "0 0 10px 0",
-                maxWidth: "82.5%",
+                margin: '0 0 10px 0',
+                maxWidth: '82.5%',
               }}
             />
           </div>
           <div className="col-lg-6">
             <div className="container-fluid">
               <div className="row">
-                {cart.map((cartItem: CartItem) => {
+                {cart.map((cartItem) => {
                   return (
                     <div
                       key={cartItem.product.id}
@@ -352,16 +355,16 @@ const OrderPage: FC = () => {
                     >
                       <div className="card mb-5">
                         <img
-                          src={`${cartItem.product.productImageFilepath}`}
+                          src={`http://localhost:8080/${cartItem.product.productImageFilepath}`}
                           className="rounded mx-auto w-50"
                         />
                         <div className="card-body text-center">
                           <h5>{cartItem.product.productName}</h5>
                           <h6>
                             <span>
-                              가격 :{" "}
+                              가격 :{' '}
                               {`${cartItem.product.productPrice.toLocaleString(
-                                "ko-KR"
+                                'ko-KR'
                               )} 원`}
                             </span>
                           </h6>
@@ -377,11 +380,11 @@ const OrderPage: FC = () => {
             </div>
             <hr
               style={{
-                margin: "0 0 5px 0",
+                margin: '0 0 5px 0',
               }}
             />
             <div className="form-group row mb-0">
-              <label className="col-sm-3 col-form-label">결제수단:</label>
+              <label className="col-sm-2 col-form-label">결제수단:</label>
               <div className="col-sm-8 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (
                   <div key={`payment-method-radio-${i}`}>
@@ -394,15 +397,17 @@ const OrderPage: FC = () => {
                       onChange={(e) => {
                         setPaymentMethod(e.target.value as PaymentMethodType);
                       }}
-                    />{" "}
-                    <label htmlFor={value}>{value}</label>
+                    />{' '}
+                    <label className="d-inline" htmlFor={value}>
+                      {value}
+                    </label>
                   </div>
                 ))}
               </div>
             </div>
             <hr
               style={{
-                margin: "0 0 10px 0",
+                margin: '0 0 10px 0',
               }}
             />
             <button
@@ -413,8 +418,8 @@ const OrderPage: FC = () => {
             </button>
             <div className="row">
               <h4>
-                주문 금액 :{" "}
-                <span>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</span>
+                주문 금액 :{' '}
+                <span>{`${orderTotalPrice.toLocaleString('ko-KR')} 원`}</span>
               </h4>
             </div>
           </div>

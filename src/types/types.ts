@@ -101,7 +101,7 @@ export type InsertOrder = {
   orderPhoneNumber: string | undefined;
   orderMemo: string | undefined;
   orderTotalPrice: number;
-  cart: CartItem[];
+  cart: Array<CartItem | CartItemNonMember>;
 };
 
 export type OrderError = {
