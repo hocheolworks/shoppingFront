@@ -30,114 +30,91 @@ const NavBar: FC = () => {
 
   let links;
   let signOut;
+  let orderListLink;
   if (typeof window !== 'undefined') {
     if (window.sessionStorage.getItem('isLoggedIn') === 'true') {
-      links = (
-        <div className="nav-item right-item">
-          <Link href={'/account'}>
-            <a>
-              <span className="nav-link nav-icon">
-                <i className="fas fa-user mr-2"></i>
-                마이페이지
-              </span>
-            </a>
-          </Link>
-        </div>
-      );
+      links = <Link href={'/account'}>마이페이지</Link>;
       signOut = (
-        <div className="nav-item right-item">
-          <Link href={'/'}>
-            <a onClick={handleLogout}>
-              <span className="nav-link nav-icon">
-                <FontAwesomeIcon className="mr-2" icon={faSignOutAlt} />
-                로그아웃
-              </span>
-            </a>
-          </Link>
-        </div>
+        <Link href={'/'}>
+          <a onClick={handleLogout}>로그아웃</a>
+        </Link>
       );
+      orderListLink = <Link href={'/account/customer/orders'}>주문내역</Link>;
     } else {
       links = (
         <>
-          <div className="nav-item"></div>
-          <div className="nav-item right-item">
-            <Link href={'/login'}>
-              <a>
-                <span className="nav-link nav-icon">
-                  <FontAwesomeIcon className="mr-2" icon={faSignInAlt} />
-                  로그인
-                </span>
-              </a>
-            </Link>
-          </div>
-          <div className="nav-item right-item">
-            <Link href={'/registration'}>
-              <a>
-                <span className="nav-link">
-                  <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
-                  회원가입
-                </span>
-              </a>
-            </Link>
-          </div>
+          <Link href={'/login'}>
+            <a style={{ fontWeight: 'bold' }}>로그인</a>
+          </Link>
+          <Link href={'/registration'}>
+            <a style={{ fontWeight: 'bold' }}>회원가입</a>
+          </Link>
         </>
       );
       signOut = null;
+      orderListLink = (
+        <Link href={'/non-members/orders'}>
+          <a style={{ fontWeight: 'bold' }}>주문내역</a>
+        </Link>
+      );
     }
   }
 
   return (
-    <div>
-      <div id="header" className="container-fluid header-top pb-5 pt-5">
-        <img src="/image/logo/1x.png" className="rounded mx-auto d-block" />
-      </div>
-      <div className="container-fluid bg-black">
-        <div></div>
-        <nav id="navbar-main">
-          <div id="navbarSupportedContent">
-            <div className="navbar-nav left-items">
-              <div className="nav-item">
+    <>
+      <header className="common-header main-header">
+        <div className="top-utility">
+          {links}
+          {signOut}
+          {typeof window !== 'undefined' && (
+            <Link href={'/cart'}>
+              <a style={{ fontWeight: 'bold' }}>장바구니({cart.length})</a>
+            </Link>
+          )}
+          {orderListLink}
+        </div>
+        <Link href={'/'}>
+          <a>
+            <div id="header" className="container-fluid header-top pb-5 pt-5">
+              <img
+                src="/image/logo/1x.png"
+                className="rounded mx-auto d-block"
+              />
+            </div>
+          </a>
+        </Link>
+      </header>
+
+      <div>
+        <div className="container-fluid bg-black">
+          <nav id="navbar-main">
+            <ul>
+              <li>
                 <Link href={'/'}>
                   <a>
-                    <span className="nav-link">HOME</span>
+                    <span className="nav-link">홈</span>
                   </a>
                 </Link>
-              </div>
-              <div className="nav-item">
+              </li>
+              <li>
                 <Link href="/menu">
                   <a>
-                    <span className="nav-link">PRODUCT</span>
+                    <span className="nav-link">상품 목록</span>
                   </a>
                 </Link>
-              </div>
-              <div className="nav-item">
+              </li>
+              <li>
                 <Link href={'/contacts'}>
                   <a>
-                    <span className="nav-link">CONTACT</span>
+                    <span className="nav-link">고객지원</span>
                   </a>
                 </Link>
-              </div>
-            </div>
-            <div className="navbar-nav right-items">
-              <div className="nav-item">
-                <Link href={'/cart'}>
-                  <a className="nav-link">
-                    <h5 className="d-inline nav-icon">
-                      <i className="fas fa-shopping-cart"></i>
-                      <span className="badge badge-success ml-1">
-                        {cart.length}
-                      </span>
-                    </h5>
-                  </a>
-                </Link>
-              </div>
-              {links}
-              {signOut}
-            </div>
-          </div>
-        </nav>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

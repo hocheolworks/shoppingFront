@@ -9,14 +9,14 @@ const Footer: FC = () => {
         <div className="justify-content-between">
           <div className="footer-container">
             <div className="footer-item">
-              <h3>일조유통</h3>
+              <h3>진솔유통</h3>
               <p>010-2269-9422</p>
             </div>
             <div className="footer-item">
               <p>상담 가능 시간 : (평일) 09:00 - 20:00</p>
             </div>
             <div className="footer-item">
-              <p>© Copy right 일조유통</p>
+              <p>© Copy right 진솔유통</p>
             </div>
           </div>
         </div>

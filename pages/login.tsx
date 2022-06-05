@@ -106,11 +106,20 @@ const Login: FC = () => {
                 <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
                 로그인
               </button>
-              <Link href={'/forgot'}>
-                <a style={{ position: 'relative' }}>비밀번호 찾기</a>
-              </Link>
+              {/* <Link href={'/forgot'}>
+                <a style={{ position: 'relative'}}>
+                  비밀번호 찾기
+                </a>
+              </Link> */}
             </div>
           </form>
+          <div className="mb-5">
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div>
         </div>
         <div className="col-md-6">
           <div className="mt-5">

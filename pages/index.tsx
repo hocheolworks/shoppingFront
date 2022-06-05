@@ -21,7 +21,7 @@ const HomePage: FC = () => {
 
   return (
     <>
-    <div id="wrapper">
+    <div>
       <ScrollButton />
       <CarouselImageSlider />
       {/* <SliderBrands />

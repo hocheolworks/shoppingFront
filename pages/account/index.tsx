@@ -22,7 +22,7 @@ const AccountItem: FCinLayout = () => {
       ) : (
         <div>
           <h4 style={{ display: "flex", justifyContent: "center" }}>
-            안녕하세요, 일조유통입니다!
+            안녕하세요, 진솔유통입니다!
           </h4>
         </div>
       )}
