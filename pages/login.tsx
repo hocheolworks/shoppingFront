@@ -1,24 +1,24 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react';
-import Link from 'next/link';
-import { NextRouter, useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
+import { NextRouter, useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
   faLock,
   faSignInAlt,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
 import {
   activateAccount,
   formReset,
   login,
-} from '../src/redux/thunks/auth-thunks';
-import { AppStateType } from '../src/redux/reducers/root-reducer';
-import { CustomerData } from '../src/types/types';
-import googleLogo from '../src/img/google.png';
-import facebookLogo from '../src/img/facebook.png';
-import KakaoLogin from '../src/component/Kakao/KakaoLogin';
+} from "../src/redux/thunks/auth-thunks";
+import { AppStateType } from "../src/redux/reducers/root-reducer";
+import { CustomerData } from "../src/types/types";
+import googleLogo from "../src/img/google.png";
+import facebookLogo from "../src/img/facebook.png";
+import KakaoLogin from "../src/component/Kakao/KakaoLogin";
 
 const Login: FC = () => {
   const dispatch = useDispatch();
@@ -28,8 +28,8 @@ const Login: FC = () => {
   const success: string = useSelector(
     (state: AppStateType) => state.auth.success
   );
-  const [customerEmail, setEmail] = useState<string>('');
-  const [customerPassword, setPassword] = useState<string>('');
+  const [customerEmail, setEmail] = useState<string>("");
+  const [customerPassword, setPassword] = useState<string>("");
 
   useEffect(() => {
     dispatch(formReset());
@@ -68,7 +68,7 @@ const Login: FC = () => {
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">이메일: </label>
               <FontAwesomeIcon
-                style={{ position: 'relative'}}
+                style={{ position: "relative" }}
                 icon={faEnvelope}
               />
               <div className="col-sm-7">
@@ -83,10 +83,7 @@ const Login: FC = () => {
             </div>
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">비밀번호: </label>
-              <FontAwesomeIcon
-                style={{ position: 'relative'}}
-                icon={faLock}
-              />
+              <FontAwesomeIcon style={{ position: "relative" }} icon={faLock} />
               <div className="col-sm-7">
                 <input
                   className="form-control"
@@ -102,13 +99,20 @@ const Login: FC = () => {
                 <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
                 로그인
               </button>
-              <Link href={'/forgot'}>
+              {/* <Link href={'/forgot'}>
                 <a style={{ position: 'relative'}}>
                   비밀번호 찾기
                 </a>
-              </Link>
+              </Link> */}
             </div>
           </form>
+          <div className="mb-5">
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+          </div>
         </div>
         <div className="col-md-6">
           <div className="mt-5">
