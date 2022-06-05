@@ -75,10 +75,11 @@ const NavBar: FC = () => {
         </div>
         <Link href={"/"}>
           <a>
-            <div id="header" className="container-fluid header-top pb-5 pt-5">
+            <div id="header" className="image-fluid">
               <img
-                src="/image/logo/1x.png"
+                src="/image/logo/jinsol-removebg-preview.png"
                 className="rounded mx-auto d-block"
+                height="100%"
               />
             </div>
           </a>
@@ -106,7 +107,7 @@ const NavBar: FC = () => {
               <li>
                 <Link href={"/contacts"}>
                   <a>
-                    <span className="nav-link">고객지원</span>
+                    <span className="nav-link">기업 소개 </span>
                   </a>
                 </Link>
               </li>

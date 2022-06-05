@@ -60,6 +60,8 @@ const Contacts: FC = () => {
           <b>연락처: </b>{" "}
           <span className="mb-1">010-4826-0519, 010-2269-9422</span>
           <br></br>
+          <b>이메일: </b> <span className="mb-1">jinsoltrade@gmail.com</span>
+          <br></br>
           <b>주소:</b>{" "}
           <span className="mb-1">서울시 용산구 신흥로 3길 22-1</span>
           <br />

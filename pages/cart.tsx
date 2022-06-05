@@ -82,10 +82,14 @@ const Cart: FC = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <div>
+        <div className="mb-5">
           {cart.length === 0 ? (
             <div style={{ textAlign: "center" }}>
-              <h2>장바구니가 비었습니다.</h2>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <h2 className="mb-5">장바구니가 비었습니다.</h2>
             </div>
           ) : (
             <div>

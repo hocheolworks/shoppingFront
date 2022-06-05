@@ -10,7 +10,7 @@ const Footer: FC = () => {
           <div className="footer-container">
             <div className="footer-item">
               <h3>진솔유통</h3>
-              <p>010-2269-9422</p>
+              <p>010-4826-0519</p>
             </div>
             <div className="footer-item">
               <p>상담 가능 시간 : (평일) 09:00 - 20:00</p>

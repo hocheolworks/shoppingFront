@@ -124,13 +124,16 @@ const Registration: FC = () => {
       <hr />
       {isRegistered ? (
         <div>
-          <div className="alert alert-success col-6" role="alert">
+          <div className="alert alert-success col-6 mb-5" role="alert">
             인증 코드가 전송되었습니다.
           </div>
           <form onSubmit={onClickFinishRegistration}>
-            <div className="form-group row">
+            <div className="form-group row mr-5 mb-5">
               <label className=" col-form-label">인증번호: </label>
-              <FontAwesomeIcon icon={faEnvelope} />
+              <FontAwesomeIcon
+                icon={faEnvelope}
+                style={{ marginRight: "30" }}
+              />
               <div className="form-input">
                 <input
                   type="userInputVerifyNumber"
@@ -147,7 +150,7 @@ const Registration: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <button type="submit" className="btn btn-dark mx-3">
+              <button type="submit" className="btn btn-dark mx-3 mb-5">
                 <FontAwesomeIcon className="mr-2" icon={faUserPlus} />
                 회원가입 완료
               </button>

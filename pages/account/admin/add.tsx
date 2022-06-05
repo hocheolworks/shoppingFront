@@ -164,8 +164,9 @@ const AddProduct: FCinLayout = () => {
     if (customerId && customerId.current !== -1) {
       bodyFormData.append("customerId", customerId.current.toString());
     }
-    return;
     dispatch(addProduct(bodyFormData));
+
+    return;
   };
 
   const handleInputChange = (
@@ -243,19 +244,19 @@ const AddProduct: FCinLayout = () => {
           <div className="form row mt-3">
             <div className="col">
               <label>설명: </label>
-              <TextEditor />
-              {/* <input
+              {/* <TextEditor /> */}
+              <input
                 type="text"
                 className={
                   productDescriptionError
-                    ? 'form-control is-invalid'
-                    : 'form-control'
+                    ? "form-control is-invalid"
+                    : "form-control"
                 }
                 name="productDescription"
                 value={productDescription}
                 placeholder="상품 설명을 입력하세요."
                 onChange={handleInputChange}
-              /> */}
+              />
               <div className="invalid-feedback">{productDescriptionError}</div>
             </div>
           </div>
