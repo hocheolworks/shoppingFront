@@ -9,6 +9,7 @@ import {
   OrderActionTypes,
   SAVE_INSERT_ORDER_INFORMATION,
   CLEAR_INSERT_ORDER_INFORMATION,
+  HIDE_LOADER,
 } from '../action-types/order-action-types';
 
 export type InitialStateType = {
@@ -36,6 +37,9 @@ const reducer = (
   switch (action.type) {
     case SHOW_LOADER:
       return { ...state, loading: true };
+
+    case HIDE_LOADER:
+      return { ...state, loading: false };
 
     case FETCH_ORDER_SUCCESS:
       return { ...state, errors: {}, loading: false };

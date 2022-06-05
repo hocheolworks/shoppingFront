@@ -10,18 +10,22 @@ import {
   ADD_CART_ITEM,
   REMOVE_CART_ITEM,
   UPDATE_CART_ITEM,
+  RETURN_TO_CART_PAGE,
+  RETURN_TO_CART_PAGE_DONE,
 } from '../action-types/cart-action-types';
 
 export type InitialStateType = {
   cartItems: Array<CartItem | CartItemNonMember>;
   loading: boolean;
   totalPrice: number;
+  returnToCartPage: boolean;
 };
 
 const initialState: InitialStateType = {
   cartItems: [],
   loading: false,
   totalPrice: 0,
+  returnToCartPage: false,
 };
 
 const reducer = (
@@ -29,6 +33,12 @@ const reducer = (
   action: CartActionTypes
 ): InitialStateType => {
   switch (action.type) {
+    case RETURN_TO_CART_PAGE:
+      return { ...state, returnToCartPage: true };
+
+    case RETURN_TO_CART_PAGE_DONE:
+      return { ...state, returnToCartPage: false };
+
     case LOADING_CART:
       return { ...state, loading: true };
 

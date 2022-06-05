@@ -18,7 +18,19 @@ import {
   RemoveCartItemActionType,
   UpdateCartItemActionType,
   UPDATE_CART_ITEM,
+  ReturnToCartPageActionType,
+  RETURN_TO_CART_PAGE,
+  RETURN_TO_CART_PAGE_DONE,
+  ReturnToCartPageDoneActionType,
 } from '../action-types/cart-action-types';
+
+export const returnToCartPage = (): ReturnToCartPageActionType => ({
+  type: RETURN_TO_CART_PAGE,
+});
+
+export const returnToCartPageDone = (): ReturnToCartPageDoneActionType => ({
+  type: RETURN_TO_CART_PAGE_DONE,
+});
 
 export const loadingCart = (): LoadingCartActionType => ({
   type: LOADING_CART,

@@ -11,7 +11,7 @@ import {
 
 import { logout } from '../../redux/thunks/auth-thunks';
 import { AppStateType } from '../../redux/reducers/root-reducer';
-import { CartItem } from '../../types/types';
+import { CartItem, CartItemNonMember } from '../../types/types';
 import {} from 'next';
 
 const NavBar: FC = () => {
@@ -20,7 +20,7 @@ const NavBar: FC = () => {
     (state: AppStateType) => state.auth.isLoggedIn
   );
 
-  const cart: Array<CartItem> = useSelector(
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
 

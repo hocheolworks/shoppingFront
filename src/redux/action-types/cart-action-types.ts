@@ -6,7 +6,13 @@ export const FETCH_CART_SUCCESS = 'FETCH_CART_SUCCESS';
 export const LOADING_CART = 'LOADING_CART';
 export const STOP_LOADING_CART = 'STOP_LOADING_CART';
 export const UPDATE_CART_SUCCESS = 'UPDATE_CART_SUCCESS';
+export const RETURN_TO_CART_PAGE = 'RETURN_TO_CART_PAGE';
+export const RETURN_TO_CART_PAGE_DONE = 'RETURN_TO_CART_PAGE_DONE';
 
+export type ReturnToCartPageActionType = { type: typeof RETURN_TO_CART_PAGE };
+export type ReturnToCartPageDoneActionType = {
+  type: typeof RETURN_TO_CART_PAGE_DONE;
+};
 export type LoadingCartActionType = { type: typeof LOADING_CART };
 export type FetchCartSuccessActionType = {
   type: typeof FETCH_CART_SUCCESS;
@@ -39,6 +45,8 @@ export type UpdateCartItemActionType = {
 };
 
 export type CartActionTypes =
+  | ReturnToCartPageActionType
+  | ReturnToCartPageDoneActionType
   | LoadingCartActionType
   | FetchCartSuccessActionType
   | CalculateCartPriceSuccessActionType

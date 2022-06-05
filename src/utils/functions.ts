@@ -1,4 +1,4 @@
-import { CartItem, Order } from '../types/types';
+import { CartItem, CartItemNonMember, Order } from '../types/types';
 import { API_BASE_URL } from './constants/url';
 
 export function isValidNumber(numb: number): Boolean {
@@ -18,9 +18,11 @@ export function compareOrderByCreatedAt(a: Order, b: Order): number {
   else return 1;
 }
 
-export function sumCartItems(cart: Array<CartItem>): number {
+export function sumCartItems(
+  cart: Array<CartItem | CartItemNonMember>
+): number {
   let sum = 0;
-  cart.map((cartItem: CartItem) => {
+  cart.map((cartItem) => {
     if (cartItem.product != null)
       sum += cartItem.product.productPrice * cartItem.productCount;
   });

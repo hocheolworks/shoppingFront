@@ -15,7 +15,7 @@ import {
   login,
 } from '../src/redux/thunks/auth-thunks';
 import { AppStateType } from '../src/redux/reducers/root-reducer';
-import { CustomerData } from '../src/types/types';
+import { CartItem, CartItemNonMember, CustomerData } from '../src/types/types';
 import googleLogo from '../src/img/google.png';
 import facebookLogo from '../src/img/facebook.png';
 import KakaoLogin from '../src/component/Kakao/KakaoLogin';
@@ -24,6 +24,13 @@ const Login: FC = () => {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
   const { code } = router.query;
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const returnToCartPage: boolean = useSelector(
+    (state: AppStateType) => state.cart.returnToCartPage
+  );
   const error: string = useSelector((state: AppStateType) => state.auth.error);
   const success: string = useSelector(
     (state: AppStateType) => state.auth.success
@@ -42,7 +49,7 @@ const Login: FC = () => {
   const onClickSignIn = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const customerData: CustomerData = { customerEmail, customerPassword };
-    dispatch(login(customerData, router));
+    dispatch(login(customerData, router, cart, returnToCartPage));
   };
 
   return (
@@ -68,7 +75,7 @@ const Login: FC = () => {
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">이메일: </label>
               <FontAwesomeIcon
-                style={{ position: 'relative'}}
+                style={{ position: 'relative' }}
                 icon={faEnvelope}
               />
               <div className="col-sm-7">
@@ -83,10 +90,7 @@ const Login: FC = () => {
             </div>
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">비밀번호: </label>
-              <FontAwesomeIcon
-                style={{ position: 'relative'}}
-                icon={faLock}
-              />
+              <FontAwesomeIcon style={{ position: 'relative' }} icon={faLock} />
               <div className="col-sm-7">
                 <input
                   className="form-control"
@@ -103,9 +107,7 @@ const Login: FC = () => {
                 로그인
               </button>
               <Link href={'/forgot'}>
-                <a style={{ position: 'relative'}}>
-                  비밀번호 찾기
-                </a>
+                <a style={{ position: 'relative' }}>비밀번호 찾기</a>
               </Link>
             </div>
           </form>

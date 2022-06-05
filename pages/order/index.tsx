@@ -49,16 +49,7 @@ const OrderPage: FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('카드');
 
   useEffect(() => {
-    if (sessionStorage.getItem('id') === null) {
-      // 비로그인 상태 : 비회원 주문
-      // MySwal.fire({
-      //   title: `<strong>잘못된 접근</strong>`,
-      //   html: `<i>홈으로 이동합니다.</i>`,
-      //   icon: "error",
-      // }).then(() => {
-      //   router.push("/");
-      // });
-    } else {
+    if (sessionStorage.getItem('id') !== null) {
       // 로그인 상태 : 회원 주문
       customerId.current = parseInt(sessionStorage.getItem('id') as string);
       dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
@@ -184,7 +175,11 @@ const OrderPage: FC = () => {
     loadTossPayments(clientKey).then((tossPayments) => {
       tossPayments.requestPayment(paymentMethod, {
         amount: orderTotalPrice,
-        orderId: `order-${customerId.current}-${Date.now()}`,
+        orderId: `order-${
+          customerId.current === -1
+            ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
+            : customerId.current
+        }-${Date.now()}`,
         orderName:
           cart.length === 1
             ? cart[0].product.productName
@@ -355,7 +350,7 @@ const OrderPage: FC = () => {
                     >
                       <div className="card mb-5">
                         <img
-                          src={`http://localhost:8080/${cartItem.product.productImageFilepath}`}
+                          src={`${cartItem.product.productImageFilepath}`}
                           className="rounded mx-auto w-50"
                         />
                         <div className="card-body text-center">

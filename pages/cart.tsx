@@ -22,6 +22,7 @@ import { API_BASE_URL } from '../src/utils/constants/url';
 import {
   calculateCartPriceSuccess,
   removeCartItem,
+  returnToCartPage,
   updateCartItem,
 } from '../src/redux/actions/cart-actions';
 import Swal from 'sweetalert2';
@@ -134,6 +135,7 @@ const Cart: FC = () => {
         if (result.isConfirmed) {
           router.push('/order');
         } else if (result.isDenied) {
+          dispatch(returnToCartPage());
           router.push('/login');
         }
       });

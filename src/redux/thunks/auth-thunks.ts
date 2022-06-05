@@ -1,6 +1,10 @@
 import { fetchCustomerSuccess } from './../actions/customer-actions';
 import { emailVerifySuccess } from './../actions/auth-actions';
-import { RegistrationEmailData } from './../../types/types';
+import {
+  CartItem,
+  CartItemNonMember,
+  RegistrationEmailData,
+} from './../../types/types';
 import {
   activateAccountFailure,
   activateAccountSuccess,
@@ -27,12 +31,22 @@ import { Dispatch } from 'redux';
 import RequestService from '../../utils/request-service';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { clearCartSuccess, fetchCartSuccess } from '../actions/cart-actions';
+import {
+  clearCartSuccess,
+  fetchCartSuccess,
+  returnToCartPageDone,
+} from '../actions/cart-actions';
 
 const MySwal = withReactContent(Swal);
 
 export const login =
-  (customerData: CustomerData, router: any) => async (dispatch: Dispatch) => {
+  (
+    customerData: CustomerData,
+    router: any,
+    cart: Array<CartItem | CartItemNonMember>,
+    returnToCartPage: boolean
+  ) =>
+  async (dispatch: Dispatch) => {
     try {
       const response = await RequestService.post(
         '/customer/login',
@@ -47,12 +61,25 @@ export const login =
       dispatch(loginSuccess(response.data.customerRole));
       dispatch(fetchCustomerSuccess(response.data));
 
+      if (cart.length > 0) {
+        // 비회원으로 담은 장바구니가 있을 때
+        await RequestService.put(
+          `/customer/${response.data.id}/cart/all`,
+          cart
+        );
+      }
+
       const cartResponse = await RequestService.get(
         `/customer/${response.data.id}/cart`
       );
       dispatch(fetchCartSuccess(cartResponse.data));
 
-      router.push('/account');
+      if (returnToCartPage) {
+        dispatch(returnToCartPageDone());
+        router.push('/cart');
+      } else {
+        router.push('/account');
+      }
     } catch (error: any) {
       let errorMessage = error.response.data.message;
 
