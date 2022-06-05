@@ -33,38 +33,28 @@ const NavBar: FC = () => {
   let orderListLink;
   if (typeof window !== "undefined") {
     if (window.sessionStorage.getItem("isLoggedIn") === "true") {
-      links = (
-        <Link href={'/account'}>
-          마이페이지
-        </Link>
-      );
+      links = <Link href={"/account"}>마이페이지</Link>;
       signOut = (
-        <Link href={'/'}>
-          <a onClick={handleLogout}>
-            로그아웃
-          </a>
+        <Link href={"/"}>
+          <a onClick={handleLogout}>로그아웃</a>
         </Link>
       );
-      orderListLink = (
-        <Link href={'/account/customer/orders'}>
-          주문내역
-        </Link>
-      );
+      orderListLink = <Link href={"/account/customer/orders"}>주문내역</Link>;
     } else {
       links = (
         <>
-          <Link href={'/login'}>
-            로그인
+          <Link href={"/login"}>
+            <a style={{ fontWeight: "bold" }}>로그인</a>
           </Link>
-          <Link href={'/registration'}>
-            회원가입
+          <Link href={"/registration"}>
+            <a style={{ fontWeight: "bold" }}>회원가입</a>
           </Link>
         </>
       );
       signOut = null;
       orderListLink = (
-        <Link href={'/non-members/orders'}>
-          주문내역
+        <Link href={"/non-members/orders"}>
+          <a style={{ fontWeight: "bold" }}>주문내역</a>
         </Link>
       );
     }
@@ -72,57 +62,58 @@ const NavBar: FC = () => {
 
   return (
     <>
-    <header className="common-header main-header">
-      <div className="top-utility">
-        {links}
-        {signOut}
-        {(typeof window !== 'undefined') && (
-          <Link href={'/cart'}>
-            <a>
-              장바구니({cart.length})
-            </a>
-          </Link>
-        )}
-        {orderListLink}
-      </div>
-      <Link href={'/'}>
-        <a>
-          <div id="header" className="container-fluid header-top pb-5 pt-5">
-              <img src="/image/logo/1x.png" className="rounded mx-auto d-block" />
-          </div>
-        </a>
-      </Link>
-    </header>
+      <header className="common-header main-header">
+        <div className="top-utility">
+          {links}
+          {signOut}
+          {typeof window !== "undefined" && (
+            <Link href={"/cart"}>
+              <a style={{ fontWeight: "bold" }}>장바구니({cart.length})</a>
+            </Link>
+          )}
+          {orderListLink}
+        </div>
+        <Link href={"/"}>
+          <a>
+            <div id="header" className="container-fluid header-top pb-5 pt-5">
+              <img
+                src="/image/logo/1x.png"
+                className="rounded mx-auto d-block"
+              />
+            </div>
+          </a>
+        </Link>
+      </header>
 
-    <div>
-      <div className="container-fluid bg-black">
-        <nav id="navbar-main">
-          <ul>
-            <li>
-              <Link href={'/'}>
-                <a>
-                  <span className="nav-link">홈</span>
-                </a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/menu">
-                <a>
-                  <span className="nav-link">상품 목록</span>
-                </a>
-              </Link>
-            </li>
-            <li>
-              <Link href={'/contacts'}>
-                <a>
-                  <span className="nav-link">고객지원</span>
-                </a>
-              </Link>
-            </li>
-          </ul>
-        </nav>
+      <div>
+        <div className="container-fluid bg-black">
+          <nav id="navbar-main">
+            <ul>
+              <li>
+                <Link href={"/"}>
+                  <a>
+                    <span className="nav-link">홈</span>
+                  </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/menu">
+                  <a>
+                    <span className="nav-link">상품 목록</span>
+                  </a>
+                </Link>
+              </li>
+              <li>
+                <Link href={"/contacts"}>
+                  <a>
+                    <span className="nav-link">고객지원</span>
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-    </div>
     </>
   );
 };
