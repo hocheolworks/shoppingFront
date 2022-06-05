@@ -54,7 +54,7 @@ const NavBar: FC = () => {
       signOut = null;
       orderListLink = (
         <Link href={'/non-members/orders'}>
-          <a style={{ fontWeight: 'bold' }}>주문내역</a>
+          <a style={{ fontWeight: 'bold' }}>비회원 주문조회</a>
         </Link>
       );
     }

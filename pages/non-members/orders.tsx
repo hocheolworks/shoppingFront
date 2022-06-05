@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { showLoader } from "../../src/redux/actions/auth-actions";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import { fetchNonMemberOrders } from "../../src/redux/thunks/order-thunks";
@@ -12,6 +14,7 @@ import { AuthErrors, Order } from "../../src/types/types";
 const Orders: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const MySwal = withReactContent(Swal);
 
   const errors: Partial<AuthErrors> = useSelector(
     (state: AppStateType) => state.auth.errors
@@ -38,14 +41,44 @@ const Orders: FC = () => {
 
   const [orderId, setOrderId] = useState<string>("");
   const [customerName, setName] = useState<string>("");
-  const [customerPhoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   const onClickHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (orderId != undefined){
-      dispatch(fetchNonMemberOrders(orderId, customerName, customerPhoneNumber, router));
-    } else {
-      alert('주문번호를 입력하세요.');
+    let customerPhoneNumber = phoneNumber.replace('-','')
+    let regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (regPhone.test(customerPhoneNumber) === false) {
+      MySwal.fire({
+        title: `<strong>휴대폰 번호 에러</strong>`,
+        html: `<i>올바른 형식의 휴대폰 번호를 입력해주세요.</i>`,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: '확인',
+      })
+      return
+    }
+
+    try {
+      if (orderId != undefined){
+        dispatch(fetchNonMemberOrders(orderId, customerName, customerPhoneNumber));
+      } else {
+        MySwal.fire({
+          title: `<strong>주문 번호 에러</strong>`,
+          html: `<i>주문 번호를 입력해주세요.</i>`,
+          icon: 'error',
+          showConfirmButton: true,
+          confirmButtonText: '확인',
+        })
+      }
+    }
+    catch {
+      MySwal.fire({
+        title: `<strong>주문 정보 없음</strong>`,
+        html: `<i>조회하신 정보로 주문내역이 조회되지 않습니다.</i>`,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: '확인',
+      })
     }
   }
 
@@ -92,7 +125,7 @@ const Orders: FC = () => {
                 className={
                   phoneNumberError ? "form-control is-invalid" : "form-control"
                 }
-                value={customerPhoneNumber}
+                value={phoneNumber}
                 onChange={(event) => setPhoneNumber(event.target.value)}
               />
               <div className="invalid-feedback">{phoneNumberError}</div>

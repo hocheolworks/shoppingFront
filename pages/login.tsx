@@ -60,7 +60,7 @@ const Login: FC = () => {
             <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
             로그인
           </h4>
-          <hr />
+          <hr className='mb-3'/>
           {error ? (
             <div className="alert alert-danger col-6" role="alert">
               {error}
