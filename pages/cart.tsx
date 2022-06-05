@@ -170,7 +170,7 @@ const Cart: FC = () => {
                     <div className="row no-gutters">
                       <div className="col-2 mx-3 my-3">
                         <img
-                          src={`http://localhost:8080/${cartItem.product.productImageFilepath}`}
+                          src={`${cartItem.product.productImageFilepath}`}
                           className="img-fluid"
                         />
                       </div>
