@@ -20,6 +20,8 @@ import {
   CLEAR_INSERT_ORDER_INFORMATION,
   HIDE_LOADER,
   HideLoaderActionType,
+  FetchNonMemberOrdersSuccessActionType,
+  FETCH_NONMEMBER_ORDERS_SUCCESS,
 } from '../action-types/order-action-types';
 
 export const showLoader = (): ShowLoaderActionType => ({
@@ -73,3 +75,11 @@ export const clearInsertOrderInformation =
   (): ClearInsertOrderInformationActionType => ({
     type: CLEAR_INSERT_ORDER_INFORMATION,
   });
+
+export const fetchNonMemberOrdersSuccess =(
+  order: Order
+): FetchNonMemberOrdersSuccessActionType => ({
+  type: FETCH_NONMEMBER_ORDERS_SUCCESS,
+  payload: order,
+});
+  

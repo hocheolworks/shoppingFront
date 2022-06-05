@@ -10,6 +10,7 @@ import {
   SAVE_INSERT_ORDER_INFORMATION,
   CLEAR_INSERT_ORDER_INFORMATION,
   HIDE_LOADER,
+  FETCH_NONMEMBER_ORDERS_SUCCESS,
 } from '../action-types/order-action-types';
 
 export type InitialStateType = {
@@ -71,6 +72,9 @@ const reducer = (
 
     case CLEAR_INSERT_ORDER_INFORMATION:
       return { ...state, insertOrder: {} };
+
+    case FETCH_NONMEMBER_ORDERS_SUCCESS:
+      return { ...state, order: action.payload, loading:false};
 
     default:
       return state;
