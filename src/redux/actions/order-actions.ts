@@ -1,5 +1,9 @@
 import { InsertOrder, Order, OrderError } from '../../types/types';
 import {
+  ShowLoaderActionType,
+  SHOW_LOADER,
+} from '../action-types/auth-action-types';
+import {
   FETCH_ORDER_SUCCESS,
   FETCH_USER_ORDERS_SUCCESS,
   ORDER_ADDED_FAILURE,
@@ -14,7 +18,19 @@ import {
   SAVE_INSERT_ORDER_INFORMATION,
   ClearInsertOrderInformationActionType,
   CLEAR_INSERT_ORDER_INFORMATION,
+  HIDE_LOADER,
+  HideLoaderActionType,
+  FetchNonMemberOrdersSuccessActionType,
+  FETCH_NONMEMBER_ORDERS_SUCCESS,
 } from '../action-types/order-action-types';
+
+export const showLoader = (): ShowLoaderActionType => ({
+  type: SHOW_LOADER,
+});
+
+export const hideLoader = (): HideLoaderActionType => ({
+  type: HIDE_LOADER,
+});
 
 export const fetchOrderSuccess = (): FetchOrderSuccessActionType => ({
   type: FETCH_ORDER_SUCCESS,
@@ -59,3 +75,11 @@ export const clearInsertOrderInformation =
   (): ClearInsertOrderInformationActionType => ({
     type: CLEAR_INSERT_ORDER_INFORMATION,
   });
+
+export const fetchNonMemberOrdersSuccess =(
+  order: Order
+): FetchNonMemberOrdersSuccessActionType => ({
+  type: FETCH_NONMEMBER_ORDERS_SUCCESS,
+  payload: order,
+});
+  

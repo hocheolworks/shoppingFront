@@ -101,7 +101,7 @@ export type InsertOrder = {
   orderPhoneNumber: string | undefined;
   orderMemo: string | undefined;
   orderTotalPrice: number;
-  cart: CartItem[];
+  cart: Array<CartItem | CartItemNonMember>;
 };
 
 export type OrderError = {
@@ -208,6 +208,17 @@ export type CartItem = {
   productCount: number;
 };
 
+export type CartItemNonMember = {
+  productId: number;
+  product: Product;
+  productCount: number;
+};
+
 export type FCinLayout<P = {}> = FC<P> & {
   getLayout: (page: ReactElement) => JSX.Element;
+};
+
+export type FileInQuill = {
+  base64: string;
+  file: File;
 };

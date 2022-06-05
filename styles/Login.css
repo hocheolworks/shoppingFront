@@ -1,29 +1,29 @@
 .social-btn {
-    border: 1px solid #ced4da
+  border: 1px solid #ced4da;
 }
 
 .social-btn:hover {
-    color: white;
-    background-color: #00A1DF;
+  color: white;
+  background-color: #00a1df;
 }
 
 .social-btn img {
-    float: left;
+  float: left;
 }
 
 .social-btn.google img {
-    height: 30px;
-    margin-top: -3px;
+  height: 30px;
+  margin-top: -3px;
 }
 
 .social-btn.facebook img {
-    height: 22px;
-    margin-left: 3px;
+  height: 22px;
+  margin-left: 3px;
 }
 
 .social-btn.github img {
-    height: 24px;
-    margin-left: 3px;
+  height: 24px;
+  margin-left: 3px;
 }
 
 .login-contatiner {
@@ -37,22 +37,21 @@
   }
 
   .regist-container {
-      transform: scale(90%);
+    transform: scale(90%);
   }
 }
 
 @media (max-width: 719px) {
   .form-group {
-      align-items: center;
-      display: grid;
-      grid-template-columns: 2fr 1fr 5fr;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 2fr 1fr 5fr;
   }
 
   .form-group .form-icon {
-      text-align: right !important;
-      margin-right: 10%;
+    text-align: right !important;
+    margin-right: 10%;
   }
-
 }
 
 @media (min-width: 720px) {
@@ -61,11 +60,11 @@
     display: flex;
   }
 
-  .form-group label{
+  .form-group label {
     display: block;
     width: 130px;
   }
-  
+
   .form-group .form-icon {
     text-align: right !important;
     margin-left: 10px;

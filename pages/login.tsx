@@ -1,35 +1,42 @@
-import React, { FC, FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
-import { NextRouter, useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC, FormEvent, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEnvelope,
   faLock,
   faSignInAlt,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
 import {
   activateAccount,
   formReset,
   login,
-} from "../src/redux/thunks/auth-thunks";
-import { AppStateType } from "../src/redux/reducers/root-reducer";
-import { CustomerData } from "../src/types/types";
-import googleLogo from "../src/img/google.png";
-import facebookLogo from "../src/img/facebook.png";
-import KakaoLogin from "../src/component/Kakao/KakaoLogin";
+} from '../src/redux/thunks/auth-thunks';
+import { AppStateType } from '../src/redux/reducers/root-reducer';
+import { CartItem, CartItemNonMember, CustomerData } from '../src/types/types';
+import googleLogo from '../src/img/google.png';
+import facebookLogo from '../src/img/facebook.png';
+import KakaoLogin from '../src/component/Kakao/KakaoLogin';
 
 const Login: FC = () => {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
   const { code } = router.query;
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const returnToCartPage: boolean = useSelector(
+    (state: AppStateType) => state.cart.returnToCartPage
+  );
   const error: string = useSelector((state: AppStateType) => state.auth.error);
   const success: string = useSelector(
     (state: AppStateType) => state.auth.success
   );
-  const [customerEmail, setEmail] = useState<string>("");
-  const [customerPassword, setPassword] = useState<string>("");
+  const [customerEmail, setEmail] = useState<string>('');
+  const [customerPassword, setPassword] = useState<string>('');
 
   useEffect(() => {
     dispatch(formReset());
@@ -42,7 +49,7 @@ const Login: FC = () => {
   const onClickSignIn = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     const customerData: CustomerData = { customerEmail, customerPassword };
-    dispatch(login(customerData, router));
+    dispatch(login(customerData, router, cart, returnToCartPage));
   };
 
   return (
@@ -53,7 +60,7 @@ const Login: FC = () => {
             <FontAwesomeIcon className="mr-3" icon={faSignInAlt} />
             로그인
           </h4>
-          <hr />
+          <hr className='mb-3'/>
           {error ? (
             <div className="alert alert-danger col-6" role="alert">
               {error}
@@ -68,7 +75,7 @@ const Login: FC = () => {
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">이메일: </label>
               <FontAwesomeIcon
-                style={{ position: "relative" }}
+                style={{ position: 'relative' }}
                 icon={faEnvelope}
               />
               <div className="col-sm-7">
@@ -83,7 +90,7 @@ const Login: FC = () => {
             </div>
             <div className="form-group row">
               <label className="col-sm-4 col-form-label">비밀번호: </label>
-              <FontAwesomeIcon style={{ position: "relative" }} icon={faLock} />
+              <FontAwesomeIcon style={{ position: 'relative' }} icon={faLock} />
               <div className="col-sm-7">
                 <input
                   className="form-control"

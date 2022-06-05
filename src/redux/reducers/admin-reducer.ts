@@ -15,8 +15,11 @@ import {
   LOADING_DATA,
   PRODUCT_DELETE_FAILURE,
   PRODUCT_DELETE_SUCCESS,
+  CLEAR_ADD_PRODUCT_EDITOR,
+  SET_PRODUCT_CONTENT,
+  PUSH_PRODUCT_IMAGE,
 } from '../action-types/admin-action-types';
-import { Customer, Order, ProductErrors } from '../../types/types';
+import { Customer, FileInQuill, Order, ProductErrors } from '../../types/types';
 import { AdminActionTypes } from '../action-types/admin-action-types';
 import { isDoStatement } from 'typescript';
 
@@ -29,6 +32,8 @@ export type InitialStateType = {
   isProductAdded: boolean;
   isProductEdited: boolean;
   isLoaded: boolean;
+  addProductContent: string;
+  addProductImages: Array<FileInQuill>;
 };
 
 const initialState: InitialStateType = {
@@ -40,6 +45,8 @@ const initialState: InitialStateType = {
   isProductAdded: false,
   isProductEdited: false,
   isLoaded: false,
+  addProductContent: '',
+  addProductImages: [],
 };
 
 const reducer = (
@@ -109,6 +116,18 @@ const reducer = (
         isProductEdited: false,
         errors: {},
       };
+
+    case SET_PRODUCT_CONTENT:
+      return { ...state, addProductContent: action.payload };
+
+    case PUSH_PRODUCT_IMAGE:
+      return {
+        ...state,
+        addProductImages: [...state.addProductImages, action.payload],
+      };
+
+    case CLEAR_ADD_PRODUCT_EDITOR:
+      return { ...state, addProductContent: '', addProductImages: [] };
 
     default:
       return state;

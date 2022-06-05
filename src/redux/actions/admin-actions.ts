@@ -1,4 +1,4 @@
-import { Order, ProductErrors, Customer } from '../../types/types';
+import { Order, ProductErrors, Customer, FileInQuill } from '../../types/types';
 import {
   FETCH_ALL_USERS_ORDERS_SUCCESS,
   FETCH_ALL_USERS_SUCCESS,
@@ -32,6 +32,12 @@ import {
   PRODUCT_DELETE_FAILURE,
   DeleteProductSuccessActionType,
   PRODUCT_DELETE_SUCCESS,
+  ClearAddProductEditorActionType,
+  CLEAR_ADD_PRODUCT_EDITOR,
+  SetProductContentActionType,
+  SET_PRODUCT_CONTENT,
+  PushProductImageActionType,
+  PUSH_PRODUCT_IMAGE,
 } from '../action-types/admin-action-types';
 
 export const loadingData = (): LoadingDataActionType => ({
@@ -125,4 +131,22 @@ export const getUserOrdersByQuery = (
 ): GetUserOrdersByQueryActionType => ({
   type: FETCH_USER_ORDERS_BY_QUERY_SUCCESS,
   payload: orders,
+});
+
+export const setProductContent = (
+  content: string
+): SetProductContentActionType => ({
+  type: SET_PRODUCT_CONTENT,
+  payload: content,
+});
+
+export const pushProductImage = (
+  image: FileInQuill
+): PushProductImageActionType => ({
+  type: PUSH_PRODUCT_IMAGE,
+  payload: image,
+});
+
+export const clearAddProductEditor = (): ClearAddProductEditorActionType => ({
+  type: CLEAR_ADD_PRODUCT_EDITOR,
 });

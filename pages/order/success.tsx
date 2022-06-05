@@ -11,7 +11,13 @@ import { ParsedUrlQuery } from 'querystring';
 import { AppStateType } from '../../src/redux/reducers/root-reducer';
 import { InsertOrder, Order } from '../../src/types/types';
 import { clearCartSuccess } from '../../src/redux/actions/cart-actions';
-import { clearInsertOrderInformation } from '../../src/redux/actions/order-actions';
+import {
+  clearInsertOrderInformation,
+  hideLoader,
+  showLoader,
+} from '../../src/redux/actions/order-actions';
+import Spinner from '../../src/component/Spinner/Spinner';
+import PageLoader from '../../src/component/PageLoader/PageLoader';
 
 const MySwal = withReactContent(Swal);
 
@@ -22,6 +28,9 @@ type OrderSuccessProps = {
 const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const loading: boolean = useSelector(
+    (state: AppStateType) => state.order.loading
+  );
   const insertOrder: Partial<InsertOrder> = useSelector(
     (state: AppStateType) => state.order.insertOrder
   );
@@ -31,16 +40,17 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
+    dispatch(showLoader());
+  }, []);
+
+  useEffect(() => {
     customerId.current = parseInt(sessionStorage.getItem('id') as string);
     requestService
       .post('/order/payment', { ...query, insertOrder: insertOrder })
       .then((res) => {
-        if (isNaN(customerId.current)) {
-          return;
-        }
-
         dispatch(clearInsertOrderInformation());
         dispatch(clearCartSuccess());
+        dispatch(hideLoader());
       })
       .catch((err) => {
         console.log(err.response);
@@ -55,12 +65,20 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   }, []);
 
   return (
-    <div className="container text-center mt-5">
-      <h2>주문이 완료되었습니다!</h2>
-      <p>
-        주문번호: <span>{(orderId as string).split('-')[1]}</span>
-      </p>
-    </div>
+    <>
+      <div className="container text-center mt-5">
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <h2>주문이 완료되었습니다!</h2>
+            <p>
+              주문번호: <span>{(orderId as string).replace('order-', '')}</span>
+            </p>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
