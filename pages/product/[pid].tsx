@@ -1,17 +1,17 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartPlus,
   faEraser,
   faPaperPlane,
   faStar,
-} from '@fortawesome/free-solid-svg-icons';
-import StarRatingComponent from 'react-star-rating-component';
+} from "@fortawesome/free-solid-svg-icons";
+import StarRatingComponent from "react-star-rating-component";
 
-import { resetForm } from '../../src/redux/thunks/customer-thunks';
-import { AppStateType } from '../../src/redux/reducers/root-reducer';
+import { resetForm } from "../../src/redux/thunks/customer-thunks";
+import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
   CartItem,
   CartItemNonMember,
@@ -20,32 +20,32 @@ import {
   Review,
   ReviewData,
   ReviewError,
-} from '../../src/types/types';
-import Spinner from '../../src/component/Spinner/Spinner';
-import ProductReview from './review';
-import ScrollButton from '../../src/component/ScrollButton/ScrollButton';
+} from "../../src/types/types";
+import Spinner from "../../src/component/Spinner/Spinner";
+import ProductReview from "./review";
+import ScrollButton from "../../src/component/ScrollButton/ScrollButton";
 import {
   addReviewToProduct,
   fetchIsPurchased,
   fetchProduct,
   removeReviewToProduct,
-} from '../../src/redux/thunks/product-thunks';
-import RequestService from '../../src/utils/request-service';
+} from "../../src/redux/thunks/product-thunks";
+import RequestService from "../../src/utils/request-service";
 import {
   fetchCart,
   insertCart,
   updateCart,
-} from '../../src/redux/thunks/cart-thunks';
-import StarRating from '../../src/component/StarRating/StarRating';
-import { API_BASE_URL } from '../../src/utils/constants/url';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
-import axios from 'axios';
-import { reloadSuccess } from '../../src/redux/actions/customer-actions';
+} from "../../src/redux/thunks/cart-thunks";
+import StarRating from "../../src/component/StarRating/StarRating";
+import { API_BASE_URL } from "../../src/utils/constants/url";
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next";
+import axios from "axios";
+import { reloadSuccess } from "../../src/redux/actions/customer-actions";
 import {
   addCartItem,
   fetchCartSuccess,
   updateCartItem,
-} from '../../src/redux/actions/cart-actions';
+} from "../../src/redux/actions/cart-actions";
 
 type ProductDetailProps = {
   product: Product;
@@ -93,9 +93,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [author, setAuthor] = useState<string>(
-    String(customer.customerEmail).split('@')[0]
+    String(customer.customerEmail).split("@")[0]
   );
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
   const { authorError, messageError, ratingError } = errors;
 
@@ -103,7 +103,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     dispatch(resetForm());
     dispatch(fetchIsPurchased(parseInt(pid as string), customer.id));
     if (isLoggedIn) {
-      dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
+      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
     }
   }, []);
 
@@ -129,7 +129,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
 
   useEffect(() => {
     setCount(product.productMinimumEA as number);
-    setMessage('');
+    setMessage("");
     setRating(5);
   }, [reviews]);
 
@@ -137,8 +137,8 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     const productId: number = product.id as number;
     let customerId: number | undefined;
 
-    if (typeof window !== 'undefined') {
-      customerId = parseInt(sessionStorage.getItem('id') as string);
+    if (typeof window !== "undefined") {
+      customerId = parseInt(sessionStorage.getItem("id") as string);
     }
 
     if (!Boolean(customerId)) {
@@ -186,12 +186,12 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
       }
     }
 
-    router.push('/cart');
+    router.push("/cart");
   };
 
   const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const onlyNumber = value.replace(/[^0-9]/g, '').substring(0, 4);
+    const onlyNumber = value.replace(/[^0-9]/g, "").substring(0, 4);
     const num = parseInt(onlyNumber);
     setCount(num);
   };
@@ -214,15 +214,15 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         <StarRatingComponent
           renderStarIconHalf={() => (
             <img
-              src={'/image/star-half.svg'}
+              src={"/image/star-half.svg"}
               alt="halfStar"
-              style={{ width: '14.5px', marginBottom: '2px' }}
+              style={{ width: "14.5px", marginBottom: "2px" }}
             />
           )}
           renderStarIcon={() => (
             <FontAwesomeIcon className="fa-sm" icon={faStar} />
           )}
-          name={'star'}
+          name={"star"}
           starCount={5}
           editing={false}
           value={productRating}
@@ -259,28 +259,28 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   )}
                 </div>
                 <div className="col-md-8">
-                  <span style={{ paddingBottom: '50px' }}>
+                  <span style={{ paddingBottom: "50px" }}>
                     {product.productRatingCount}개의 리뷰
                   </span>
                 </div>
               </div>
-              <p style={{ color: '#54C0A1' }}>재고 있음</p>
+              <p style={{ color: "#54C0A1" }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString('ko-KR')}원</span>
+                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
                 </h4>
               </div>
-              <div className="row ml-1" style={{ alignItems: 'center' }}>
-                <span style={{ marginRight: '5px' }}>수량: </span>
+              <div className="row ml-1" style={{ alignItems: "center" }}>
+                <span style={{ marginRight: "5px" }}>수량: </span>
                 <input
                   type="number"
                   min={product.productMinimumEA}
                   max="1000"
-                  step="10"
-                  maxLength={4}
+                  step="1"
+                  maxLength={10}
                   style={{
-                    width: '60px',
-                    height: '30px',
+                    width: "60px",
+                    height: "30px",
                   }}
                   value={count}
                   onChange={countOnChange}
@@ -290,7 +290,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   className="btn btn-success mx-3"
                   onClick={addToCart}
                 >
-                  <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{' '}
+                  <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
                   장바구니 담기
                 </button>
               </div>
@@ -301,17 +301,22 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                     <td>상품명:</td>
                     <td>{product.productName}</td>
                   </tr>
-                  <tr>
-                    <td>설명:</td>
-                    <td>{product.productDescription}</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
           <hr />
           <div className="mt-5">
-            <h3 className="text-center mb-5">리뷰</h3>
+            <h3 className="text-center mb-5">상품 설명</h3>
+            <body
+              className="text-center mb-5"
+              dangerouslySetInnerHTML={{ __html: product.productDescription }}
+            ></body>
+          </div>
+          <div className="mt-5">
+            <h3 className="text-center mt-5 mb-5 border-top">
+              <br></br>리뷰
+            </h3>
             <div id="review-table">
               <ProductReview
                 data={product.reviews}
@@ -329,15 +334,15 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{' '}
+                          </span>{" "}
                           작성자
                         </label>
                         <input
                           type="text"
                           className={
                             authorError
-                              ? 'form-control is-invalid'
-                              : 'form-control'
+                              ? "form-control is-invalid"
+                              : "form-control"
                           }
                           name="author"
                           value={author}
@@ -347,7 +352,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{' '}
+                          </span>{" "}
                           내용
                         </label>
                       </div>
@@ -355,7 +360,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                         <label>
                           <span className="text-danger">
                             <b>*</b>
-                          </span>{' '}
+                          </span>{" "}
                           별점
                         </label>
                         <div>
@@ -381,12 +386,12 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                       rows={4}
                       className={
                         messageError
-                          ? 'form-control is-invalid'
-                          : 'form-control'
+                          ? "form-control is-invalid"
+                          : "form-control"
                       }
                       name="message"
                       value={message}
-                      style={{ resize: 'none' }}
+                      style={{ resize: "none" }}
                       onChange={(event) => setMessage(event.target.value)}
                     />
                     <div className="invalid-feedback">{messageError}</div>
