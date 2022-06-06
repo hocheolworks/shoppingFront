@@ -220,5 +220,5 @@ export type FCinLayout<P = {}> = FC<P> & {
 
 export type FileInQuill = {
   base64: string;
-  file: File;
+  file: string | Blob;
 };
