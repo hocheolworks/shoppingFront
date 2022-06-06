@@ -151,17 +151,8 @@ const Cart: FC = () => {
       ) : (
         <div className="mb-5">
           {cart.length === 0 ? (
-<<<<<<< HEAD
-            <div style={{ textAlign: "center" }}>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-              <h2 className="mb-5">장바구니가 비었습니다.</h2>
-=======
             <div style={{ textAlign: 'center' }}>
               <h2>장바구니가 비었습니다.</h2>
->>>>>>> 6b4a1b4132eb5b86b729864ba371631eb93c244c
             </div>
           ) : (
             <div>

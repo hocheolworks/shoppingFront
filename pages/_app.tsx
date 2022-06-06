@@ -41,6 +41,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
+        <title>진솔유통</title>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
         <meta
@@ -75,7 +76,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             <>
               <NavBar />
               {getLayout(<Component {...pageProps} />)}
-              <Footer />  
+              <Footer />
             </>
           )}
         </PersistGate>

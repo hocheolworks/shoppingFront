@@ -1,4 +1,12 @@
-import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  FC,
+  FormEvent,
+  TextareaHTMLAttributes,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -98,6 +106,14 @@ const OrderPage: FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const postIndexRef = useRef(null);
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleResizeHeight = useCallback(() => {
+    if (textAreaRef === null || textAreaRef.current === null) return;
+    textAreaRef.current.style.height = '37px';
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + 'px';
+  }, []);
 
   const onClickPostIndex = (): void => {
     setIsPopupOpen((prevState) => !prevState);
@@ -304,16 +320,23 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">배송메모:</label>
+              <label className="col-sm-2 col-form-label">요청사항:</label>
               <div className="col-sm-8">
-                <input
-                  type="text"
+                <textarea
+                  ref={textAreaRef}
+                  style={{
+                    minHeight: '37px',
+                  }}
                   className="form-control"
                   name="orderMemo"
                   value={orderMemo}
-                  placeholder="30자 이내"
-                  maxLength={30}
-                  onChange={(event) => setOrderMemo(event.target.value)}
+                  placeholder="200자 이내"
+                  rows={1}
+                  maxLength={200}
+                  onChange={(event) => {
+                    handleResizeHeight();
+                    setOrderMemo(event.target.value);
+                  }}
                 />
               </div>
             </div>
