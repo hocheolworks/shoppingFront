@@ -30,6 +30,7 @@ import ToastShow from '../../../../src/component/Toasts/ToastShow';
 import { makeImageUrl } from '../../../../src/utils/functions';
 import Spinner from '../../../../src/component/Spinner/Spinner';
 import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+import TextEditor from '../../../../src/component/TextEditor/TextEditor';
 
 const EditProduct: FCinLayout = () => {
   const dispatch = useDispatch();
@@ -142,7 +143,7 @@ const EditProduct: FCinLayout = () => {
         <>
           <ToastShow
             showToast={showToast}
-            message={'Product successfully edited!'}
+            message={'상품 수정이 완료되었습니다!'}
           />
           <div className="container">
             <h4>
@@ -150,102 +151,18 @@ const EditProduct: FCinLayout = () => {
               상품 수정
             </h4>
             <form onSubmit={onFormSubmit}>
-              <div className="row mt-5">
-                <div className="col-md-7">
-                  <div className="form-group row">
-                    <label className="col-sm-4 col-form-label font-weight-bold">
-                      상품명:{' '}
-                    </label>
-                    <div className="col-sm-8">
-                      <input
-                        type="text"
-                        className={
-                          productNameError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
-                        }
-                        name="productName"
-                        value={productName}
-                        onChange={handleInputChange}
-                      />
-                      <div className="invalid-feedback">{productNameError}</div>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-4 col-form-label font-weight-bold">
-                      최소 주문 수량:{' '}
-                    </label>
-                    <div className="col-sm-8">
-                      <input
-                        type="number"
-                        className={
-                          productMinimumEAError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
-                        }
-                        name="productMinimumEA"
-                        value={productMinimumEA}
-                        onChange={handleInputChange}
-                      />
-                      <div className="invalid-feedback">
-                        {productMinimumEAError}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-4 col-form-label font-weight-bold">
-                      가격:{' '}
-                    </label>
-                    <div className="col-sm-8">
-                      <input
-                        type="number"
-                        className={
-                          productPriceError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
-                        }
-                        name="productPrice"
-                        value={productPrice}
-                        onChange={handleInputChange}
-                      />
-                      <div className="invalid-feedback">
-                        {productPriceError}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-4 col-form-label font-weight-bold">
-                      상품 설명:{' '}
-                    </label>
-                    <div className="col-sm-8">
-                      <input
-                        type="text"
-                        className={
-                          productDescriptionError
-                            ? 'form-control is-invalid'
-                            : 'form-control'
-                        }
-                        name="productDescription"
-                        value={productDescription}
-                        onChange={handleInputChange}
-                      />
-
-                      <div className="invalid-feedback">
-                        {productDescriptionError}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-5">
+              <div className="form row mt-3">
+                <div className="col">
                   <img
                     src={
                       file
                         ? imgSrc
                         : makeImageUrl(productImageFilepath as string)
                     }
-                    className="rounded mx-auto w-100 mb-2"
+                    className="rounded mx-auto w-30 mb-2"
                     style={{ width: '180px' }}
                   />
+                  <label>상품이미지: </label>
                   <input
                     type="file"
                     className={
@@ -259,12 +176,119 @@ const EditProduct: FCinLayout = () => {
                     onChange={handleFileChange}
                     placeholder=""
                   />
+
                   <div className="invalid-feedback">
                     {productImageFileError}
                   </div>
                 </div>
               </div>
-              <button type="submit" className="btn btn-dark">
+              <div className="form row">
+                <div className="col">
+                  <label>상품명: </label>
+                  <input
+                    type="text"
+                    className={
+                      productNameError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    name="productName"
+                    value={productName}
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productNameError}</div>
+                </div>
+              </div>
+
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 최소 수량: </label>
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    name="productMinimumEA"
+                    value={productMinimumEA}
+                    placeholder="최소 주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    type="number"
+                    className={
+                      productPriceError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    name="productPrice"
+                    value={productPrice}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>설명: </label>
+                  <TextEditor />
+                  {/* <input
+                        type="text"
+                        className={
+                          productDescriptionError
+                            ? 'form-control is-invalid'
+                            : 'form-control'
+                        }
+                        name="productDescription"
+                        value={productDescription}
+                        placeholder="상품 설명을 입력하세요."
+                        onChange={handleInputChange}
+                        /> */}
+                  <div className="invalid-feedback">
+                    {productDescriptionError}
+                  </div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>상품이미지: </label>
+                  <input
+                    type="file"
+                    className={
+                      productImageFileError
+                        ? 'form-control is-invalid'
+                        : 'form-control'
+                    }
+                    style={{ height: '44px' }}
+                    name="file"
+                    ref={fileInput}
+                    onChange={handleFileChange}
+                    placeholder=""
+                  />
+                  <img
+                    src={
+                      file
+                        ? imgSrc
+                        : makeImageUrl(productImageFilepath as string)
+                    }
+                    className="rounded mx-auto w-30 mb-2"
+                    style={{ width: '180px' }}
+                  />
+                  <div className="invalid-feedback">
+                    {productImageFileError}
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" className="btn btn-dark mt-3 mb-5">
                 <FontAwesomeIcon className="mr-2" icon={faEdit} />
                 수정
               </button>

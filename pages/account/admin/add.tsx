@@ -173,8 +173,6 @@ const AddProduct: FCinLayout = () => {
     if (customerId && customerId.current !== -1) {
       bodyFormData.append('customerId', customerId.current.toString());
     }
-<<<<<<< HEAD
-=======
 
     if (addProductImages && addProductContent) {
       const finalImages = addProductImages.filter((value) =>
@@ -184,7 +182,6 @@ const AddProduct: FCinLayout = () => {
     }
 
     return; // debug
->>>>>>> 6b4a1b4132eb5b86b729864ba371631eb93c244c
     dispatch(addProduct(bodyFormData));
 
     return;
@@ -270,8 +267,8 @@ const AddProduct: FCinLayout = () => {
                 type="text"
                 className={
                   productDescriptionError
-                    ? "form-control is-invalid"
-                    : "form-control"
+                    ? 'form-control is-invalid'
+                    : 'form-control'
                 }
                 name="productDescription"
                 value={productDescription}
