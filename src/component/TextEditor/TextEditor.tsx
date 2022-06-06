@@ -24,28 +24,20 @@ const ReactQuillWrapper = dynamic(
   { ssr: false, loading: () => <p>Loading ...</p> }
 );
 
-const EditorComponent = () => {
+const EditorComponent = ({ contentsProp }: { contentsProp: string }) => {
   const dispatch = useDispatch();
   const QuillRef = useRef<ReactQuill>();
   const isMounted = useRef<boolean>(false);
 
-  const addProductImages: Array<FileInQuill> = useSelector(
-    (state: AppStateType) => state.admin.addProductImages
-  );
-
   useEffect(() => {
     if (!isMounted.current) {
-      console.log('wrong');
       dispatch(clearAddProductEditor());
+      if (contentsProp) {
+        setContents(contentsProp);
+      }
       isMounted.current = true;
     }
   }, []);
-
-  useEffect(() => {
-    if (isMounted.current) {
-      console.log(addProductImages);
-    }
-  }, [addProductImages]);
 
   const [contents, setContents] = useState('');
   const [timer, setTimer] = useState<NodeJS.Timeout>(); // 디바운싱 타이머
@@ -74,7 +66,7 @@ const EditorComponent = () => {
 
     // 파일이 input 태그에 담기면 실행 될 함수
     input.onchange = async (event: any) => {
-      const file: File = event.target.files[0];
+      const file: string | Blob = event.target.files[0];
 
       const fileReader = new FileReader();
       fileReader.onload = function (event: any) {
@@ -90,7 +82,7 @@ const EditorComponent = () => {
         const newImage: FileInQuill = { base64: baseData, file: file };
         dispatch(pushProductImage(newImage));
       };
-      fileReader.readAsDataURL(file);
+      fileReader.readAsDataURL(file as Blob);
     };
   };
 

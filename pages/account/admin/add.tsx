@@ -24,11 +24,15 @@ import {
 } from '../../../src/types/types';
 import { fetchProducts } from '../../../src/redux/thunks/product-thunks';
 import { isValidNumber } from '../../../src/utils/functions';
-import { addProductFailure } from '../../../src/redux/actions/admin-actions';
+import {
+  addProductFailure,
+  setProductContent,
+} from '../../../src/redux/actions/admin-actions';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import AccountLayout from '../../../src/component/AccountLayout/AccountLayout';
 import TextEditor from '../../../src/component/TextEditor/TextEditor';
+import requestService from '../../../src/utils/request-service';
 
 const MySwal = withReactContent(Swal);
 
@@ -112,12 +116,11 @@ const AddProduct: FCinLayout = () => {
     }
   }, [isProductAdded]);
 
-  const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (
       !Boolean(productName) ||
-      // !Boolean(productDescription) ||
+      !Boolean(addProductContent) ||
       !Boolean(productMinimumEA) ||
       !Boolean(productPrice) ||
       !isValidNumber(productMinimumEA) ||
@@ -139,7 +142,7 @@ const AddProduct: FCinLayout = () => {
         productError.productNameError = '상품명은 필수 입니다.';
       }
 
-      if (!Boolean(productDescription)) {
+      if (!Boolean(addProductContent)) {
         productError.productDescriptionError = '상품 설명은 필수 입니다.';
       }
 
@@ -168,20 +171,45 @@ const AddProduct: FCinLayout = () => {
     bodyFormData.append('file', file as string);
     bodyFormData.append('productName', productName);
     bodyFormData.append('productMinimumEA', productMinimumEA.toString());
-    bodyFormData.append('productDescription', productDescription);
     bodyFormData.append('productPrice', productPrice.toString());
     if (customerId && customerId.current !== -1) {
       bodyFormData.append('customerId', customerId.current.toString());
     }
 
-    if (addProductImages && addProductContent) {
+    if (addProductImages.length > 0) {
       const finalImages = addProductImages.filter((value) =>
         addProductContent.includes(value.base64)
       );
-      console.log(finalImages);
+
+      const bodyFormDataFiles: FormData = new FormData();
+      finalImages.forEach((val) => bodyFormDataFiles.append('files', val.file));
+
+      const response = await requestService.post(
+        '/product/detail/images',
+        bodyFormDataFiles
+      );
+
+      const urls: Array<string> = response.data;
+
+      if (urls.length !== finalImages.length) {
+        console.log('서버에서 받아온 이미지 경로 개수가 일치하지 않습니다.');
+        return;
+      }
+
+      let newAddProductContent = addProductContent;
+      for (let i = 0; i < urls.length; i += 1) {
+        newAddProductContent = newAddProductContent.replace(
+          finalImages[i].base64,
+          urls[i]
+        );
+      }
+      console.log(newAddProductContent);
+      bodyFormData.append('productDescription', newAddProductContent);
+    } else {
+      console.log(addProductContent);
+      bodyFormData.append('productDescription', addProductContent);
     }
 
-    return; // debug
     dispatch(addProduct(bodyFormData));
   };
 
