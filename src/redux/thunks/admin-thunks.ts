@@ -13,6 +13,7 @@ import {
   loadingData,
   deleteProductFailure,
   deleteProductSuccess,
+  clearAddProductEditor,
 } from '../actions/admin-actions';
 import { fetchProductSuccess, getProducts } from '../actions/product-actions';
 import RequestService from '../../utils/request-service';
@@ -27,6 +28,7 @@ export const addProduct = (data: FormData) => async (dispatch: Dispatch) => {
     );
 
     dispatch(addProductSuccess());
+    dispatch(clearAddProductEditor());
     dispatch(fetchProductSuccess(response.data));
   } catch (error: any) {
     if (error === undefined || error.response === undefined) {
