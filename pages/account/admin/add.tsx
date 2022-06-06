@@ -290,8 +290,8 @@ const AddProduct: FCinLayout = () => {
           <div className="form row mt-3">
             <div className="col">
               <label>설명: </label>
-              {/* <TextEditor /> */}
-              <input
+              <TextEditor />
+              {/* <input
                 type="text"
                 className={
                   productDescriptionError
@@ -302,7 +302,7 @@ const AddProduct: FCinLayout = () => {
                 value={productDescription}
                 placeholder="상품 설명을 입력하세요."
                 onChange={handleInputChange}
-              />
+              /> */}
               <div className="invalid-feedback">{productDescriptionError}</div>
             </div>
           </div>

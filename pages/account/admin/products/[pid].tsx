@@ -151,37 +151,6 @@ const EditProduct: FCinLayout = () => {
               상품 수정
             </h4>
             <form onSubmit={onFormSubmit}>
-              <div className="form row mt-3">
-                <div className="col">
-                  <img
-                    src={
-                      file
-                        ? imgSrc
-                        : makeImageUrl(productImageFilepath as string)
-                    }
-                    className="rounded mx-auto w-30 mb-2"
-                    style={{ width: '180px' }}
-                  />
-                  <label>상품이미지: </label>
-                  <input
-                    type="file"
-                    className={
-                      productImageFileError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
-                    }
-                    style={{ height: '44px' }}
-                    name="file"
-                    ref={fileInput}
-                    onChange={handleFileChange}
-                    placeholder=""
-                  />
-
-                  <div className="invalid-feedback">
-                    {productImageFileError}
-                  </div>
-                </div>
-              </div>
               <div className="form row">
                 <div className="col">
                   <label>상품명: </label>
@@ -239,7 +208,7 @@ const EditProduct: FCinLayout = () => {
               <div className="form row mt-3">
                 <div className="col">
                   <label>설명: </label>
-                  <TextEditor />
+                  <TextEditor contentsProp={productDescription} />
                   {/* <input
                         type="text"
                         className={

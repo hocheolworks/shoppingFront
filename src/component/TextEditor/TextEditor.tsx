@@ -24,7 +24,7 @@ const ReactQuillWrapper = dynamic(
   { ssr: false, loading: () => <p>Loading ...</p> }
 );
 
-const EditorComponent = ({ contentsProp }: { contentsProp: string }) => {
+const EditorComponent = ({ contentsProp = '' }) => {
   const dispatch = useDispatch();
   const QuillRef = useRef<ReactQuill>();
   const isMounted = useRef<boolean>(false);
