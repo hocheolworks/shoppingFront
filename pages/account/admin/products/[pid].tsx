@@ -23,6 +23,7 @@ import {
 import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
 import {
   FCinLayout,
+  FileInQuill,
   Product,
   ProductErrors,
 } from '../../../../src/types/types';
@@ -31,6 +32,10 @@ import { makeImageUrl } from '../../../../src/utils/functions';
 import Spinner from '../../../../src/component/Spinner/Spinner';
 import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
 import TextEditor from '../../../../src/component/TextEditor/TextEditor';
+import {
+  clearAddProductEditor,
+  pushProductImage,
+} from '../../../../src/redux/actions/admin-actions';
 
 const EditProduct: FCinLayout = () => {
   const dispatch = useDispatch();
@@ -44,6 +49,15 @@ const EditProduct: FCinLayout = () => {
   const isProductEdited: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductEdited
   );
+
+  const productContent: string = useSelector(
+    (state: AppStateType) => state.admin.addProductContent
+  );
+
+  const productImages: Array<FileInQuill> = useSelector(
+    (state: AppStateType) => state.admin.addProductImages
+  );
+
   const [product, setProduct] = useState<Partial<Product>>(productData);
   const [loading, setLoading] = useState<boolean>(true);
   const [showToast, setShowToast] = useState(false);
@@ -55,7 +69,6 @@ const EditProduct: FCinLayout = () => {
     productPriceError,
     productDescriptionError,
     productImageFileError,
-    customerRoleError,
   } = errors;
 
   const {
@@ -70,6 +83,7 @@ const EditProduct: FCinLayout = () => {
 
   useEffect(() => {
     customerId.current = parseInt(sessionStorage.getItem('id') as string);
+    dispatch(clearAddProductEditor());
     dispatch(fetchProduct(parseInt(pid as string)));
   }, []);
 
@@ -78,6 +92,16 @@ const EditProduct: FCinLayout = () => {
   }, [productData]);
 
   useEffect(() => {
+    if (productData.productDescription) {
+      const regex: RegExp = /src=[\"']?([^>\"']*)[\"']?[^>]*/g;
+      productData.productDescription
+        .match(regex)
+        ?.map((val) =>
+          dispatch(
+            pushProductImage({ base64: val.slice(5).slice(0, -1), file: '-1' })
+          )
+        );
+    }
     setProduct(productData);
     if (isProductEdited) {
       if (fileInput.current !== null) fileInput.current.value = '';

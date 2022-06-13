@@ -28,19 +28,10 @@ const ProductListComponent: FC<PropsType> = ({
   data,
   itemsPerPage,
   startFrom,
-  searchByData,
 }) => {
   const dispatch = useDispatch();
   const loading: boolean = useSelector(
     (state: AppStateType) => state.product.isProductLoading
-  );
-
-  const customer: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.customer.customer
-  );
-
-  const error: Partial<ProductErrors> = useSelector(
-    (state: AppStateType) => state.admin.errors
   );
 
   const customerId = useRef<number>(-1);
@@ -48,15 +39,8 @@ const ProductListComponent: FC<PropsType> = ({
   const [modalActive, setModalActive] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<Product>();
 
-  const {
-    slicedData,
-    pagination,
-    prevPage,
-    nextPage,
-    changePage,
-    setFilteredData,
-    setSearching,
-  } = usePagination({ itemsPerPage, data, startFrom });
+  const { slicedData, pagination, prevPage, nextPage, changePage } =
+    usePagination({ itemsPerPage, data, startFrom });
 
   useEffect(() => {
     customerId.current = parseInt(sessionStorage.getItem('id') as string);
@@ -90,14 +74,6 @@ const ProductListComponent: FC<PropsType> = ({
         <FontAwesomeIcon className="ml-2 mr-2" icon={faList} /> 상품 목록
       </h4>
       <br />
-      {/* <div className="mt-3">
-        <PaginationItem
-          pagination={pagination}
-          prevPage={prevPage}
-          changePage={changePage}
-          nextPage={nextPage}
-        />
-      </div> */}
       {loading ? (
         <Spinner />
       ) : (
