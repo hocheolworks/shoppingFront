@@ -6,17 +6,17 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faShoppingBag,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { addOrder, fetchOrder } from '../../src/redux/thunks/order-thunks';
-import PageLoader from '../../src/component/PageLoader/PageLoader';
-import { AppStateType } from '../../src/redux/reducers/root-reducer';
+import { addOrder, fetchOrder } from "../../src/redux/thunks/order-thunks";
+import PageLoader from "../../src/component/PageLoader/PageLoader";
+import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
   OrderError,
   OrderItem,
@@ -26,41 +26,41 @@ import {
   CartItem,
   Order,
   CartItemNonMember,
-} from '../../src/types/types';
+} from "../../src/types/types";
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-import DaumPostcode from 'react-daum-postcode';
-import { loadTossPayments } from '@tosspayments/payment-sdk';
-import { API_BASE_URL } from '../../src/utils/constants/url';
-import { useRouter } from 'next/router';
-import { fetchCart } from '../../src/redux/thunks/cart-thunks';
+import DaumPostcode from "react-daum-postcode";
+import { loadTossPayments } from "@tosspayments/payment-sdk";
+import { API_BASE_URL } from "../../src/utils/constants/url";
+import { useRouter } from "next/router";
+import { fetchCart } from "../../src/redux/thunks/cart-thunks";
 import {
   orderAddedFailure,
   saveInsertOrderInformation,
-} from '../../src/redux/actions/order-actions';
-import { FRONT_BASE_URL } from '../../src/utils/constants/url';
-const clientKey = 'test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM';
+} from "../../src/redux/actions/order-actions";
+import { FRONT_BASE_URL } from "../../src/utils/constants/url";
+const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
 
 const MySwal = withReactContent(Swal);
 
-type PaymentMethodType = '카드' | '계좌이체' | '가상계좌';
+type PaymentMethodType = "카드" | "계좌이체" | "가상계좌";
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   const customerId = useRef<number>(-1);
-  const paymentMethodList = ['카드', '계좌이체', '가상계좌'];
+  const paymentMethodList = ["카드", "계좌이체", "가상계좌"];
 
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('카드');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
 
   useEffect(() => {
-    if (sessionStorage.getItem('id') !== null) {
+    if (sessionStorage.getItem("id") !== null) {
       // 로그인 상태 : 회원 주문
-      customerId.current = parseInt(sessionStorage.getItem('id') as string);
-      dispatch(fetchCart(parseInt(sessionStorage.getItem('id') as string)));
+      customerId.current = parseInt(sessionStorage.getItem("id") as string);
+      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
     }
 
     dispatch(orderAddedFailure({}));
@@ -74,9 +74,21 @@ const OrderPage: FC = () => {
     (state: AppStateType) => state.cart.cartItems
   );
 
-  const orderTotalPrice: number = useSelector(
+  const cartTotalPrice: number = useSelector(
     (state: AppStateType) => state.cart.totalPrice
   );
+
+  const [tax, SetTax] = useState<number>(
+    cartTotalPrice ? cartTotalPrice * 0.1 : 0
+  );
+  const [deliveryFee, SetDeliveryFee] = useState<number>(
+    cartTotalPrice ? (cartTotalPrice < 100_000 ? 5000 : 0) : 0
+  );
+
+  const [orderTotalPrice, setOrderTotalPrice] = useState<number>(
+    cartTotalPrice ? cartTotalPrice + tax + deliveryFee : 0
+  );
+
   const errors: Partial<OrderError> = useSelector(
     (state: AppStateType) => state.order.errors
   );
@@ -101,7 +113,7 @@ const OrderPage: FC = () => {
     string | undefined
   >(customersData.customerAddressDetail);
 
-  const [orderMemo, setOrderMemo] = useState<string | undefined>('');
+  const [orderMemo, setOrderMemo] = useState<string | undefined>("");
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
@@ -111,8 +123,8 @@ const OrderPage: FC = () => {
 
   const handleResizeHeight = useCallback(() => {
     if (textAreaRef === null || textAreaRef.current === null) return;
-    textAreaRef.current.style.height = '37px';
-    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + 'px';
+    textAreaRef.current.style.height = "37px";
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
   }, []);
 
   const onClickPostIndex = (): void => {
@@ -121,7 +133,7 @@ const OrderPage: FC = () => {
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setOrderAddress(
-      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
+      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
     );
     setOrderPostIndex(data.zonecode);
     setIsPopupOpen(false);
@@ -145,27 +157,27 @@ const OrderPage: FC = () => {
       !Boolean(orderPhoneNumber)
     ) {
       const orderError: OrderError = {
-        orderCustomerNameError: '',
-        orderPostIndexError: '',
-        orderAddressError: '',
-        orderAddressDetailError: '',
-        orderPhoneNumberError: '',
+        orderCustomerNameError: "",
+        orderPostIndexError: "",
+        orderAddressError: "",
+        orderAddressDetailError: "",
+        orderPhoneNumberError: "",
       };
 
       if (!Boolean(orderCustomerName)) {
-        orderError.orderCustomerNameError = '수령인은 필수 입니다.';
+        orderError.orderCustomerNameError = "수령인은 필수 입니다.";
       }
       if (!Boolean(orderPostIndex)) {
-        orderError.orderPostIndexError = '우편번호는 필수 입니다.';
+        orderError.orderPostIndexError = "우편번호는 필수 입니다.";
       }
       if (!Boolean(orderAddress)) {
-        orderError.orderAddressError = '주소는 필수 입니다.';
+        orderError.orderAddressError = "주소는 필수 입니다.";
       }
       if (!Boolean(orderAddressDetail)) {
-        orderError.orderAddressDetailError = '상세주소는 필수 입니다.';
+        orderError.orderAddressDetailError = "상세주소는 필수 입니다.";
       }
       if (!Boolean(orderPhoneNumber)) {
-        orderError.orderPhoneNumberError = '연락처는 필수 입니다.';
+        orderError.orderPhoneNumberError = "연락처는 필수 입니다.";
       }
       dispatch(orderAddedFailure(orderError));
       return;
@@ -229,8 +241,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderCustomerNameError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="lastName"
                   value={orderCustomerName}
@@ -250,8 +262,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPostIndexError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="postIndex"
                   value={orderPostIndex}
@@ -269,8 +281,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="address"
                   value={orderAddress}
@@ -286,8 +298,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderAddressDetailError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="address"
                   value={orderAddressDetail}
@@ -307,8 +319,8 @@ const OrderPage: FC = () => {
                   type="text"
                   className={
                     orderPhoneNumberError
-                      ? 'form-control is-invalid'
-                      : 'form-control'
+                      ? "form-control is-invalid"
+                      : "form-control"
                   }
                   name="phoneNumber"
                   value={orderPhoneNumber}
@@ -325,7 +337,7 @@ const OrderPage: FC = () => {
                 <textarea
                   ref={textAreaRef}
                   style={{
-                    minHeight: '37px',
+                    minHeight: "37px",
                   }}
                   className="form-control"
                   name="orderMemo"
@@ -347,7 +359,7 @@ const OrderPage: FC = () => {
                   <DaumPostcode
                     className="form-control"
                     style={{
-                      border: '1px solid black',
+                      border: "1px solid black",
                       padding: 0,
                     }}
                     onComplete={onCompletePostIndex}
@@ -357,8 +369,8 @@ const OrderPage: FC = () => {
             )}
             <hr
               style={{
-                margin: '0 0 10px 0',
-                maxWidth: '82.5%',
+                margin: "0 0 10px 0",
+                maxWidth: "82.5%",
               }}
             />
           </div>
@@ -380,9 +392,9 @@ const OrderPage: FC = () => {
                           <h5>{cartItem.product.productName}</h5>
                           <h6>
                             <span>
-                              가격 :{' '}
+                              가격 :{" "}
                               {`${cartItem.product.productPrice.toLocaleString(
-                                'ko-KR'
+                                "ko-KR"
                               )} 원`}
                             </span>
                           </h6>
@@ -398,7 +410,7 @@ const OrderPage: FC = () => {
             </div>
             <hr
               style={{
-                margin: '0 0 5px 0',
+                margin: "0 0 5px 0",
               }}
             />
             <div className="form-group row mb-0">
@@ -415,7 +427,7 @@ const OrderPage: FC = () => {
                       onChange={(e) => {
                         setPaymentMethod(e.target.value as PaymentMethodType);
                       }}
-                    />{' '}
+                    />{" "}
                     <label className="d-inline" htmlFor={value}>
                       {value}
                     </label>
@@ -425,21 +437,40 @@ const OrderPage: FC = () => {
             </div>
             <hr
               style={{
-                margin: '0 0 10px 0',
+                margin: "0 0 10px 0",
               }}
             />
+
+            <div className="row">
+              <div className="container">
+                <div className="d-flex justify-content-between">
+                  <p className="mb-0">상품 금액</p>
+                  <p className="mb-0">{`${cartTotalPrice.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <p className="mb-0">부가세</p>
+                  <p className="mb-0">{`+${tax.toLocaleString("ko-KR")} 원`}</p>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <p className="mb-1">배송비</p>
+                  <p className="mb-1">{`+${deliveryFee.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
+                </div>
+              </div>
+              <div className="container d-flex justify-content-between">
+                <h5 className="ml-0 pl-0">총 주문 금액</h5>
+                <h5>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</h5>
+              </div>
+            </div>
             <button
               type="submit"
-              className="btn btn-primary btn-lg btn-success px-5 float-right"
+              className="btn btn-primary btn-lg btn-success px-5 float-right mt-2"
             >
               <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
             </button>
-            <div className="row">
-              <h4>
-                주문 금액 :{' '}
-                <span>{`${orderTotalPrice.toLocaleString('ko-KR')} 원`}</span>
-              </h4>
-            </div>
           </div>
         </div>
       </form>
