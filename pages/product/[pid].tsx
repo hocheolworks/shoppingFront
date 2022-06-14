@@ -55,6 +55,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { pid } = router.query;
+  console.log(product);
 
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
@@ -191,7 +192,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
 
   const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const onlyNumber = value.replace(/[^0-9]/g, "").substring(0, 4);
+    const onlyNumber = value.replace(/[^0-9]/g, "").substring(0, 10);
     const num = parseInt(onlyNumber);
     setCount(num);
   };
@@ -267,7 +268,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
               <p style={{ color: "#54C0A1" }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
+                  <span>
+                    {product.productPrice?.toLocaleString("ko-KR")}원~
+                  </span>
                 </h4>
               </div>
               <div className="row ml-1" style={{ alignItems: "center" }}>
@@ -275,11 +278,11 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                 <input
                   type="number"
                   min={product.productMinimumEA}
-                  max="1000"
+                  max="1000000000"
                   step="1"
-                  maxLength={10}
+                  maxLength={20}
                   style={{
-                    width: "60px",
+                    width: "120px",
                     height: "30px",
                   }}
                   value={count}
@@ -295,12 +298,94 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                 </button>
               </div>
               <br />
+              <div className="row ml-1" style={{ alignItems: "center" }}>
+                <span>구매 수량별 가격</span>
+              </div>
               <table className="table">
                 <tbody>
-                  <tr>
-                    <td>상품명:</td>
-                    <td>{product.productName}</td>
-                  </tr>
+                  {product.productEA1 !== 0 ? (
+                    <tr>
+                      <td>1개 ~ {product.productEA1}개</td>
+                      <td>
+                        {product.productPrice1 === "문의 후 가격 협의" ? (
+                          <span>문의 후 가격 협의</span>
+                        ) : (
+                          <span>{product.productPrice1}원</span>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <div></div>
+                  )}
+                  {product.productEA2 !== 0 ? (
+                    <tr>
+                      <td>
+                        {product.productEA1 + 1}개 ~ {product.productEA2}개
+                      </td>
+                      <td>
+                        {product.productPrice2 === "문의 후 가격 협의" ? (
+                          <span>문의 후 가격 협의</span>
+                        ) : (
+                          <span>{product.productPrice2}원</span>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <div></div>
+                  )}
+                  {product.productEA3 !== 0 ? (
+                    <tr>
+                      <td>
+                        {product.productEA2 + 1}개 ~ {product.productEA3}개
+                      </td>
+                      <td>
+                        {product.productPrice3 === "문의 후 가격 협의" ? (
+                          <span>문의 후 가격 협의</span>
+                        ) : (
+                          <span>{product.productPrice3}원</span>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <div></div>
+                  )}
+                  {product.productEA4 !== 0 ? (
+                    <tr>
+                      <td>
+                        {product.productEA3 + 1}개 ~ {product.productEA4}개
+                      </td>
+                      <td>
+                        {product.productPrice4 === "문의 후 가격 협의" ? (
+                          <span>문의 후 가격 협의</span>
+                        ) : (
+                          <span>{product.productPrice4}원</span>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <div></div>
+                  )}
+                  {product.productEA5 !== 0 ? (
+                    <tr>
+                      <td>
+                        {product.productEA4 + 1}개 ~ {product.productEA5}개
+                      </td>
+                      <td>
+                        {product.productPrice5 === "문의 후 가격 협의" ? (
+                          <span>문의 후 가격 협의</span>
+                        ) : (
+                          <span>{product.productPrice5}원</span>
+                        )}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr>
+                      <td>{product.productEA3 + 1}개~</td>
+                      <td>
+                        <span>문의 후 가격 협의</span>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

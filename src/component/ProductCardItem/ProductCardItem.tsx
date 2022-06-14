@@ -43,7 +43,7 @@ const ProductCardItem: FC<PropsType> = ({
           <StarRating productRating={product.productRating} />
           <h6>{product.productName}</h6>
           <h6>
-            <span>{product.productPrice.toLocaleString("ko-KR")}원</span>
+            <span>{product.productPrice.toLocaleString("ko-KR")}원~</span>
           </h6>
         </div>
         <div className="text-center align-items-end mb-3">

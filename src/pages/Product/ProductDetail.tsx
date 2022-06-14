@@ -9,9 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StarRatingComponent from "react-star-rating-component";
 
-import {
-  resetForm,
-} from "../../redux/thunks/customer-thunks";
+import { resetForm } from "../../redux/thunks/customer-thunks";
 import { AppStateType } from "../../redux/reducers/root-reducer";
 import {
   CartItem,
@@ -25,7 +23,11 @@ import halfStar from "../../img/star-half.svg";
 import Spinner from "../../component/Spinner/Spinner";
 import ProductReview from "./ProductReview";
 import ScrollButton from "../../component/ScrollButton/ScrollButton";
-import { addReviewToProduct, fetchIsPurchased, fetchProduct } from "../../redux/thunks/product-thunks";
+import {
+  addReviewToProduct,
+  fetchIsPurchased,
+  fetchProduct,
+} from "../../redux/thunks/product-thunks";
 import RequestService from "../../utils/request-service";
 import {
   fetchCart,
@@ -59,7 +61,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const loading: boolean = useSelector(
     (state: AppStateType) => state.product.isProductLoading
   );
-  
+
   const cart: Array<CartItem> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
@@ -75,7 +77,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   const [isCartExist, setIsCartExist] = useState<boolean>(false);
   const [count, setCount] = useState<number>(0);
   const [author, setAuthor] = useState<string>(
-    String(customer.customerEmail).split('@')[0]
+    String(customer.customerEmail).split("@")[0]
   );
   const [message, setMessage] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
@@ -105,7 +107,7 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
   useEffect(() => {
     setMessage("");
     setRating(5);
-  }, [isReviewAdded,isReviewDeleted]);
+  }, [isReviewAdded, isReviewDeleted]);
 
   useEffect(() => {
     setCount(product.productMinimumEA as number);
@@ -214,7 +216,9 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
               <p style={{ color: "#54C0A1" }}>재고 있음</p>
               <div className="row ml-1">
                 <h4 className="mr-5">
-                  <span>{product.productPrice?.toLocaleString("ko-KR")}원</span>
+                  <span>
+                    {product.productPrice?.toLocaleString("ko-KR")}원~
+                  </span>
                 </h4>
               </div>
               {(sessionStorage.getItem("isLoggedIn") === "true" ||
@@ -224,11 +228,11 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
                   <input
                     type="number"
                     min={product.productMinimumEA}
-                    max="1000"
+                    max="1000000"
                     step="10"
-                    maxLength={4}
+                    maxLength={10}
                     style={{
-                      width: "60px",
+                      width: "100px",
                       height: "30px",
                     }}
                     value={count}
@@ -265,81 +269,90 @@ const ProductDetail: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
             <Route
               exact
               component={() => (
-                <ProductReview data={reviews} itemsPerPage={5} dispatch={dispatch} />
+                <ProductReview
+                  data={reviews}
+                  itemsPerPage={5}
+                  dispatch={dispatch}
+                />
               )}
             />
-            {(isPurchased) && (
-            <form onSubmit={addReview}>
-              <div className="form-group border mt-5">
-                <div className="mx-3 my-3">
-                  <div className="row">
-                    <div className="col-md-4">
-                      <label>
-                        <span className="text-danger">
-                          <b>*</b>
-                        </span>{" "}
-                        작성자
-                      </label>
-                      <input
-                        type="text"
-                        className={
-                          authorError
-                            ? "form-control is-invalid"
-                            : "form-control"
-                        }
-                        name="author"
-                        value={author}
-                        readOnly={true}
-                      />
-                      <div className="invalid-feedback">{authorError}</div>
-                      <label>
-                        <span className="text-danger">
-                          <b>*</b>
-                        </span>{" "}
-                        내용
-                      </label>
-                    </div>
-                    <div className="col-md-8">
-                      <label>
-                        <span className="text-danger">
-                          <b>*</b>
-                        </span>{" "}
-                        별점
-                      </label>
-                      <div>
-                        <StarRatingComponent
-                          name="star"
-                          starCount={5}
-                          value={rating}
-                          onStarClick={(value) => setRating(value)}
-                          renderStarIcon={() => (
-                            <FontAwesomeIcon className="fa-sm" icon={faStar} />
-                          )}
+            {isPurchased && (
+              <form onSubmit={addReview}>
+                <div className="form-group border mt-5">
+                  <div className="mx-3 my-3">
+                    <div className="row">
+                      <div className="col-md-4">
+                        <label>
+                          <span className="text-danger">
+                            <b>*</b>
+                          </span>{" "}
+                          작성자
+                        </label>
+                        <input
+                          type="text"
+                          className={
+                            authorError
+                              ? "form-control is-invalid"
+                              : "form-control"
+                          }
+                          name="author"
+                          value={author}
+                          readOnly={true}
                         />
-                        <div className="invalid-feedback d-block">
-                          {ratingError}
+                        <div className="invalid-feedback">{authorError}</div>
+                        <label>
+                          <span className="text-danger">
+                            <b>*</b>
+                          </span>{" "}
+                          내용
+                        </label>
+                      </div>
+                      <div className="col-md-8">
+                        <label>
+                          <span className="text-danger">
+                            <b>*</b>
+                          </span>{" "}
+                          별점
+                        </label>
+                        <div>
+                          <StarRatingComponent
+                            name="star"
+                            starCount={5}
+                            value={rating}
+                            onStarClick={(value) => setRating(value)}
+                            renderStarIcon={() => (
+                              <FontAwesomeIcon
+                                className="fa-sm"
+                                icon={faStar}
+                              />
+                            )}
+                          />
+                          <div className="invalid-feedback d-block">
+                            {ratingError}
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <textarea
+                      rows={4}
+                      className={
+                        messageError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="message"
+                      value={message}
+                      style={{ resize: "none" }}
+                      onChange={(event) => setMessage(event.target.value)}
+                    />
+                    <div className="invalid-feedback">{messageError}</div>
+                    <button type="submit" className="btn btn-dark mt-3">
+                      <FontAwesomeIcon className="mr-2" icon={faPaperPlane} />
+                      리뷰 남기기
+                    </button>
                   </div>
-                  <textarea
-                    rows={4}
-                    className={
-                      messageError ? "form-control is-invalid" : "form-control"
-                    }
-                    name="message"
-                    value={message}
-                    style={{ resize: "none" }}
-                    onChange={(event) => setMessage(event.target.value)}
-                  />
-                  <div className="invalid-feedback">{messageError}</div>
-                  <button type="submit" className="btn btn-dark mt-3">
-                    <FontAwesomeIcon className="mr-2" icon={faPaperPlane} />
-                    리뷰 남기기
-                  </button>
                 </div>
-              </div>
-            </form>
+              </form>
             )}
           </div>
         </>
