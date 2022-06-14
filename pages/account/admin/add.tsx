@@ -66,6 +66,8 @@ const AddProduct: FCinLayout = () => {
 
   const customerId = useRef<number>(-1);
 
+  const toastTimeout = useRef<NodeJS.Timeout>();
+
   const isProductAdded: boolean = useSelector(
     (state: AppStateType) => state.admin.isProductAdded
   );
@@ -134,6 +136,11 @@ const AddProduct: FCinLayout = () => {
         icon: "error",
       });
     }
+
+    return () => {
+      window.clearTimeout(toastTimeout.current as NodeJS.Timeout);
+      dispatch(formReset());
+    };
   }, []);
 
   useEffect(() => {
@@ -143,7 +150,7 @@ const AddProduct: FCinLayout = () => {
       if (fileInput.current !== null) fileInput.current.value = "";
 
       setShowToast(true);
-      setTimeout(() => {
+      toastTimeout.current = setTimeout(() => {
         setShowToast(false);
         dispatch(formReset());
       }, 5000);
@@ -154,11 +161,11 @@ const AddProduct: FCinLayout = () => {
 
   const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (
       !Boolean(productName) ||
       !Boolean(addProductContent) ||
       !Boolean(productMinimumEA) ||
-      !Boolean(productPrice) ||
       !isValidNumber(productMinimumEA) ||
       productMinimumEA < 1 ||
       !isValidNumber(productPrice) ||
@@ -189,7 +196,7 @@ const AddProduct: FCinLayout = () => {
           "최소 주문 수량은 0보다 큰 숫자여야 합니다.";
       }
 
-      if (!Boolean(productPrice)) {
+      if (!isValidNumber(productPrice)) {
         productError.productPriceError = "상품 가격은 필수 입니다.";
       } else if (productPrice < 0) {
         productError.productPriceError = "상품 가격은 0보다 작을 수 없습니다.";
@@ -250,10 +257,8 @@ const AddProduct: FCinLayout = () => {
           urls[i]
         );
       }
-      console.log(newAddProductContent);
       bodyFormData.append("productDescription", newAddProductContent);
     } else {
-      console.log(addProductContent);
       bodyFormData.append("productDescription", addProductContent);
     }
 

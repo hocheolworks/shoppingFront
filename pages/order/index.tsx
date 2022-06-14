@@ -74,9 +74,21 @@ const OrderPage: FC = () => {
     (state: AppStateType) => state.cart.cartItems
   );
 
-  const orderTotalPrice: number = useSelector(
+  const cartTotalPrice: number = useSelector(
     (state: AppStateType) => state.cart.totalPrice
   );
+
+  const [tax, SetTax] = useState<number>(
+    cartTotalPrice ? cartTotalPrice * 0.1 : 0
+  );
+  const [deliveryFee, SetDeliveryFee] = useState<number>(
+    cartTotalPrice ? (cartTotalPrice < 100_000 ? 5000 : 0) : 0
+  );
+
+  const [orderTotalPrice, setOrderTotalPrice] = useState<number>(
+    cartTotalPrice ? cartTotalPrice + tax + deliveryFee : 0
+  );
+
   const errors: Partial<OrderError> = useSelector(
     (state: AppStateType) => state.order.errors
   );
@@ -428,9 +440,34 @@ const OrderPage: FC = () => {
                 margin: "0 0 10px 0",
               }}
             />
+
+            <div className="row">
+              <div className="container">
+                <div className="d-flex justify-content-between">
+                  <p className="mb-0">상품 금액</p>
+                  <p className="mb-0">{`${cartTotalPrice.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <p className="mb-0">부가세</p>
+                  <p className="mb-0">{`+${tax.toLocaleString("ko-KR")} 원`}</p>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <p className="mb-1">배송비</p>
+                  <p className="mb-1">{`+${deliveryFee.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
+                </div>
+              </div>
+              <div className="container d-flex justify-content-between">
+                <h5 className="ml-0 pl-0">총 주문 금액</h5>
+                <h5>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</h5>
+              </div>
+            </div>
             <button
               type="submit"
-              className="btn btn-primary btn-lg btn-success px-5 float-right"
+              className="btn btn-primary btn-lg btn-success px-5 float-right mt-2"
             >
               <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
             </button>

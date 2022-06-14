@@ -296,6 +296,9 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
                   장바구니 담기
                 </button>
+                <p className="mb-0 fw-lighter">
+                  *부가세 10% 별도, 10만원 이상 주문시 배송비 무료
+                </p>
               </div>
               <br />
               <div className="row ml-1" style={{ alignItems: "center" }}>
@@ -395,7 +398,12 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
             <h3 className="text-center mb-5">상품 설명</h3>
             <body
               className="text-center mb-5"
-              dangerouslySetInnerHTML={{ __html: product.productDescription }}
+              dangerouslySetInnerHTML={{
+                __html: product.productDescription.replace(
+                  "<img ",
+                  '<img style="max-width:100%"'
+                ),
+              }}
             ></body>
           </div>
           <div className="mt-5">
