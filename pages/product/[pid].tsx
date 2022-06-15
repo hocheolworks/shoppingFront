@@ -229,6 +229,24 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         });
         router.push("/cart");
       } else {
+        MySwal.fire({
+          title: `<strong>가격 안내</strong>`,
+          html: `<i><b>${count}개를 구매하시면 개당 ${finalPrice}원 입니다.</i>`,
+          icon: "question",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "계속",
+          cancelButtonText: "취소",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            dispatch(
+              insertCart(customerId as number, productId, count, finalPrice)
+            );
+            router.push("/cart");
+          } else if (result.isDenied) {
+            return;
+          }
+        });
         dispatch(
           addCartItem({
             productId: product.id,
