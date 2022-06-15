@@ -1,5 +1,5 @@
-import { StaticRouter } from 'react-router-dom';
-import { CartItem, CartItemNonMember, Product } from '../../types/types';
+import { StaticRouter } from "react-router-dom";
+import { CartItem, CartItemNonMember, Product } from "../../types/types";
 import {
   CALCULATE_CART_PRICE_SUCCESS,
   CLEAR_CART_SUCCESS,
@@ -12,7 +12,7 @@ import {
   UPDATE_CART_ITEM,
   RETURN_TO_CART_PAGE,
   RETURN_TO_CART_PAGE_DONE,
-} from '../action-types/cart-action-types';
+} from "../action-types/cart-action-types";
 
 export type InitialStateType = {
   cartItems: Array<CartItem | CartItemNonMember>;

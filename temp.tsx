@@ -35,8 +35,15 @@ const MySwal = withReactContent(Swal);
 const Cart: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [productPrice, setProductPrice] = useState<any[]>([]);
+
+  const [priceInfo, setPriceInfo] = useState<any[]>([]);
   const [finalPrice, setFinalPrice] = useState(0);
+
+  useEffect(() => {
+    requestService.get("/product/all").then((res) => {
+      setPriceInfo(res.data);
+    });
+  }, []);
 
   const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
@@ -71,12 +78,6 @@ const Cart: FC = () => {
     dispatch(calculateCartPriceSuccess(sum));
   }, [cart]);
 
-  useEffect(() => {
-    requestService.get("/product/all").then((res) => {
-      setProductPrice(res.data);
-    });
-  }, []);
-
   const deleteFromCart = (productId: number): void => {
     if (isNaN(customerId.current) || customerId.current === 0) {
       // 비로그인 상태 : 비회원
@@ -91,166 +92,129 @@ const Cart: FC = () => {
     event: ChangeEvent<HTMLInputElement>,
     productId: number
   ): void => {
-    let value: number = parseInt(event.target.value);
-    if (productPrice !== []) {
-      const targetProduct = productPrice.filter((x) => x.id === productId)[0];
-      let tempPrice = parseInt(targetProduct.productPrice);
-      const price1 = targetProduct.productPrice1;
-      const price2 = targetProduct.productPrice2;
-      const price3 = targetProduct.productPrice3;
-      const price4 = targetProduct.productPrice4;
-      const price5 = targetProduct.productPrice5;
-      const ea1 = parseInt(targetProduct.productEA1);
-      const ea2 = parseInt(targetProduct.productEA2);
-      const ea3 = parseInt(targetProduct.productEA3);
-      const ea4 = parseInt(targetProduct.productEA4);
-      const ea5 = parseInt(targetProduct.productEA5);
-      console.log(targetProduct);
-
-      if (value != NaN && 1 <= value && value < ea1) {
-        tempPrice = price1;
-        setFinalPrice(tempPrice);
-        console.log(price1);
-      } else if (value < ea2 && value >= ea1) {
-        tempPrice = price2;
-        setFinalPrice(tempPrice);
-        console.log(price2);
-      } else if (value < ea3 && value >= ea2) {
-        tempPrice = price3;
-        setFinalPrice(tempPrice);
-        console.log(price3);
-      } else if (value < ea4 && value >= ea3) {
-        tempPrice = price4;
-        setFinalPrice(tempPrice);
-        console.log(price4);
-      } else if (value >= ea5) {
-        console.log("else!");
-        setFinalPrice(tempPrice);
-        tempPrice = price5;
-      } else {
-        if (!isNaN(value)) {
-          {
-            alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
-          }
-        }
-      }
-    }
+    const value: number = parseInt(event.target.value);
 
     if (isNaN(customerId.current) || customerId.current === 0) {
       // 비로그인 상태 : 비회원
       let newValue = value;
 
-      if (isNaN(value) || value < 0 || value > 100000000) {
-        newValue = 1;
+      if (isNaN(value) || value === 0 || value > 10000) {
+        newValue = 10;
+        if (value > 10000) {
+          alert("대량 구매는 문의를 통한 가격 협의 후 이용해주세요!");
+        }
       }
-      dispatch(updateCartItem(productId, newValue));
+      if (priceInfo !== []) {
+        const targetProduct = priceInfo.filter((x) => x.id === productId)[0];
+        let tempPrice = parseInt(targetProduct.productPrice);
+        const price1 = targetProduct.productPrice1;
+        const price2 = targetProduct.productPrice2;
+        const price3 = targetProduct.productPrice3;
+        const price4 = targetProduct.productPrice4;
+        const price5 = targetProduct.productPrice5;
+        const ea1 = parseInt(targetProduct.productEA1);
+        const ea2 = parseInt(targetProduct.productEA2);
+        const ea3 = parseInt(targetProduct.productEA3);
+        const ea4 = parseInt(targetProduct.productEA4);
+        const ea5 = parseInt(targetProduct.productEA5);
+        console.log(targetProduct);
+
+        if (value != NaN && 1 <= value && value < ea1) {
+          tempPrice = price1;
+          setFinalPrice(tempPrice);
+        } else if (value < ea2 && value >= ea1) {
+          tempPrice = price2;
+          setFinalPrice(tempPrice);
+        } else if (value < ea3 && value >= ea2) {
+          tempPrice = price3;
+          setFinalPrice(tempPrice);
+        } else if (value < ea4 && value >= ea3) {
+          tempPrice = price4;
+          setFinalPrice(tempPrice);
+        } else if (value >= ea5) {
+          setFinalPrice(tempPrice);
+          tempPrice = price5;
+        } else {
+          if (!isNaN(value)) {
+            {
+              alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
+            }
+          }
+        }
+      }
+
+      const productPrice = finalPrice;
+      dispatch(updateCartItem(productId, newValue, productPrice));
     } else {
       // 로그인 상태 : 회원
-      if (isNaN(value) || value < 0 || value > 100000000) {
-        dispatch(updateCart(customerId.current, productId, 1));
+      if (isNaN(value) || value === 0 || value > 10000) {
+        if (value > 10000) {
+          alert("대량 구매는 문의를 통한 가격 협의 후 이용해주세요!");
+        }
+        // dispatch(updateCart(customerId.current, productId, 10, productPrice));
       } else {
-        dispatch(updateCart(customerId.current, productId, value));
-      }
-    }
-  };
+        console.log("hereherehereherehereherehere");
+        if (priceInfo !== []) {
+          const targetProduct = priceInfo.filter((x) => x.id === productId)[0];
+          let tempPrice = parseInt(targetProduct.productPrice);
+          const price1 = targetProduct.productPrice1;
+          const price2 = targetProduct.productPrice2;
+          const price3 = targetProduct.productPrice3;
+          const price4 = targetProduct.productPrice4;
+          const price5 = targetProduct.productPrice5;
+          const ea1 = parseInt(targetProduct.productEA1);
+          const ea2 = parseInt(targetProduct.productEA2);
+          const ea3 = parseInt(targetProduct.productEA3);
+          const ea4 = parseInt(targetProduct.productEA4);
+          const ea5 = parseInt(targetProduct.productEA5);
 
-  const onIncrease = (productId: number, prevCount: number): void => {
-    if (isNaN(customerId.current) || customerId.current === 0) {
-      dispatch(updateCartItem(productId, prevCount + 1));
-    } else {
-      const targetProduct = productPrice.filter((x) => x.id === productId)[0];
-      let tempPrice = parseInt(targetProduct.productPrice);
-      const price1 = targetProduct.productPrice1;
-      const price2 = targetProduct.productPrice2;
-      const price3 = targetProduct.productPrice3;
-      const price4 = targetProduct.productPrice4;
-      const price5 = targetProduct.productPrice5;
-      const ea1 = parseInt(targetProduct.productEA1);
-      const ea2 = parseInt(targetProduct.productEA2);
-      const ea3 = parseInt(targetProduct.productEA3);
-      const ea4 = parseInt(targetProduct.productEA4);
-      const ea5 = parseInt(targetProduct.productEA5);
-      console.log(targetProduct);
-
-      if (prevCount != NaN && 1 <= prevCount && prevCount < ea1) {
-        tempPrice = price1;
-        setFinalPrice(tempPrice);
-        console.log(price1);
-      } else if (prevCount < ea2 && prevCount >= ea1) {
-        tempPrice = price2;
-        setFinalPrice(tempPrice);
-        console.log(price2);
-      } else if (prevCount < ea3 && prevCount >= ea2) {
-        tempPrice = price3;
-        setFinalPrice(tempPrice);
-        console.log(price3);
-      } else if (prevCount < ea4 && prevCount >= ea3) {
-        tempPrice = price4;
-        setFinalPrice(tempPrice);
-        console.log(price4);
-      } else if (prevCount >= ea5) {
-        console.log("else!");
-        setFinalPrice(tempPrice);
-        tempPrice = price5;
-      } else {
-        if (!isNaN(prevCount)) {
-          {
-            alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
+          if (value != NaN && 1 <= value && value < ea1) {
+            tempPrice = price1;
+            setFinalPrice(tempPrice);
+          } else if (value < ea2 && value >= ea1) {
+            tempPrice = price2;
+            setFinalPrice(tempPrice);
+          } else if (value < ea3 && value >= ea2) {
+            tempPrice = price3;
+            setFinalPrice(tempPrice);
+          } else if (value < ea4 && value >= ea3) {
+            tempPrice = price4;
+            setFinalPrice(tempPrice);
+          } else if (value >= ea5) {
+            setFinalPrice(tempPrice);
+            tempPrice = price5;
+          } else {
+            if (!isNaN(value)) {
+              {
+                alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
+              }
+            }
           }
         }
+
+        const productPrice = finalPrice;
+        dispatch(
+          updateCart(customerId.current, productId, value, productPrice)
+        );
       }
-      dispatch(updateCart(customerId.current, productId, prevCount + 1));
     }
   };
 
-  const onDecrease = (productId: number, prevCount: number): void => {
-    if (isNaN(customerId.current) || customerId.current <= 0) {
-      dispatch(updateCartItem(productId, 1));
-    } else {
-      const targetProduct = productPrice.filter((x) => x.id === productId)[0];
-      let tempPrice = parseInt(targetProduct.productPrice);
-      const price1 = targetProduct.productPrice1;
-      const price2 = targetProduct.productPrice2;
-      const price3 = targetProduct.productPrice3;
-      const price4 = targetProduct.productPrice4;
-      const price5 = targetProduct.productPrice5;
-      const ea1 = parseInt(targetProduct.productEA1);
-      const ea2 = parseInt(targetProduct.productEA2);
-      const ea3 = parseInt(targetProduct.productEA3);
-      const ea4 = parseInt(targetProduct.productEA4);
-      const ea5 = parseInt(targetProduct.productEA5);
-      console.log(targetProduct);
+  // const onIncrease = (productId: number, prevCount: number): void => {
+  //   if (isNaN(customerId.current) || customerId.current === 0) {
+  //     dispatch(updateCartItem(productId, prevCount + 1));
+  //   } else {
+  //     dispatch(updateCart(customerId.current, productId, prevCount + 1));
+  //   }
+  // };
 
-      if (prevCount != NaN && 1 <= prevCount && prevCount < ea1) {
-        tempPrice = price1;
-        setFinalPrice(tempPrice);
-        console.log(price1);
-      } else if (prevCount < ea2 && prevCount >= ea1) {
-        tempPrice = price2;
-        setFinalPrice(tempPrice);
-        console.log(price2);
-      } else if (prevCount < ea3 && prevCount >= ea2) {
-        tempPrice = price3;
-        setFinalPrice(tempPrice);
-        console.log(price3);
-      } else if (prevCount < ea4 && prevCount >= ea3) {
-        tempPrice = price4;
-        setFinalPrice(tempPrice);
-        console.log(price4);
-      } else if (prevCount >= ea5) {
-        console.log("else!");
-        setFinalPrice(tempPrice);
-        tempPrice = price5;
-      } else {
-        if (!isNaN(prevCount)) {
-          {
-            alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
-          }
-        }
-      }
-      dispatch(updateCart(customerId.current, productId, prevCount - 1));
-    }
-  };
+  // const onDecrease = (productId: number, prevCount: number): void => {
+  //   if (isNaN(customerId.current) || customerId.current === 0) {
+  //     dispatch(updateCartItem(productId, prevCount - 1));
+  //   } else {
+  //     dispatch(updateCart(customerId.current, productId, prevCount - 1));
+  //   }
+  // };
 
   const onClickHandler = (): void => {
     if (isNaN(customerId.current) || customerId.current === -1) {
@@ -314,16 +278,15 @@ const Cart: FC = () => {
                             {cartItem.product.productName}
                           </h4>
                           <p className="card-text">
-                            {finalPrice.toLocaleString("ko-KR")}
-                            {"원"}
+                            {cartItem.productPrice.toLocaleString("ko-KR")} 원
                           </p>
                           <p className="card-text"></p>
                         </div>
                       </div>
                       <div className="col-1 mt-3 text-center">
-                        <button
+                        {/* <button
                           className="btn btn-default"
-                          disabled={cartItem.productCount === 10000000}
+                          disabled={cartItem.productCount === 1000}
                           onClick={() =>
                             onIncrease(
                               cartItem.product.id,
@@ -332,21 +295,21 @@ const Cart: FC = () => {
                           }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronUp} />
-                        </button>
+                        </button> */}
                         <input
                           type="text"
                           className="form-control input-number"
                           style={{
-                            width: "150px",
+                            width: "65px",
                           }}
                           value={cartItem.productCount}
                           onChange={(event) =>
                             handleInputChange(event, cartItem.product.id)
                           }
                         />
-                        <button
+                        {/* <button
                           className="btn btn-default"
-                          disabled={cartItem.productCount === 1}
+                          disabled={cartItem.productCount === 10}
                           onClick={() =>
                             onDecrease(
                               cartItem.product.id,
@@ -355,14 +318,14 @@ const Cart: FC = () => {
                           }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronDown} />
-                        </button>
+                        </button> */}
                       </div>
                       <div className="col-3">
                         <div className="card-body text-right">
                           <h5 className="card-title">
                             <span>
                               {(
-                                finalPrice * cartItem.productCount
+                                cartItem.productPrice * cartItem.productCount
                               ).toLocaleString("ko-KR")}{" "}
                               원
                             </span>

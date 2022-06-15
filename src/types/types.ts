@@ -217,12 +217,14 @@ export type CartItem = {
   productId: number;
   product: Product;
   productCount: number;
+  productPrice: number;
 };
 
 export type CartItemNonMember = {
   productId: number;
   product: Product;
   productCount: number;
+  productPrice: number;
 };
 
 export type FCinLayout<P = {}> = FC<P> & {

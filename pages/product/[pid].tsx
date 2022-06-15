@@ -44,8 +44,12 @@ import { reloadSuccess } from "../../src/redux/actions/customer-actions";
 import {
   addCartItem,
   fetchCartSuccess,
+  returnToCartPage,
   updateCartItem,
 } from "../../src/redux/actions/cart-actions";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 type ProductDetailProps = {
   product: Product;
@@ -55,7 +59,35 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { pid } = router.query;
-  console.log(product);
+  // console.log(product);
+
+  function priceSetter(ea: number) {
+    if (ea <= parseInt(product.productEA1)) {
+      return product.productPrice1;
+    } else if (
+      ea <= parseInt(product.productEA2) &&
+      ea >= parseInt(product.productEA1) + 1
+    ) {
+      return product.productPrice2;
+    } else if (
+      ea <= parseInt(product.productEA3) &&
+      ea >= parseInt(product.productEA2) + 1
+    ) {
+      return product.productPrice3;
+    } else if (
+      ea <= parseInt(product.productEA4) &&
+      ea >= parseInt(product.productEA3) + 1
+    ) {
+      return product.productPrice4;
+    } else if (
+      ea <= parseInt(product.productEA5) &&
+      ea >= parseInt(product.productEA4) + 1
+    ) {
+      return product.productPrice5;
+    } else {
+      return false;
+    }
+  }
 
   const isLoggedIn: boolean = useSelector(
     (state: AppStateType) => state.customer.isLoggedIn
@@ -141,53 +173,130 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
     if (typeof window !== "undefined") {
       customerId = parseInt(sessionStorage.getItem("id") as string);
     }
+    if (count <= 0) {
+      MySwal.fire({
+        title: `<strong>잘못된 입력입니다.</strong>`,
+        html: `<i><b>수량을 확인해주세요!</b><br> </i>`,
+        icon: "error",
+      });
+      return;
+    }
+
+    const finalPrice = priceSetter(count);
+    if (!finalPrice) {
+      MySwal.fire({
+        title: `<strong>대량 구매는 문의해주세요!</strong>`,
+        html: `<i><b>전국 최저가 보장<br> 문의 ) 010-4826-0519</b><br> </i>`,
+        icon: "info",
+      });
+      return;
+    }
 
     if (!Boolean(customerId)) {
       // 비회원일 경우,
       if (isCartExist) {
         // 카트에 이미 해당 상품이 담겨있다면,
-        const prevCartItem: CartItem | CartItemNonMember = cart.find(
-          (val: CartItem | CartItemNonMember) =>
-            val.productId === parseInt(pid as string)
-        ) as CartItem | CartItemNonMember;
+        // MySwal.fire({
+        //   title: `<strong>장바구니에 이미 있는 상품입니다.</strong>`,
+        //   html: `<i>${count}개를 추가하시겠습니까?</i>`,
+        //   icon: "question",
+        //   showConfirmButton: true,
+        //   showCancelButton: true,
+        //   confirmButtonText: "계속",
+        //   cancelButtonText: "취소",
+        // }).then((result) => {
+        //   if (result.isConfirmed) {
+        //     const prevCartItem: CartItem | CartItemNonMember = cart.find(
+        //       (val: CartItem | CartItemNonMember) =>
+        //         val.productId === parseInt(pid as string)
+        //     ) as CartItem | CartItemNonMember;
 
-        dispatch(
-          updateCartItem(
-            parseInt(pid as string),
-            prevCartItem.productCount + count
-          )
-        );
+        //     dispatch(
+        //       updateCartItem(
+        //         parseInt(pid as string),
+        //         prevCartItem.productCount + count
+        //       )
+        //     );
+        //     router.push("/cart");
+        //   } else if (result.isDenied) {
+        //     return;
+        //   }
+        // });
+        MySwal.fire({
+          title: `<strong>이미 장바구니에 담겨있습니다!</strong>`,
+          html: `<i><b>수량 변경을 위해선<br>장바구니에서 삭제 후 이용해주세요!</b> </i>`,
+          icon: "error",
+        });
+        router.push("/cart");
       } else {
         dispatch(
           addCartItem({
             productId: product.id,
             product: product,
             productCount: count,
+            productPrice: finalPrice,
           })
         );
+        router.push("/cart");
       }
     } else {
       // 로그인되어 있을 경우
       if (isCartExist) {
-        // 카트에 이미 해당 상품이 담겨있다면,
-        const prevCartItem: CartItem | CartItemNonMember = cart.find(
-          (val: CartItem | CartItemNonMember) =>
-            val.productId === parseInt(pid as string)
-        ) as CartItem | CartItemNonMember;
+        // // 카트에 이미 해당 상품이 담겨있다면,
+        // MySwal.fire({
+        //   title: `<strong>장바구니에 이미 있는 상품입니다.</strong>`,
+        //   html: `<i>${count}개를 추가하시겠습니까?</i>`,
+        //   icon: "question",
+        //   showConfirmButton: true,
+        //   showCancelButton: true,
+        //   confirmButtonText: "계속",
+        //   cancelButtonText: "취소",
+        // }).then((result) => {
+        //   if (result.isConfirmed) {
+        //     const prevCartItem: CartItem | CartItemNonMember = cart.find(
+        //       (val: CartItem | CartItemNonMember) =>
+        //         val.productId === parseInt(pid as string)
+        //     ) as CartItem | CartItemNonMember;
 
-        dispatch(
-          updateCart(
-            customerId as number,
-            productId,
-            prevCartItem.productCount + count
-          )
-        );
+        //     dispatch(
+        //       updateCart(
+        //         customerId as number,
+        //         productId,
+        //         prevCartItem.productCount + count
+        //       )
+        //     );
+        //     router.push("/cart");
+        //   } else if (result.isDenied) {
+        //     return;
+        //   }
+        // });
+        MySwal.fire({
+          title: `<strong>이미 장바구니에 담겨있습니다!</strong>`,
+          html: `<i><b>수량 변경을 위해선<br>장바구니에서 삭제 후 이용해주세요!</b> </i>`,
+          icon: "error",
+        });
+        router.push("/cart");
       } else {
-        dispatch(insertCart(customerId as number, productId, count));
+        MySwal.fire({
+          title: `<strong>가격 안내</strong>`,
+          html: `<i><b>${count}개를 구매하시면 개당 ${finalPrice}원 입니다.</i>`,
+          icon: "question",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "계속",
+          cancelButtonText: "취소",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            dispatch(
+              insertCart(customerId as number, productId, count, finalPrice)
+            );
+            router.push("/cart");
+          } else if (result.isDenied) {
+            return;
+          }
+        });
       }
     }
-
-    router.push("/cart");
   };
 
   const countOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -296,9 +405,6 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   <FontAwesomeIcon className="mr-2 fa-lg" icon={faCartPlus} />{" "}
                   장바구니 담기
                 </button>
-                <p className="mb-0 fw-lighter">
-                  *부가세 10% 별도, 10만원 이상 주문시 배송비 무료
-                </p>
               </div>
               <br />
               <div className="row ml-1" style={{ alignItems: "center" }}>
@@ -398,12 +504,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
             <h3 className="text-center mb-5">상품 설명</h3>
             <body
               className="text-center mb-5"
-              dangerouslySetInnerHTML={{
-                __html: product.productDescription.replace(
-                  "<img ",
-                  '<img style="max-width:100%"'
-                ),
-              }}
+              dangerouslySetInnerHTML={{ __html: product.productDescription }}
             ></body>
           </div>
           <div className="mt-5">

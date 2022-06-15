@@ -61,9 +61,7 @@ const Cart: FC = () => {
 
   useEffect(() => {
     let sum = 0;
-    cart.forEach(
-      (value) => (sum += value.product.productPrice * value.productCount)
-    );
+    cart.forEach((value) => (sum += value.productPrice * value.productCount));
     dispatch(calculateCartPriceSuccess(sum));
   }, [cart]);
 
@@ -83,23 +81,28 @@ const Cart: FC = () => {
   ): void => {
     const value: number = parseInt(event.target.value);
 
-    if (isNaN(customerId.current) || customerId.current === 0) {
-      // 비로그인 상태 : 비회원
-      let newValue = value;
+    // if (isNaN(customerId.current) || customerId.current === 0) {
+    //   // 비로그인 상태 : 비회원
+    //   let newValue = value;
 
-      if (isNaN(value) || value === 0 || value > 1000) {
-        newValue = 10;
-      }
+    //   if (isNaN(value) || value > 10000) {
+    //     if (value > 10000) {
+    //       alert("대량 구매는 문의 후 이용해주세요!");
+    //     } else {
+    //       alert("입력을 확인해 주세요!");
+    //     }
+    //     newValue = 10;
+    //   }
 
-      dispatch(updateCartItem(productId, newValue));
-    } else {
-      // 로그인 상태 : 회원
-      if (isNaN(value) || value === 0 || value > 1000) {
-        dispatch(updateCart(customerId.current, productId, 10));
-      } else {
-        dispatch(updateCart(customerId.current, productId, value));
-      }
-    }
+    // //   dispatch(updateCartItem(productId, newValue));
+    // } else {
+    //   // 로그인 상태 : 회원
+    //   if (isNaN(value) || value === 0 || value > 10000) {
+    //     dispatch(updateCart(customerId.current, productId, 10));
+    //   } else {
+    //     dispatch(updateCart(customerId.current, productId, value));
+    //   }
+    // }
   };
 
   const onIncrease = (productId: number, prevCount: number): void => {
@@ -180,16 +183,13 @@ const Cart: FC = () => {
                             {cartItem.product.productName}
                           </h4>
                           <p className="card-text">
-                            {cartItem.product.productPrice.toLocaleString(
-                              "ko-KR"
-                            )}{" "}
-                            원
+                            {cartItem.productPrice.toLocaleString("ko-KR")} 원
                           </p>
                           <p className="card-text"></p>
                         </div>
                       </div>
-                      <div className="col-1 mt-3 text-center">
-                        <button
+                      <div className="col-1 mt-5 text-center">
+                        {/* <button
                           className="btn btn-default"
                           disabled={cartItem.productCount === 1000}
                           onClick={() =>
@@ -200,19 +200,9 @@ const Cart: FC = () => {
                           }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronUp} />
-                        </button>
-                        <input
-                          type="text"
-                          className="form-control input-number"
-                          style={{
-                            width: "65px",
-                          }}
-                          value={cartItem.productCount}
-                          onChange={(event) =>
-                            handleInputChange(event, cartItem.product.id)
-                          }
-                        />
-                        <button
+                        </button> */}
+                        <span> {cartItem.productCount} 개</span>
+                        {/* <button
                           className="btn btn-default"
                           disabled={cartItem.productCount === 10}
                           onClick={() =>
@@ -223,15 +213,14 @@ const Cart: FC = () => {
                           }
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronDown} />
-                        </button>
+                        </button> */}
                       </div>
                       <div className="col-3">
                         <div className="card-body text-right">
                           <h5 className="card-title">
                             <span>
                               {(
-                                cartItem.product.productPrice *
-                                cartItem.productCount
+                                cartItem.productPrice * cartItem.productCount
                               ).toLocaleString("ko-KR")}{" "}
                               원
                             </span>
