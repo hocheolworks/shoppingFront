@@ -240,22 +240,18 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         }).then((result) => {
           if (result.isConfirmed) {
             dispatch(
-              insertCart(customerId as number, productId, count, finalPrice)
+              addCartItem({
+                productId: product.id,
+                product: product,
+                productCount: count,
+                productPrice: finalPrice,
+              })
             );
             router.push("/cart");
           } else if (result.isDenied) {
             return;
           }
         });
-        dispatch(
-          addCartItem({
-            productId: product.id,
-            product: product,
-            productCount: count,
-            productPrice: finalPrice,
-          })
-        );
-        router.push("/cart");
       }
     } else {
       // 로그인되어 있을 경우
