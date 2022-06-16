@@ -116,7 +116,7 @@ const Registration: FC = () => {
   }
 
   return (
-    <div className="container mt-5 regist-container">
+    <div className="container mt-5 regist-container" id="mid">
       {pageLoading}
       <h4>
         <FontAwesomeIcon className="mr-2 mb-2" icon={faUserPlus} /> 회원가입

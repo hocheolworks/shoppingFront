@@ -29,7 +29,7 @@ const Menu: FC<MenuProps> = ({ products }) => {
   }, []);
 
   return (
-    <div className="container d-flex">
+    <div className="container d-flex" id='mid'>
       <ScrollButton />
 
       <MenuCards

@@ -50,13 +50,11 @@ hr {
   z-index: 20;
 }
 
-@media (min-height: 1000px) {
-  footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    z-index: -1;
-  }
+footer {
+  position: absolute;
+  top: 1080px;
+  width: 100%;
+  z-index: 9999;
 }
 
 .footer-container {
@@ -111,6 +109,8 @@ hr {
 #navbar-main ul {
   color: white;
   display: flex;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 #navbar-main li {

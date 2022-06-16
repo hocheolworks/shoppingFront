@@ -356,7 +356,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   };
 
   return (
-    <div className="container mt-5 pb-5">
+    <div className="container mt-5 pb-5" id="mid">
       {loading ? (
         <Spinner />
       ) : (

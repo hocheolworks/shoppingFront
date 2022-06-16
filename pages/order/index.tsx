@@ -225,7 +225,7 @@ const OrderPage: FC = () => {
   }
 
   return (
-    <div className="container mt-5 pb-5">
+    <div className="container mt-5 pb-5" id="mid">
       {pageLoading}
       <h4 className="mb-4 text-center">
         <FontAwesomeIcon className="mr-2" icon={faShoppingBag} /> 주문하기

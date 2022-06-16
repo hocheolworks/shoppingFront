@@ -16,7 +16,7 @@ const AccountItem: FCinLayout = () => {
   );
 
   return (
-    <>
+    <div id="mid">
       {loading ? (
         <Spinner />
       ) : (
@@ -26,7 +26,7 @@ const AccountItem: FCinLayout = () => {
           </h4>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
