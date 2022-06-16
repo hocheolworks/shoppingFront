@@ -85,6 +85,7 @@ export type Order = {
   orderAddress: string;
   orderAddressDetail: string;
   orderMemo: string;
+  orderDesignFile: string;
   orderPhoneNumber: string;
   orderPostIndex: string;
   orderStatus: string;
@@ -112,7 +113,7 @@ export type InsertOrder = {
   orderPhoneNumber: string | undefined;
   orderMemo: string | undefined;
   orderTotalPrice: number;
-  orderDesignFile: string | Blob;
+  orderDesignFile: string;
   cart: Array<CartItem | CartItemNonMember>;
 };
 

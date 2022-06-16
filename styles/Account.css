@@ -62,3 +62,11 @@
 .password-item {
   font-weight: bold;
 }
+
+#design_file_download:link {
+  color: #5a5a5a;
+}
+
+#design_file_download:visited {
+  color: #5a5a5a;
+}

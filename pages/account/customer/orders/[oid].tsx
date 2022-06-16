@@ -1,12 +1,12 @@
-import React, { FC, ReactElement, useEffect } from 'react';
-import Link from 'next/link';
-import { NextRouter, useRouter } from 'next/router';
-import { FCinLayout, Order } from '../../../../src/types/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import RequestService from '../../../../src/utils/request-service';
-import { GetServerSideProps } from 'next';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+import React, { FC, ReactElement, useEffect } from "react";
+import Link from "next/link";
+import { NextRouter, useRouter } from "next/router";
+import { FCinLayout, Order } from "../../../../src/types/types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import RequestService from "../../../../src/utils/request-service";
+import { GetServerSideProps } from "next";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
 
 type ManageUserOrderProp = {
   order: Order;
@@ -26,16 +26,17 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
     orderStatus,
     orderIsPaid,
     orderMemo,
+    orderDesignFile,
   } = order;
 
   return (
     <>
-      <h4 style={{ textAlign: 'center' }}>
+      <h4 style={{ textAlign: "center" }}>
         <FontAwesomeIcon icon={faShoppingBag} /> 주문 #{id}
       </h4>
       <div className="row border my-5 px-5 py-3">
         <div className="col-md-6">
-          <h5 style={{ marginBottom: '30px' }}>
+          <h5 style={{ marginBottom: "30px" }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문자 정보
           </h5>
           <p className="personal_data_item">
@@ -62,9 +63,21 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
             배송메모:
             <span className="personal_data_text">{orderMemo}</span>
           </p>
+          {orderDesignFile && (
+            <p className="personal_data_item">
+              파일첨부:
+              <a
+                id="design_file_download"
+                className="personal_data_text"
+                href={orderDesignFile}
+              >
+                다운로드
+              </a>
+            </p>
+          )}
         </div>
         <div className="col-md-6">
-          <h5 style={{ marginBottom: '30px' }}>
+          <h5 style={{ marginBottom: "30px" }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문 정보
           </h5>
           <p className="personal_data_item">
@@ -74,7 +87,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
           <p className="personal_data_item">
             주문날짜:
             <span className="personal_data_text">
-              {new Date(createdAt).toLocaleString('ko-kr')}
+              {new Date(createdAt).toLocaleString("ko-kr")}
             </span>
           </p>
           <p className="personal_data_item">
@@ -84,14 +97,14 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
           <p className="personal_data_item">
             결제여부:
             <span className="personal_data_text">
-              {orderIsPaid ? 'O' : 'X'}
+              {orderIsPaid ? "O" : "X"}
             </span>
           </p>
-          <h4 style={{ marginBottom: '30px', marginTop: '30px' }}>
+          <h4 style={{ marginBottom: "30px", marginTop: "30px" }}>
             주문금액:
-            <span style={{ color: 'green' }}>
-              {' '}
-              {orderTotalPrice.toLocaleString('ko-KR')} 원
+            <span style={{ color: "green" }}>
+              {" "}
+              {orderTotalPrice.toLocaleString("ko-KR")} 원
             </span>
           </h4>
         </div>
@@ -118,10 +131,10 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
                 <th>{orderItem.product.productName}</th>
                 <th>{orderItem.orderItemEA}</th>
                 <th>
-                  {orderItem.product.productPrice.toLocaleString('ko-KR')}원
+                  {orderItem.product.productPrice.toLocaleString("ko-KR")}원
                 </th>
                 <th>
-                  {orderItem.orderItemTotalPrice.toLocaleString('ko-KR')}원
+                  {orderItem.orderItemTotalPrice.toLocaleString("ko-KR")}원
                 </th>
               </tr>
             );

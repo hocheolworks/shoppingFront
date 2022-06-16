@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import qs from "qs";
 import { clearCart } from "../../src/redux/thunks/cart-thunks";
 import { useRouter } from "next/router";
-import requestService from "../../src/utils/request-service";
+import RequestService from "../../src/utils/request-service";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { GetServerSideProps } from "next";
@@ -35,55 +35,35 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
     (state: AppStateType) => state.order.insertOrder
   );
 
-  console.log(insertOrder);
-
   const { orderId } = query;
 
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
-    console.log(insertOrder);
     dispatch(showLoader());
   }, []);
 
   useEffect(() => {
-    const saveOrderDesignFile = async (
-      file: string | Blob
-    ): Promise<string> => {
-      const formData: FormData = new FormData();
-      formData.append("file", file);
-
-      const response = await requestService.post("/order/design", formData);
-      console.log(response);
-      if (response && response.data) {
-        return response.data;
-      } else {
-        return "";
-      }
-    };
-
     customerId.current = parseInt(sessionStorage.getItem("id") as string);
-    saveOrderDesignFile(insertOrder.orderDesignFile!).then((res) => {
-      insertOrder.orderDesignFile = res;
-
-      requestService
-        .post("/order/payment", { ...query, insertOrder: insertOrder })
-        .then((res) => {
-          dispatch(clearInsertOrderInformation());
-          dispatch(clearCartSuccess());
-          dispatch(hideLoader());
-        })
-        .catch((err) => {
-          console.log(err.response);
-          MySwal.fire({
-            title: `<strong>오류</strong>`,
-            html: `<i>${err.response.data.message}</i>`,
-            icon: "error",
-          }).then(() => {
-            router.push("/");
-          });
+    RequestService.post("/order/payment", {
+      ...query,
+      insertOrder: insertOrder,
+    })
+      .then((res) => {
+        dispatch(clearInsertOrderInformation());
+        dispatch(clearCartSuccess());
+        dispatch(hideLoader());
+      })
+      .catch((err) => {
+        console.log(err.response);
+        MySwal.fire({
+          title: `<strong>오류</strong>`,
+          html: `<i>${err.response.data.message}</i>`,
+          icon: "error",
+        }).then(() => {
+          router.push("/");
         });
-    });
+      });
   }, []);
 
   return (

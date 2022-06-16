@@ -43,6 +43,7 @@ import {
   saveInsertOrderInformation,
 } from "../../src/redux/actions/order-actions";
 import { FRONT_BASE_URL } from "../../src/utils/constants/url";
+import RequestService from "../../src/utils/request-service";
 const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
 
 const MySwal = withReactContent(Swal);
@@ -58,6 +59,10 @@ const OrderPage: FC = () => {
   const paymentMethodList = ["카드", "계좌이체", "가상계좌"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
+
+  const insertOrder = useSelector(
+    (state: AppStateType) => state.order.insertOrder
+  );
 
   useEffect(() => {
     if (sessionStorage.getItem("id") !== null) {
@@ -156,7 +161,7 @@ const OrderPage: FC = () => {
     SetOrderDesignFile(event.target.files[0]);
   };
 
-  const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (
       !Boolean(orderCustomerName) ||
@@ -203,9 +208,22 @@ const OrderPage: FC = () => {
       orderPhoneNumber,
       orderMemo,
       orderTotalPrice,
-      orderDesignFile: orderDesignFile as string,
+      orderDesignFile: "",
       cart,
     };
+
+    if (orderDesignFile) {
+      const formData: FormData = new FormData();
+      formData.append("file", orderDesignFile);
+      const response = await RequestService.post(
+        "/order/design",
+        formData,
+        false,
+        "multipart/form-data"
+      );
+
+      insertOrder.orderDesignFile = response.data;
+    }
 
     dispatch(saveInsertOrderInformation(insertOrder));
     // 결제창 요청
@@ -415,7 +433,7 @@ const OrderPage: FC = () => {
                           <h6>
                             <span>
                               가격 :{" "}
-                              {`${cartItem.product.productPrice.toLocaleString(
+                              {`${cartItem.productPrice.toLocaleString(
                                 "ko-KR"
                               )} 원`}
                             </span>
