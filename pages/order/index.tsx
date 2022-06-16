@@ -1,6 +1,7 @@
 import React, {
   FC,
   FormEvent,
+  RefObject,
   TextareaHTMLAttributes,
   useCallback,
   useEffect,
@@ -26,6 +27,7 @@ import {
   CartItem,
   Order,
   CartItemNonMember,
+  InsertOrder,
 } from "../../src/types/types";
 
 import Swal from "sweetalert2";
@@ -52,6 +54,7 @@ const OrderPage: FC = () => {
   const router = useRouter();
 
   const customerId = useRef<number>(-1);
+  const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
   const paymentMethodList = ["카드", "계좌이체", "가상계좌"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
@@ -117,6 +120,8 @@ const OrderPage: FC = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
+  const [orderDesignFile, SetOrderDesignFile] = useState<string | Blob>("");
+
   const postIndexRef = useRef(null);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -146,6 +151,10 @@ const OrderPage: FC = () => {
     orderAddressDetailError,
     orderPhoneNumberError,
   } = errors;
+
+  const handleFileChange = (event: any): void => {
+    SetOrderDesignFile(event.target.files[0]);
+  };
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -194,11 +203,11 @@ const OrderPage: FC = () => {
       orderPhoneNumber,
       orderMemo,
       orderTotalPrice,
+      orderDesignFile: orderDesignFile as string,
       cart,
     };
 
     dispatch(saveInsertOrderInformation(insertOrder));
-
     // 결제창 요청
     loadTossPayments(clientKey).then((tossPayments) => {
       tossPayments.requestPayment(paymentMethod, {
@@ -349,6 +358,19 @@ const OrderPage: FC = () => {
                     handleResizeHeight();
                     setOrderMemo(event.target.value);
                   }}
+                />
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">파일첨부:</label>
+              <div className="col-sm-8">
+                <input
+                  type="file"
+                  className={"form-control"}
+                  style={{ height: "44px" }}
+                  name="file"
+                  ref={fileInput}
+                  onChange={handleFileChange}
                 />
               </div>
             </div>

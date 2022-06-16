@@ -1,8 +1,8 @@
-import { InsertOrder, Order, OrderError } from '../../types/types';
+import { InsertOrder, Order, OrderError } from "../../types/types";
 import {
   ShowLoaderActionType,
   SHOW_LOADER,
-} from '../action-types/auth-action-types';
+} from "../action-types/auth-action-types";
 import {
   FETCH_ORDER_SUCCESS,
   FETCH_USER_ORDERS_SUCCESS,
@@ -22,7 +22,9 @@ import {
   HideLoaderActionType,
   FetchNonMemberOrdersSuccessActionType,
   FETCH_NONMEMBER_ORDERS_SUCCESS,
-} from '../action-types/order-action-types';
+  SAVE_INSERT_ORDER_DESIGN_FILE,
+  SaveInsertOrderDesignFileActionType,
+} from "../action-types/order-action-types";
 
 export const showLoader = (): ShowLoaderActionType => ({
   type: SHOW_LOADER,
@@ -71,15 +73,21 @@ export const saveInsertOrderInformation = (
   payload: insertOrder,
 });
 
+export const saveInsertOrderDesignFile = (
+  file: string | Blob
+): SaveInsertOrderDesignFileActionType => ({
+  type: SAVE_INSERT_ORDER_DESIGN_FILE,
+  payload: file,
+});
+
 export const clearInsertOrderInformation =
   (): ClearInsertOrderInformationActionType => ({
     type: CLEAR_INSERT_ORDER_INFORMATION,
   });
 
-export const fetchNonMemberOrdersSuccess =(
+export const fetchNonMemberOrdersSuccess = (
   order: Order
 ): FetchNonMemberOrdersSuccessActionType => ({
   type: FETCH_NONMEMBER_ORDERS_SUCCESS,
   payload: order,
 });
-  

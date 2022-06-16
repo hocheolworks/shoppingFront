@@ -1,4 +1,4 @@
-import { FC, FunctionComponent, ReactElement } from 'react';
+import { FC, FunctionComponent, ReactElement } from "react";
 
 export type Product = {
   id: number;
@@ -101,6 +101,7 @@ export type InsertOrder = {
   orderPhoneNumber: string | undefined;
   orderMemo: string | undefined;
   orderTotalPrice: number;
+  orderDesignFile: string | Blob;
   cart: Array<CartItem | CartItemNonMember>;
 };
 

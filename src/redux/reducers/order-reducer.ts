@@ -1,5 +1,5 @@
-import { OrderError, Order, InsertOrder } from '../../types/types';
-import { SHOW_LOADER } from '../action-types/auth-action-types';
+import { OrderError, Order, InsertOrder } from "../../types/types";
+import { SHOW_LOADER } from "../action-types/auth-action-types";
 import {
   FETCH_ORDER_SUCCESS,
   FETCH_USER_ORDERS_SUCCESS,
@@ -11,7 +11,8 @@ import {
   CLEAR_INSERT_ORDER_INFORMATION,
   HIDE_LOADER,
   FETCH_NONMEMBER_ORDERS_SUCCESS,
-} from '../action-types/order-action-types';
+  SAVE_INSERT_ORDER_DESIGN_FILE,
+} from "../action-types/order-action-types";
 
 export type InitialStateType = {
   order: Partial<Order>;
@@ -70,11 +71,14 @@ const reducer = (
     case SAVE_INSERT_ORDER_INFORMATION:
       return { ...state, insertOrder: action.payload };
 
+    // case SAVE_INSERT_ORDER_DESIGN_FILE:
+    //   return { ...state, insertOrderDesignFile: action.payload };
+
     case CLEAR_INSERT_ORDER_INFORMATION:
       return { ...state, insertOrder: {} };
 
     case FETCH_NONMEMBER_ORDERS_SUCCESS:
-      return { ...state, order: action.payload, loading:false};
+      return { ...state, order: action.payload, loading: false };
 
     default:
       return state;

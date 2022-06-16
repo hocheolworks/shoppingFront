@@ -1,23 +1,23 @@
-import React, { FC, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import qs from 'qs';
-import { clearCart } from '../../src/redux/thunks/cart-thunks';
-import { useRouter } from 'next/router';
-import requestService from '../../src/utils/request-service';
-import withReactContent from 'sweetalert2-react-content';
-import Swal from 'sweetalert2';
-import { GetServerSideProps } from 'next';
-import { ParsedUrlQuery } from 'querystring';
-import { AppStateType } from '../../src/redux/reducers/root-reducer';
-import { InsertOrder, Order } from '../../src/types/types';
-import { clearCartSuccess } from '../../src/redux/actions/cart-actions';
+import React, { FC, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import qs from "qs";
+import { clearCart } from "../../src/redux/thunks/cart-thunks";
+import { useRouter } from "next/router";
+import requestService from "../../src/utils/request-service";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { GetServerSideProps } from "next";
+import { ParsedUrlQuery } from "querystring";
+import { AppStateType } from "../../src/redux/reducers/root-reducer";
+import { InsertOrder, Order } from "../../src/types/types";
+import { clearCartSuccess } from "../../src/redux/actions/cart-actions";
 import {
   clearInsertOrderInformation,
   hideLoader,
   showLoader,
-} from '../../src/redux/actions/order-actions';
-import Spinner from '../../src/component/Spinner/Spinner';
-import PageLoader from '../../src/component/PageLoader/PageLoader';
+} from "../../src/redux/actions/order-actions";
+import Spinner from "../../src/component/Spinner/Spinner";
+import PageLoader from "../../src/component/PageLoader/PageLoader";
 
 const MySwal = withReactContent(Swal);
 
@@ -35,33 +35,55 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
     (state: AppStateType) => state.order.insertOrder
   );
 
+  console.log(insertOrder);
+
   const { orderId } = query;
 
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
+    console.log(insertOrder);
     dispatch(showLoader());
   }, []);
 
   useEffect(() => {
-    customerId.current = parseInt(sessionStorage.getItem('id') as string);
-    requestService
-      .post('/order/payment', { ...query, insertOrder: insertOrder })
-      .then((res) => {
-        dispatch(clearInsertOrderInformation());
-        dispatch(clearCartSuccess());
-        dispatch(hideLoader());
-      })
-      .catch((err) => {
-        console.log(err.response);
-        MySwal.fire({
-          title: `<strong>오류</strong>`,
-          html: `<i>${err.response.data.message}</i>`,
-          icon: 'error',
-        }).then(() => {
-          router.push('/');
+    const saveOrderDesignFile = async (
+      file: string | Blob
+    ): Promise<string> => {
+      const formData: FormData = new FormData();
+      formData.append("file", file);
+
+      const response = await requestService.post("/order/design", formData);
+      console.log(response);
+      if (response && response.data) {
+        return response.data;
+      } else {
+        return "";
+      }
+    };
+
+    customerId.current = parseInt(sessionStorage.getItem("id") as string);
+    saveOrderDesignFile(insertOrder.orderDesignFile!).then((res) => {
+      insertOrder.orderDesignFile = res;
+
+      requestService
+        .post("/order/payment", { ...query, insertOrder: insertOrder })
+        .then((res) => {
+          dispatch(clearInsertOrderInformation());
+          dispatch(clearCartSuccess());
+          dispatch(hideLoader());
+        })
+        .catch((err) => {
+          console.log(err.response);
+          MySwal.fire({
+            title: `<strong>오류</strong>`,
+            html: `<i>${err.response.data.message}</i>`,
+            icon: "error",
+          }).then(() => {
+            router.push("/");
+          });
         });
-      });
+    });
   }, []);
 
   return (
@@ -73,7 +95,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
           <>
             <h2>주문이 완료되었습니다!</h2>
             <p>
-              주문번호: <span>{(orderId as string).replace('order-', '')}</span>
+              주문번호: <span>{(orderId as string).replace("order-", "")}</span>
             </p>
           </>
         )}
