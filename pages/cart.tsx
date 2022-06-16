@@ -148,7 +148,7 @@ const Cart: FC = () => {
   };
 
   return (
-    <div className="container mt-5 pb-5" style={{ minHeight: "350px" }}>
+    <div className="container mt-5 pb-5" style={{ minHeight: "350px" }} id="mid">
       {loading ? (
         <Spinner />
       ) : (

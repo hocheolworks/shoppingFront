@@ -53,7 +53,7 @@ const Login: FC = () => {
   };
 
   return (
-    <div id="container" className="container mt-5 mb-5">
+    <div className="container mt-5 mb-5" id="mid">
       <div className="row">
         <div className="col-md-6 login-container">
           <h4>

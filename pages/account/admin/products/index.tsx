@@ -27,7 +27,7 @@ const ProductList: FCinLayout = () => {
   ];
 
   return (
-    <div className="container">
+    <div className="container" id="mid">
       <ScrollButton />
       <ProductListComponent
         data={products}

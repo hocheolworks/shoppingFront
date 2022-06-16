@@ -153,166 +153,169 @@ const PersonalData: FCinLayout = () => {
   };
 
   return (
-    <div className="row">
-      <div className="personal_data col-md-5">
-        <h4 className="personal_data_title">
-          <FontAwesomeIcon className="ml-2 mr-2" icon={faAddressCard} />
-          개인 정보
-        </h4>
-        <p className="personal_data_item">
-          이메일:
-          <span className="personal_data_text">{customerEmail}</span>
-        </p>
-        <p className="personal_data_item">
-          이름:
-          <span className="personal_data_text">{customerName}</span>
-        </p>
-        <p className="personal_data_item">
-          휴대폰 번호:
-          <span className="personal_data_text">{customerPhoneNumber}</span>
-        </p>
-        <p className="personal_data_item">
-          우편번호:
-          <span className="personal_data_text">{customerPostIndex}</span>
-        </p>
-        <p className="personal_data_item">
-          주소:
-          <span className="personal_data_text">
-            {customerAddress} {customerAddressDetail}
-          </span>
-        </p>
-        {(!isEdit) && (
-          <button
-          className="btn btn-dark personal_data_btn"
-          onClick={onEdit}
-          >
-            <FontAwesomeIcon className="mr-2" icon={faEdit} /> 변경
-          </button>
-        )}
-        {(isEdit) && (
-          <button
-          className="btn btn-dark personal_data_btn"
-          onClick={offEdit}
-          >
-            <FontAwesomeIcon className="mr-2" icon={faEdit} /> 취소
-          </button>
-        )}
-      </div>
-      {(isEdit) && (
-      <div className="col-md-7">
-        <form className="edit_personal_data" onSubmit={onFormSubmit}>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">이메일: </label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-                className={
-                  emailError ? "form-control is-invalid" : "form-control"
-                }
-                name="newCustomerEmail"
-                value={newCustomerEmail}
-                onChange={handleInputChange}
-                readOnly
-              />
-              <div className="invalid-feedback">{emailError}</div>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">이름: </label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-
-                name="newCustomerName"
-                value={newCustomerName}
-                onChange={handleInputChange}
-              />
-              <div className="invalid-feedback">{nameError}</div>
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
-            <div className="col-sm-6">
-              <input
-                type="text"
-                className={"form-control"}
-                name="newCustomerPhoneNumber"
-                value={newCustomerPhoneNumber}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">우편번호: </label>
-            <div className="col-sm-6">
-              <input
-                ref={postIndexRef}
-                onClick={onClickPostIndex}
-                readOnly
-                type="text"
-                className={
-                  postIndexError ? 'form-control is-invalid' : 'form-control'
-                }
-                name="newCustomerPostIndex"
-                value={newCustomerPostIndex}
-                placeholder="우편번호"
-                onChange={(event) => setNewCustomerPostIndex(event.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">주소: </label>
-            <div className="col-sm-6">
-                <input
-                    readOnly
-                    type="text"
-                    className={
-                      addressError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="newCustomerAddress"
-                    value={newCustomerAddress}
-                    onChange={(event) => setNewCustomerAddress(event.target.value)}
-                />
-            </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-3 col-form-label">상세 주소: </label>
-            <div className="col-sm-6">
-              <input
-                    type="text"
-                    className={
-                      addressError ? 'form-control is-invalid' : 'form-control'
-                    }
-                    name="newCustomerAddressDetail"
-                    value={newCustomerAddressDetail}
-                    onChange={(event) =>
-                      setNewCustomerAddressDetail(event.target.value)
-                    }
-                />  
-            </div>
-          </div>
-          {isPopupOpen && (
-                <div className="form-group row">
-                  <label className="col-sm-2 col-form-label"></label>
-                  <div className="col-sm-8">
-                    <DaumPostcode
-                      className="form-control"
-                      style={{
-                        border: '1px solid black',
-                        padding: 0,
-                      }}
-                      onComplete={onCompletePostIndex}
-                    />
-                  </div>
-                </div>
+    <div id="mid">
+      <div className="row">
+        <div className="personal_data col-md-5">
+          <h4 className="personal_data_title">
+            <FontAwesomeIcon className="ml-2 mr-2" icon={faAddressCard} />
+            개인 정보
+          </h4>
+          <p className="personal_data_item">
+            이메일:
+            <span className="personal_data_text">{customerEmail}</span>
+          </p>
+          <p className="personal_data_item">
+            이름:
+            <span className="personal_data_text">{customerName}</span>
+          </p>
+          <p className="personal_data_item">
+            휴대폰 번호:
+            <span className="personal_data_text">{customerPhoneNumber}</span>
+          </p>
+          <p className="personal_data_item">
+            우편번호:
+            <span className="personal_data_text">{customerPostIndex}</span>
+          </p>
+          <p className="personal_data_item">
+            주소:
+            <span className="personal_data_text">
+              {customerAddress} {customerAddressDetail}
+            </span>
+          </p>
+          {(!isEdit) && (
+            <button
+            className="btn btn-dark personal_data_btn"
+            onClick={onEdit}
+            >
+              <FontAwesomeIcon className="mr-2" icon={faEdit} /> 변경
+            </button>
           )}
-          <button type="submit" className="btn btn-dark">
-            <FontAwesomeIcon className="mr-2" icon={faCheck} />
-            저장
-          </button>
-        </form>
+          {(isEdit) && (
+            <button
+            className="btn btn-dark personal_data_btn"
+            onClick={offEdit}
+            >
+              <FontAwesomeIcon className="mr-2" icon={faEdit} /> 취소
+            </button>
+          )}
+        </div>
+        {(isEdit) && (
+        <div className="col-md-7">
+          <form className="edit_personal_data" onSubmit={onFormSubmit}>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">이메일: </label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className={
+                    emailError ? "form-control is-invalid" : "form-control"
+                  }
+                  name="newCustomerEmail"
+                  value={newCustomerEmail}
+                  onChange={handleInputChange}
+                  readOnly
+                />
+                <div className="invalid-feedback">{emailError}</div>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">이름: </label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+
+                  name="newCustomerName"
+                  value={newCustomerName}
+                  onChange={handleInputChange}
+                />
+                <div className="invalid-feedback">{nameError}</div>
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className={"form-control"}
+                  name="newCustomerPhoneNumber"
+                  value={newCustomerPhoneNumber}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">우편번호: </label>
+              <div className="col-sm-6">
+                <input
+                  ref={postIndexRef}
+                  onClick={onClickPostIndex}
+                  readOnly
+                  type="text"
+                  className={
+                    postIndexError ? 'form-control is-invalid' : 'form-control'
+                  }
+                  name="newCustomerPostIndex"
+                  value={newCustomerPostIndex}
+                  placeholder="우편번호"
+                  onChange={(event) => setNewCustomerPostIndex(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">주소: </label>
+              <div className="col-sm-6">
+                  <input
+                      readOnly
+                      type="text"
+                      className={
+                        addressError ? 'form-control is-invalid' : 'form-control'
+                      }
+                      name="newCustomerAddress"
+                      value={newCustomerAddress}
+                      onChange={(event) => setNewCustomerAddress(event.target.value)}
+                  />
+              </div>
+            </div>
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">상세 주소: </label>
+              <div className="col-sm-6">
+                <input
+                      type="text"
+                      className={
+                        addressError ? 'form-control is-invalid' : 'form-control'
+                      }
+                      name="newCustomerAddressDetail"
+                      value={newCustomerAddressDetail}
+                      onChange={(event) =>
+                        setNewCustomerAddressDetail(event.target.value)
+                      }
+                  />  
+              </div>
+            </div>
+            {isPopupOpen && (
+                  <div className="form-group row">
+                    <label className="col-sm-2 col-form-label"></label>
+                    <div className="col-sm-8">
+                      <DaumPostcode
+                        className="form-control"
+                        style={{
+                          border: '1px solid black',
+                          padding: 0,
+                        }}
+                        onComplete={onCompletePostIndex}
+                      />
+                    </div>
+                  </div>
+            )}
+            <button type="submit" className="btn btn-dark">
+              <FontAwesomeIcon className="mr-2" icon={faCheck} />
+              저장
+            </button>
+          </form>
+        </div>
+        )}
       </div>
-      )}
+      <div style={{height:'8rem'}}>&nbsp;</div>
     </div>
   );
 };

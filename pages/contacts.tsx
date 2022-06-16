@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Contacts: FC = () => {
   return (
-    <div>
+    <div id="mid">
       <div className="container mt-5">
         <h4>
           <FontAwesomeIcon className="ml-2 mr-2" icon={faInfoCircle} />

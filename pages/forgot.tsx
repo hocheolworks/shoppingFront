@@ -50,7 +50,7 @@ const ForgotPassword: FC = () => {
   }
 
   return (
-    <div id="container" className="container mt-5">
+    <div className="container mt-5" id="mid">
       {pageLoading}
       <h4>
         <FontAwesomeIcon className="mr-3" icon={faKey} />

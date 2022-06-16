@@ -62,7 +62,7 @@ const NavBar: FC = () => {
 
   return (
     <>
-      <header className="common-header main-header">
+      <header className="common-header main-header" id='common-header'>
         <div className="top-utility">
           {links}
           {signOut}
