@@ -4,8 +4,19 @@ export type Product = {
   id: number;
   productName: string;
   productDescription: string;
+  productFinalPrice: number;
   productPrice: number;
+  productPrice1: any;
+  productPrice2: any;
+  productPrice3: any;
+  productPrice4: any;
+  productPrice5: any;
   productMinimumEA: number;
+  productEA1: any;
+  productEA2: any;
+  productEA3: any;
+  productEA4: any;
+  productEA5: any;
   productImageFilepath: string;
   productRating: number;
   productRatingCount: number;
@@ -207,12 +218,14 @@ export type CartItem = {
   productId: number;
   product: Product;
   productCount: number;
+  productPrice: number;
 };
 
 export type CartItemNonMember = {
   productId: number;
   product: Product;
   productCount: number;
+  productPrice: number;
 };
 
 export type FCinLayout<P = {}> = FC<P> & {

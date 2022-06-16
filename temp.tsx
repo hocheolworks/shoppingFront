@@ -28,11 +28,22 @@ import {
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useRouter } from "next/router";
+import requestService from "../src/utils/request-service";
+
 const MySwal = withReactContent(Swal);
 
 const Cart: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const [priceInfo, setPriceInfo] = useState<any[]>([]);
+  const [finalPrice, setFinalPrice] = useState(0);
+
+  useEffect(() => {
+    requestService.get("/product/all").then((res) => {
+      setPriceInfo(res.data);
+    });
+  }, []);
 
   const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
@@ -61,7 +72,9 @@ const Cart: FC = () => {
 
   useEffect(() => {
     let sum = 0;
-    cart.forEach((value) => (sum += value.productPrice * value.productCount));
+    cart.forEach(
+      (value) => (sum += value.product.productPrice * value.productCount)
+    );
     dispatch(calculateCartPriceSuccess(sum));
   }, [cart]);
 
@@ -81,45 +94,127 @@ const Cart: FC = () => {
   ): void => {
     const value: number = parseInt(event.target.value);
 
-    // if (isNaN(customerId.current) || customerId.current === 0) {
-    //   // 비로그인 상태 : 비회원
-    //   let newValue = value;
-
-    //   if (isNaN(value) || value > 10000) {
-    //     if (value > 10000) {
-    //       alert("대량 구매는 문의 후 이용해주세요!");
-    //     } else {
-    //       alert("입력을 확인해 주세요!");
-    //     }
-    //     newValue = 10;
-    //   }
-
-    // //   dispatch(updateCartItem(productId, newValue));
-    // } else {
-    //   // 로그인 상태 : 회원
-    //   if (isNaN(value) || value === 0 || value > 10000) {
-    //     dispatch(updateCart(customerId.current, productId, 10));
-    //   } else {
-    //     dispatch(updateCart(customerId.current, productId, value));
-    //   }
-    // }
-  };
-
-  const onIncrease = (productId: number, prevCount: number): void => {
     if (isNaN(customerId.current) || customerId.current === 0) {
-      dispatch(updateCartItem(productId, prevCount + 1));
+      // 비로그인 상태 : 비회원
+      let newValue = value;
+
+      if (isNaN(value) || value === 0 || value > 10000) {
+        newValue = 10;
+        if (value > 10000) {
+          alert("대량 구매는 문의를 통한 가격 협의 후 이용해주세요!");
+        }
+      }
+      if (priceInfo !== []) {
+        const targetProduct = priceInfo.filter((x) => x.id === productId)[0];
+        let tempPrice = parseInt(targetProduct.productPrice);
+        const price1 = targetProduct.productPrice1;
+        const price2 = targetProduct.productPrice2;
+        const price3 = targetProduct.productPrice3;
+        const price4 = targetProduct.productPrice4;
+        const price5 = targetProduct.productPrice5;
+        const ea1 = parseInt(targetProduct.productEA1);
+        const ea2 = parseInt(targetProduct.productEA2);
+        const ea3 = parseInt(targetProduct.productEA3);
+        const ea4 = parseInt(targetProduct.productEA4);
+        const ea5 = parseInt(targetProduct.productEA5);
+        console.log(targetProduct);
+
+        if (value != NaN && 1 <= value && value < ea1) {
+          tempPrice = price1;
+          setFinalPrice(tempPrice);
+        } else if (value < ea2 && value >= ea1) {
+          tempPrice = price2;
+          setFinalPrice(tempPrice);
+        } else if (value < ea3 && value >= ea2) {
+          tempPrice = price3;
+          setFinalPrice(tempPrice);
+        } else if (value < ea4 && value >= ea3) {
+          tempPrice = price4;
+          setFinalPrice(tempPrice);
+        } else if (value >= ea5) {
+          setFinalPrice(tempPrice);
+          tempPrice = price5;
+        } else {
+          if (!isNaN(value)) {
+            {
+              alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
+            }
+          }
+        }
+      }
+
+      const productPrice = finalPrice;
+      dispatch(updateCartItem(productId, newValue, productPrice));
     } else {
-      dispatch(updateCart(customerId.current, productId, prevCount + 1));
+      // 로그인 상태 : 회원
+      if (isNaN(value) || value === 0 || value > 10000) {
+        if (value > 10000) {
+          alert("대량 구매는 문의를 통한 가격 협의 후 이용해주세요!");
+        }
+        // dispatch(updateCart(customerId.current, productId, 10, productPrice));
+      } else {
+        console.log("hereherehereherehereherehere");
+        if (priceInfo !== []) {
+          const targetProduct = priceInfo.filter((x) => x.id === productId)[0];
+          let tempPrice = parseInt(targetProduct.productPrice);
+          const price1 = targetProduct.productPrice1;
+          const price2 = targetProduct.productPrice2;
+          const price3 = targetProduct.productPrice3;
+          const price4 = targetProduct.productPrice4;
+          const price5 = targetProduct.productPrice5;
+          const ea1 = parseInt(targetProduct.productEA1);
+          const ea2 = parseInt(targetProduct.productEA2);
+          const ea3 = parseInt(targetProduct.productEA3);
+          const ea4 = parseInt(targetProduct.productEA4);
+          const ea5 = parseInt(targetProduct.productEA5);
+
+          if (value != NaN && 1 <= value && value < ea1) {
+            tempPrice = price1;
+            setFinalPrice(tempPrice);
+          } else if (value < ea2 && value >= ea1) {
+            tempPrice = price2;
+            setFinalPrice(tempPrice);
+          } else if (value < ea3 && value >= ea2) {
+            tempPrice = price3;
+            setFinalPrice(tempPrice);
+          } else if (value < ea4 && value >= ea3) {
+            tempPrice = price4;
+            setFinalPrice(tempPrice);
+          } else if (value >= ea5) {
+            setFinalPrice(tempPrice);
+            tempPrice = price5;
+          } else {
+            if (!isNaN(value)) {
+              {
+                alert("대량 구매는 문의룰 통한 가격 협의 이후 이용해주세요!");
+              }
+            }
+          }
+        }
+
+        const productPrice = finalPrice;
+        dispatch(
+          updateCart(customerId.current, productId, value, productPrice)
+        );
+      }
     }
   };
 
-  const onDecrease = (productId: number, prevCount: number): void => {
-    if (isNaN(customerId.current) || customerId.current === 0) {
-      dispatch(updateCartItem(productId, prevCount - 1));
-    } else {
-      dispatch(updateCart(customerId.current, productId, prevCount - 1));
-    }
-  };
+  // const onIncrease = (productId: number, prevCount: number): void => {
+  //   if (isNaN(customerId.current) || customerId.current === 0) {
+  //     dispatch(updateCartItem(productId, prevCount + 1));
+  //   } else {
+  //     dispatch(updateCart(customerId.current, productId, prevCount + 1));
+  //   }
+  // };
+
+  // const onDecrease = (productId: number, prevCount: number): void => {
+  //   if (isNaN(customerId.current) || customerId.current === 0) {
+  //     dispatch(updateCartItem(productId, prevCount - 1));
+  //   } else {
+  //     dispatch(updateCart(customerId.current, productId, prevCount - 1));
+  //   }
+  // };
 
   const onClickHandler = (): void => {
     if (isNaN(customerId.current) || customerId.current === -1) {
@@ -188,7 +283,7 @@ const Cart: FC = () => {
                           <p className="card-text"></p>
                         </div>
                       </div>
-                      <div className="col-1 mt-5 text-center">
+                      <div className="col-1 mt-3 text-center">
                         {/* <button
                           className="btn btn-default"
                           disabled={cartItem.productCount === 1000}
@@ -201,7 +296,17 @@ const Cart: FC = () => {
                         >
                           <FontAwesomeIcon size="lg" icon={faChevronUp} />
                         </button> */}
-                        <span> {cartItem.productCount} 개</span>
+                        <input
+                          type="text"
+                          className="form-control input-number"
+                          style={{
+                            width: "65px",
+                          }}
+                          value={cartItem.productCount}
+                          onChange={(event) =>
+                            handleInputChange(event, cartItem.product.id)
+                          }
+                        />
                         {/* <button
                           className="btn btn-default"
                           disabled={cartItem.productCount === 10}

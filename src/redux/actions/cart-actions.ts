@@ -1,4 +1,4 @@
-import { CartItem, CartItemNonMember } from '../../types/types';
+import { CartItem, CartItemNonMember } from "../../types/types";
 import {
   CALCULATE_CART_PRICE_SUCCESS,
   CLEAR_CART_SUCCESS,
@@ -22,7 +22,7 @@ import {
   RETURN_TO_CART_PAGE,
   RETURN_TO_CART_PAGE_DONE,
   ReturnToCartPageDoneActionType,
-} from '../action-types/cart-action-types';
+} from "../action-types/cart-action-types";
 
 export const returnToCartPage = (): ReturnToCartPageActionType => ({
   type: RETURN_TO_CART_PAGE,

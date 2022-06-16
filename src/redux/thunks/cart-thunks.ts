@@ -1,18 +1,18 @@
-import { CartItem, Product } from '../../types/types';
+import { CartItem, Product } from "../../types/types";
 import {
   calculateCartPriceSuccess,
   clearCartSuccess,
   fetchCartSuccess,
   loadingCart,
   stopLoadingCart,
-} from '../actions/cart-actions';
-import { Dispatch } from 'redux';
-import RequestService from '../../utils/request-service';
+} from "../actions/cart-actions";
+import { Dispatch } from "redux";
+import RequestService from "../../utils/request-service";
 
 const calculateTotalPrice = (cart: Array<CartItem>): number => {
   let total = 0;
   cart.forEach((cartItem: CartItem) => {
-    total += (cartItem.product?.productPrice as number) * cartItem.productCount;
+    total += (cartItem.productPrice as number) * cartItem.productCount;
   });
   return total;
 };
@@ -36,6 +36,7 @@ export const calculateCartPrice =
     if (cart === undefined || cart === null) return;
 
     const total: number = calculateTotalPrice(cart);
+    console.log(total);
 
     dispatch(calculateCartPriceSuccess(total));
   };
@@ -66,11 +67,17 @@ export const loadCart = () => (dispatch: Dispatch) => {
 };
 
 export const insertCart =
-  (customerId: number, productId: number, productCount: number) =>
+  (
+    customerId: number,
+    productId: number,
+    productCount: number,
+    productPrice: number
+  ) =>
   async (dispatch: Dispatch) => {
     const response = await RequestService.post(`/customer/${customerId}/cart`, {
       productId: productId,
       productCount: productCount,
+      productPrice: productPrice,
     });
     dispatch(fetchCartSuccess(response.data));
     dispatch(calculateCartPriceSuccess(calculateTotalPrice(response.data)));

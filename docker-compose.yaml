@@ -16,18 +16,9 @@ services:
       - 3000:3000
     container_name: myweb-web
   api:
-    image: devops7503/server_v1:latest
+    image: devops7503/server_v1.0:latest
     ports:
       - 8080:8080
       - 465:465
       - 587:587
     container_name: myweb-api
-# version: "3"
-# services:
-#   nextjs:
-#     build: ./
-#   nginx:
-#     build: ./nginx
-#     ports:
-#       - 80:80
-

@@ -493,6 +493,12 @@ const OrderPage: FC = () => {
             >
               <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
             </button>
+            <div className="row">
+              <h4>
+                주문 금액 :{" "}
+                <span>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</span>
+              </h4>
+            </div>
           </div>
         </div>
       </form>
