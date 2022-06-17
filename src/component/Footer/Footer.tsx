@@ -29,7 +29,7 @@ const Footer: FC = () => {
           }
           else {
 
-            footer.style.top = body_h + 'px';
+            footer.style.top = (body_h - 300) + 'px';
             blank.style.height = (body_h - sum) + 'px';
             if(mid.className == 'home'){
               blank.style.backgroundColor = 'black';
@@ -46,7 +46,7 @@ const Footer: FC = () => {
     catch {
       debugger;
       if(footer){
-        footer.style.top = body_h + 'px';
+        footer.style.top = (body_h - 300) + 'px';
       }
     }
   }
