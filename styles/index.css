@@ -50,9 +50,14 @@ hr {
   z-index: 20;
 }
 
+#blank {
+  height: calc(80vh - 300px);
+  background-color: black;
+}
+
 footer {
   position: absolute;
-  top: 1080px;
+  top: calc(100vh);
   width: 100%;
   z-index: 9999;
 }

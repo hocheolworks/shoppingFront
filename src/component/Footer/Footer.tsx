@@ -5,54 +5,7 @@ import React, { FC, useEffect } from "react";
 // import "./Footer.css";
 
 const Footer: FC = () => {
-  const router = Router;
-
-  const updatePosition = ():void => {
-    const body_h = document.body.scrollHeight;
-    let footer = document.getElementById('footer');
-    let blank = document.getElementById('blank');
-
-    try {
-      const head = document.getElementById('common-header');
-      const head_h = head?.clientHeight;
-      const nav = document.getElementById('navbar-main');
-      const nav_h = nav?.clientHeight;
-      const mid = document.getElementById('mid');
-      const mid_h = mid?.clientHeight;
-      if(head_h && nav_h && mid_h){
-        const sum = head_h + nav_h + mid_h; 
   
-        if(footer && blank){
-          if (body_h < sum){
-            footer.style.top = sum +'px';
-            blank.style.height = 0 + 'px';
-          }
-          else {
-
-            footer.style.top = (body_h - 300) + 'px';
-            blank.style.height = (body_h - sum) + 'px';
-            if(mid.className == 'home'){
-              blank.style.backgroundColor = 'black';
-              blank.className = 'd-flex';
-            }
-            else {
-              blank.style.backgroundColor = 'inherit';
-              blank.className = 'hide';
-            }
-          }
-        }
-      } 
-    }
-    catch {
-      debugger;
-      if(footer){
-        footer.style.top = (body_h - 300) + 'px';
-      }
-    }
-  }
-
-  router.events.on("routeChangeComplete", updatePosition);
-
   return (
     <>
       <div id="blank" className="d-flex"></div>
