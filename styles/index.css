@@ -50,11 +50,15 @@ hr {
   z-index: 20;
 }
 
+/* #blank {
+  height: auto;
+  padding-bottom: (100%);
+}
+
 footer {
-  position: absolute;
-  top: 1080px;
-  width: 100%;
-  z-index: 9999;
+  height: 100%;
+  position: relative;
+  transform: translateY(-100%);
 }
 
 .footer-container {
@@ -66,8 +70,8 @@ footer {
   display: flex;
   justify-content: flex-end;
 }
-
-.footer-container a{
+*/
+.footer-container a {
   color: #6c757d;
 }
 
@@ -116,12 +120,4 @@ footer {
 #navbar-main li {
   list-style: none;
   font-weight: bold;
-}
-
-.policy-container {
-  width: 80%;
-  display: flex;
-  margin-left: 10%;
-  flex-direction: column;
-  padding: 3rem;
 }

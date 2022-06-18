@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import type { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useEffect } from "react";
 import type { NextPage } from "next";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
@@ -19,12 +19,14 @@ import "../styles/Account.css";
 import "../styles/admin.css";
 import "../styles/ProductReview.css";
 import "../styles/Login.css";
+import "../styles/policy.css";
 
 //test
 import "../src/component/Switch/Switch.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { useRouter } from "next/router";
 
 config.autoAddCss = false;
 
@@ -39,6 +41,52 @@ type AppPropsWithLayout = AppProps & {
 const persistor = persistStore(store);
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const updatePosition = (url: string): void => {
+      const body_h = document.body.scrollHeight;
+      let footer = document.getElementById("footer");
+      let blank = document.getElementById("blank");
+
+      try {
+        const head = document.getElementById("common-header");
+        const head_h = head?.clientHeight;
+        const nav = document.getElementById("navbar-main");
+        const nav_h = nav?.clientHeight;
+        const mid = document.getElementById("mid");
+        const mid_h = mid?.clientHeight;
+        if (head_h && nav_h && mid_h) {
+          const sum = head_h + nav_h + mid_h;
+
+          if (footer && blank) {
+            if (body_h < sum + 300) {
+              footer.style.top = sum + "px";
+              blank.style.height = 0 + "px";
+            } else {
+              footer.style.top = body_h - 300 + "px";
+              blank.style.height = body_h - sum + "px";
+              if (mid.className == "home") {
+                blank.style.backgroundColor = "black";
+                blank.className = "d-flex";
+              } else {
+                blank.style.backgroundColor = "inherit";
+                blank.className = "hide";
+              }
+            }
+          }
+        }
+      } catch {
+        if (footer) {
+          footer.style.top = body_h + "px";
+        }
+      }
+    };
+
+    router.events.on("routeChangeComplete", updatePosition);
+    router.events.on("hashChangeComplete", updatePosition);
+  }, []);
+
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (

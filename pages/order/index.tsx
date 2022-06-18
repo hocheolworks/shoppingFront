@@ -468,8 +468,8 @@ const OrderPage: FC = () => {
                   className="form-control"
                   name="orderMemo"
                   value={orderMemo}
-                  placeholder="200자 이내"
-                  rows={1}
+                  placeholder="인쇄 등 요청사항을 적어주세요. 프린트 하고 싶은 디자인이 있으시다면 아래 파일 첨부를 이용해주세요"
+                  rows={3}
                   maxLength={200}
                   onChange={(event) => {
                     handleResizeHeight();
