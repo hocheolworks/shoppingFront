@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { GetServerSideProps } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
-import { InsertOrder, Order } from "../../src/types/types";
+import { InsertOrder, Order, TaxBillInfo } from "../../src/types/types";
 import { clearCartSuccess } from "../../src/redux/actions/cart-actions";
 import {
   clearInsertOrderInformation,
@@ -35,6 +35,10 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
     (state: AppStateType) => state.order.insertOrder
   );
 
+  const taxBillInfo: Partial<TaxBillInfo> = useSelector(
+    (state: AppStateType) => state.order.taxBillInfo
+  );
+
   const { orderId } = query;
 
   const customerId = useRef<number>(-1);
@@ -44,6 +48,14 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   }, []);
 
   useEffect(() => {
+    // 세금 계산서 DB 저장
+    if (insertOrder.isTaxBill) {
+      RequestService.post("/order/taxBillInfo", {
+        ...taxBillInfo,
+        orderId: orderId,
+      });
+    }
+
     customerId.current = parseInt(sessionStorage.getItem("id") as string);
     RequestService.post("/order/payment", {
       ...query,
