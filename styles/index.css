@@ -121,11 +121,3 @@ footer {
   list-style: none;
   font-weight: bold;
 }
-
-.policy-container {
-  width: 80%;
-  display: flex;
-  margin-left: 10%;
-  flex-direction: column;
-  padding: 3rem;
-}
