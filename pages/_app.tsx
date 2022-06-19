@@ -19,6 +19,10 @@ import "../styles/Account.css";
 import "../styles/admin.css";
 import "../styles/ProductReview.css";
 import "../styles/Login.css";
+import "../styles/policy.css";
+
+//test
+import "../src/component/Switch/Switch.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";

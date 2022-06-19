@@ -90,6 +90,7 @@ export type Order = {
   orderPostIndex: string;
   orderStatus: string;
   orderIsPaid: boolean;
+  isTaxBill: boolean;
   orderItems: Array<OrderItem>;
   createdAt: string;
 };
@@ -114,6 +115,7 @@ export type InsertOrder = {
   orderMemo: string | undefined;
   orderTotalPrice: number;
   orderDesignFile: string;
+  isTaxBill: boolean;
   cart: Array<CartItem | CartItemNonMember>;
 };
 
@@ -236,4 +238,23 @@ export type FCinLayout<P = {}> = FC<P> & {
 export type FileInQuill = {
   base64: string;
   file: string | Blob;
+};
+
+export type TaxBillInfo = {
+  representativeName: string;
+  companyRegistrationNumber: string;
+  companyLocation: string;
+  companyLocationDetail: string;
+  businessCategory: string; //업태
+  businessType: string; //종목
+  email: string;
+};
+
+export type TaxBillError = {
+  representativeNameError: string;
+  companyRegistrationNumberError: string;
+  companyLocationError: string;
+  companyLocationDetailError: string;
+  businessCategoryError: string; //업태
+  businessTypeError: string; //종목
 };

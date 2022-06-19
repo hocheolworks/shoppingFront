@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import React, { FC } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 
-import { Order } from '../../types/types';
-import Spinner from '../Spinner/Spinner';
+import { Order } from "../../types/types";
+import Spinner from "../Spinner/Spinner";
 
 type PropsType = {
   orders: Array<Order>;
@@ -31,6 +31,7 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                 <th>금액</th>
                 <th>주문상태</th>
                 <th>결제여부</th>
+                <th>세금계산서</th>
                 <th></th>
               </tr>
             </thead>
@@ -39,11 +40,12 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                 return (
                   <tr key={order.id}>
                     <th>{order.id}</th>
-                    <th>{new Date(order.createdAt).toLocaleString('ko-kr')}</th>
+                    <th>{new Date(order.createdAt).toLocaleString("ko-kr")}</th>
                     <th>{order.orderCustomerName}</th>
-                    <th>{order.orderTotalPrice.toLocaleString('ko-KR')}원</th>
+                    <th>{order.orderTotalPrice.toLocaleString("ko-KR")}원</th>
                     <th>{order.orderStatus}</th>
-                    <th>{order.orderIsPaid ? 'O' : 'X'}</th>
+                    <th>{order.orderIsPaid ? "O" : "X"}</th>
+                    <th>{order.isTaxBill ? "O" : "X"}</th>
                     <th>
                       <Link href={`/account/customer/orders/${order.id}`}>
                         <a>더보기</a>

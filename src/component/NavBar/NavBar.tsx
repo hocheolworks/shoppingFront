@@ -46,7 +46,8 @@ const NavBar: FC = () => {
           <Link href={'/login'}>
             <a style={{ fontWeight: 'bold' }}>로그인</a>
           </Link>
-          <Link href={'/registration'}>
+          {/* <Link href={'/registration'}> */}
+          <Link href={'/policy/join_us'}>
             <a style={{ fontWeight: 'bold' }}>회원가입</a>
           </Link>
         </>

@@ -1,4 +1,10 @@
-import { OrderError, Order, InsertOrder } from "../../types/types";
+import {
+  OrderError,
+  Order,
+  InsertOrder,
+  TaxBillInfo,
+  TaxBillError,
+} from "../../types/types";
 import { SHOW_LOADER } from "../action-types/auth-action-types";
 import {
   FETCH_ORDER_SUCCESS,
@@ -11,7 +17,8 @@ import {
   CLEAR_INSERT_ORDER_INFORMATION,
   HIDE_LOADER,
   FETCH_NONMEMBER_ORDERS_SUCCESS,
-  SAVE_INSERT_ORDER_DESIGN_FILE,
+  SAVE_TAX_BILL_INFO_FAILURE,
+  SAVE_TAX_BILL_INFO_SUCCESS,
 } from "../action-types/order-action-types";
 
 export type InitialStateType = {
@@ -21,6 +28,8 @@ export type InitialStateType = {
   loading: boolean;
   isOrderAdded: boolean;
   insertOrder: Partial<InsertOrder>;
+  taxBillInfo: Partial<TaxBillInfo>;
+  taxBillError: Partial<TaxBillError>;
 };
 
 const initialState: InitialStateType = {
@@ -30,6 +39,8 @@ const initialState: InitialStateType = {
   loading: false,
   isOrderAdded: false,
   insertOrder: {},
+  taxBillInfo: {},
+  taxBillError: {},
 };
 
 const reducer = (
@@ -79,6 +90,12 @@ const reducer = (
 
     case FETCH_NONMEMBER_ORDERS_SUCCESS:
       return { ...state, order: action.payload, loading: false };
+
+    case SAVE_TAX_BILL_INFO_FAILURE:
+      return { ...state, taxBillError: action.payload };
+
+    case SAVE_TAX_BILL_INFO_SUCCESS:
+      return { ...state, taxBillInfo: action.payload };
 
     default:
       return state;

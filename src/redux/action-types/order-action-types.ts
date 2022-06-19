@@ -1,4 +1,10 @@
-import { InsertOrder, Order, OrderError } from "../../types/types";
+import {
+  InsertOrder,
+  Order,
+  OrderError,
+  TaxBillError,
+  TaxBillInfo,
+} from "../../types/types";
 import { ShowLoaderActionType } from "./auth-action-types";
 
 export const HIDE_LOADER = "HIDE_LOADER";
@@ -12,6 +18,8 @@ export const SAVE_INSERT_ORDER_INFORMATION = "SAVE_INSERT_ORDER_INFORMATION";
 export const SAVE_INSERT_ORDER_DESIGN_FILE = "SAVE_INSERT_ORDER_DESIGN_FILE";
 export const CLEAR_INSERT_ORDER_INFORMATION = "CLEAR_INSERT_ORDER_INFORMATION";
 export const FETCH_NONMEMBER_ORDERS_SUCCESS = "FETCH_NONMEMBER_ORDERS_SUCCESS";
+export const SAVE_TAX_BILL_INFO_FAILURE = "SAVE_TAX_BILL_INFO_FAILURE";
+export const SAVE_TAX_BILL_INFO_SUCCESS = "SAVE_TAX_BILL_INFO_SUCCESS";
 
 export type HideLoaderActionType = { type: typeof HIDE_LOADER };
 export type FetchOrderSuccessActionType = { type: typeof FETCH_ORDER_SUCCESS };
@@ -48,6 +56,16 @@ export type FetchNonMemberOrdersSuccessActionType = {
   payload: Order;
 };
 
+export type SaveTaxBillInfoFailureActionType = {
+  type: typeof SAVE_TAX_BILL_INFO_FAILURE;
+  payload: Partial<TaxBillError>;
+};
+
+export type SaveTaxBillInfoSuccessActionType = {
+  type: typeof SAVE_TAX_BILL_INFO_SUCCESS;
+  payload: TaxBillInfo;
+};
+
 export type OrderActionTypes =
   | HideLoaderActionType
   | FetchOrderSuccessActionType
@@ -59,4 +77,6 @@ export type OrderActionTypes =
   | SaveInsertOrderInformationActionType
   | SaveInsertOrderDesignFileActionType
   | ClearInsertOrderInformationActionType
-  | FetchNonMemberOrdersSuccessActionType;
+  | FetchNonMemberOrdersSuccessActionType
+  | SaveTaxBillInfoFailureActionType
+  | SaveTaxBillInfoSuccessActionType;

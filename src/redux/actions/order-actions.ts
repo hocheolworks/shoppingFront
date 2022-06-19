@@ -1,4 +1,10 @@
-import { InsertOrder, Order, OrderError } from "../../types/types";
+import {
+  InsertOrder,
+  Order,
+  OrderError,
+  TaxBillError,
+  TaxBillInfo,
+} from "../../types/types";
 import {
   ShowLoaderActionType,
   SHOW_LOADER,
@@ -24,6 +30,10 @@ import {
   FETCH_NONMEMBER_ORDERS_SUCCESS,
   SAVE_INSERT_ORDER_DESIGN_FILE,
   SaveInsertOrderDesignFileActionType,
+  SaveTaxBillInfoFailureActionType,
+  SAVE_TAX_BILL_INFO_FAILURE,
+  SaveTaxBillInfoSuccessActionType,
+  SAVE_TAX_BILL_INFO_SUCCESS,
 } from "../action-types/order-action-types";
 
 export const showLoader = (): ShowLoaderActionType => ({
@@ -90,4 +100,18 @@ export const fetchNonMemberOrdersSuccess = (
 ): FetchNonMemberOrdersSuccessActionType => ({
   type: FETCH_NONMEMBER_ORDERS_SUCCESS,
   payload: order,
+});
+
+export const saveTaxBillInfoFailure = (
+  errors: Partial<TaxBillError>
+): SaveTaxBillInfoFailureActionType => ({
+  type: SAVE_TAX_BILL_INFO_FAILURE,
+  payload: errors,
+});
+
+export const saveTaxBillInfoSuccess = (
+  taxBillInfo: TaxBillInfo
+): SaveTaxBillInfoSuccessActionType => ({
+  type: SAVE_TAX_BILL_INFO_SUCCESS,
+  payload: taxBillInfo,
 });

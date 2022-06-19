@@ -1,0 +1,38 @@
+.switch-checkbox {
+  /* 1. input 체크박스 가리기 */
+  display: none;
+}
+/* 2. 체크시 볼의 css */
+.switch-checkbox:checked + .switch-label .ball {
+  transform: translateX(24px); /* 체크시 볼의 이동거리 */
+  background-color: white;
+}
+
+.switch-checkbox:checked + .switch-label {
+  background-color: #28a745;
+}
+
+.switch-label {
+  /* 1. 양쪽이 둥근 스위치 */
+  position: relative;
+  margin: auto;
+
+  /* 3. 색상 - 스위치 배경 */
+  background-color: lightgray;
+}
+
+.ball {
+  /* 1. 스위치 볼 */
+  position: relative;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+
+  /* 2. 이동시 부드럽게 */
+  transition: transform 0.2s linear;
+
+  /* 3. 색상 - 스위치 볼 */
+  background-color: gray;
+}

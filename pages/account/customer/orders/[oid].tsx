@@ -1,7 +1,7 @@
 import React, { FC, ReactElement, useEffect } from "react";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { FCinLayout, Order } from "../../../../src/types/types";
+import { FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import RequestService from "../../../../src/utils/request-service";
@@ -10,9 +10,13 @@ import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout
 
 type ManageUserOrderProp = {
   order: Order;
+  taxBillInfo?: TaxBillInfo;
 };
 
-const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
+const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
+  order,
+  taxBillInfo,
+}) => {
   const {
     id,
     orderCustomerName,
@@ -27,6 +31,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
     orderIsPaid,
     orderMemo,
     orderDesignFile,
+    isTaxBill,
   } = order;
 
   return (
@@ -35,7 +40,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
         <FontAwesomeIcon icon={faShoppingBag} /> 주문 #{id}
       </h4>
       <div className="row border my-5 px-5 py-3">
-        <div className="col-md-6">
+        <div className={isTaxBill ? "col-md-4" : "col-md-6"}>
           <h5 style={{ marginBottom: "30px" }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문자 정보
           </h5>
@@ -76,7 +81,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
             </p>
           )}
         </div>
-        <div className="col-md-6">
+        <div className={isTaxBill ? "col-md-4" : "col-md-6"}>
           <h5 style={{ marginBottom: "30px" }}>
             <FontAwesomeIcon icon={faInfoCircle} /> 주문 정보
           </h5>
@@ -108,6 +113,53 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
             </span>
           </h4>
         </div>
+        {isTaxBill && (
+          <div className="col-md-4">
+            <h5 style={{ marginBottom: "30px" }}>
+              <FontAwesomeIcon icon={faInfoCircle} /> 세금계산서 정보
+            </h5>
+            <p className="personal_data_item">
+              대표자 성명:
+              <span className="personal_data_text">
+                {taxBillInfo?.representativeName}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              사업자 등록번호:
+              <span className="personal_data_text">
+                {taxBillInfo?.companyRegistrationNumber}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              사업장 소재지:
+              <span className="personal_data_text">
+                {taxBillInfo?.companyLocation}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              사업장 상세주소:
+              <span className="personal_data_text">
+                {taxBillInfo?.companyLocationDetail}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              업태:
+              <span className="personal_data_text">
+                {taxBillInfo?.businessCategory}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              종목:
+              <span className="personal_data_text">
+                {taxBillInfo?.businessType}
+              </span>
+            </p>
+            <p className="personal_data_item">
+              이메일:
+              <span className="personal_data_text">{taxBillInfo?.email}</span>
+            </p>
+          </div>
+        )}
       </div>
       <table className="table border text-center">
         <thead className="table-active">
@@ -148,7 +200,15 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({ order }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const response = await RequestService.get(`/order/${context.params?.oid}`);
   const order = response.data;
-  return { props: { order } };
+  if (order.isTaxBill) {
+    const taxBillRes = await RequestService.get(
+      `/order/${context.params?.oid}/taxBillInfo`
+    );
+    const taxBillInfo = taxBillRes.data;
+    return { props: { order, taxBillInfo } };
+  } else {
+    return { props: { order } };
+  }
 };
 
 ManageUserOrder.getLayout = function getLayout(page: ReactElement) {

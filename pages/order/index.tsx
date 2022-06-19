@@ -17,6 +17,7 @@ import {
 
 import { addOrder, fetchOrder } from "../../src/redux/thunks/order-thunks";
 import PageLoader from "../../src/component/PageLoader/PageLoader";
+import Switch from "../../src/component/Switch/Switch";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
   OrderError,
@@ -28,6 +29,8 @@ import {
   Order,
   CartItemNonMember,
   InsertOrder,
+  TaxBillInfo,
+  TaxBillError,
 } from "../../src/types/types";
 
 import Swal from "sweetalert2";
@@ -41,6 +44,8 @@ import { fetchCart } from "../../src/redux/thunks/cart-thunks";
 import {
   orderAddedFailure,
   saveInsertOrderInformation,
+  saveTaxBillInfoFailure,
+  saveTaxBillInfoSuccess,
 } from "../../src/redux/actions/order-actions";
 import { FRONT_BASE_URL } from "../../src/utils/constants/url";
 import RequestService from "../../src/utils/request-service";
@@ -60,10 +65,6 @@ const OrderPage: FC = () => {
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
 
-  const insertOrder = useSelector(
-    (state: AppStateType) => state.order.insertOrder
-  );
-
   useEffect(() => {
     if (sessionStorage.getItem("id") !== null) {
       // 로그인 상태 : 회원 주문
@@ -72,6 +73,7 @@ const OrderPage: FC = () => {
     }
 
     dispatch(orderAddedFailure({}));
+    dispatch(saveTaxBillInfoFailure({}));
   }, []);
 
   const customersData: Partial<Customer> = useSelector(
@@ -124,12 +126,30 @@ const OrderPage: FC = () => {
   const [orderMemo, setOrderMemo] = useState<string | undefined>("");
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+  const [isPopupOpenTaxBill, setIsPopupOpenTaxBill] = useState<boolean>(false);
 
   const [orderDesignFile, SetOrderDesignFile] = useState<string | Blob>("");
 
   const postIndexRef = useRef(null);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  // 세금계산서 state
+  const [isTaxBill, setIsTaxBill] = useState<boolean>(false);
+
+  const [representativeName, setRepresentativeName] = useState<string>("");
+  const [companyRegistrationNumber, setCompanyRegistrationNumber] =
+    useState<string>("");
+  const [companyLocation, setCompanyLocation] = useState<string>("");
+  const [companyLocationDetail, setCompanyLocationDetail] =
+    useState<string>("");
+  const [businessCategory, setBusinessCategory] = useState<string>("");
+  const [businessType, setBusinessType] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  const taxBillError: Partial<TaxBillError> = useSelector(
+    (state: AppStateType) => state.order.taxBillError
+  );
 
   const handleResizeHeight = useCallback(() => {
     if (textAreaRef === null || textAreaRef.current === null) return;
@@ -140,6 +160,9 @@ const OrderPage: FC = () => {
   const onClickPostIndex = (): void => {
     setIsPopupOpen((prevState) => !prevState);
   };
+  const onClickPostIndexTaxBill = (): void => {
+    setIsPopupOpenTaxBill((prevState) => !prevState);
+  };
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setOrderAddress(
@@ -147,6 +170,12 @@ const OrderPage: FC = () => {
     );
     setOrderPostIndex(data.zonecode);
     setIsPopupOpen(false);
+  };
+  const onCompletePostIndexTaxBill = (data: PostCodeObject): void => {
+    setCompanyLocation(
+      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
+    );
+    setIsPopupOpenTaxBill(false);
   };
 
   const {
@@ -168,7 +197,14 @@ const OrderPage: FC = () => {
       !Boolean(orderPostIndex) ||
       !Boolean(orderAddress) ||
       !Boolean(orderAddressDetail) ||
-      !Boolean(orderPhoneNumber)
+      !Boolean(orderPhoneNumber) ||
+      (isTaxBill &&
+        (!Boolean(representativeName) ||
+          !Boolean(companyRegistrationNumber) ||
+          !Boolean(companyLocation) ||
+          !Boolean(companyLocationDetail) ||
+          !Boolean(businessCategory) ||
+          !Boolean(businessType)))
     ) {
       const orderError: OrderError = {
         orderCustomerNameError: "",
@@ -194,9 +230,40 @@ const OrderPage: FC = () => {
         orderError.orderPhoneNumberError = "연락처는 필수 입니다.";
       }
       dispatch(orderAddedFailure(orderError));
+
+      const taxBillError: TaxBillError = {
+        representativeNameError: "",
+        companyRegistrationNumberError: "",
+        companyLocationError: "",
+        companyLocationDetailError: "",
+        businessCategoryError: "",
+        businessTypeError: "",
+      };
+
+      if (!Boolean(representativeName)) {
+        taxBillError.representativeNameError = "수령인은 필수 입니다.";
+      }
+      if (!Boolean(companyRegistrationNumber)) {
+        taxBillError.companyRegistrationNumberError = "우편번호는 필수 입니다.";
+      }
+      if (!Boolean(companyLocation)) {
+        taxBillError.companyLocationError = "주소는 필수 입니다.";
+      }
+      if (!Boolean(companyLocationDetail)) {
+        taxBillError.companyLocationDetailError = "상세주소는 필수 입니다.";
+      }
+      if (!Boolean(businessCategory)) {
+        taxBillError.businessCategoryError = "연락처는 필수 입니다.";
+      }
+      if (!Boolean(businessType)) {
+        taxBillError.businessTypeError = "연락처는 필수 입니다.";
+      }
+
+      dispatch(saveTaxBillInfoFailure(taxBillError));
       return;
     } else {
       dispatch(orderAddedFailure({}));
+      dispatch(saveTaxBillInfoFailure({}));
     }
 
     const insertOrder = {
@@ -209,6 +276,7 @@ const OrderPage: FC = () => {
       orderMemo,
       orderTotalPrice,
       orderDesignFile: "",
+      isTaxBill,
       cart,
     };
 
@@ -226,6 +294,22 @@ const OrderPage: FC = () => {
     }
 
     dispatch(saveInsertOrderInformation(insertOrder));
+
+    // 세금 계산서 정보 저장
+    if (isTaxBill) {
+      const taxBillInfo: TaxBillInfo = {
+        representativeName,
+        companyRegistrationNumber,
+        companyLocation,
+        companyLocationDetail,
+        businessCategory,
+        businessType,
+        email,
+      };
+
+      dispatch(saveTaxBillInfoSuccess(taxBillInfo));
+    }
+
     // 결제창 요청
     loadTossPayments(clientKey).then((tossPayments) => {
       tossPayments.requestPayment(paymentMethod, {
@@ -262,8 +346,8 @@ const OrderPage: FC = () => {
         <div className="row">
           <div className="col-lg-6">
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">수령인:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">수령인:</label>
+              <div className="col-sm-7">
                 <input
                   type="text"
                   className={
@@ -280,8 +364,8 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">우편번호:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">우편번호:</label>
+              <div className="col-sm-7">
                 <input
                   ref={postIndexRef}
                   onClick={onClickPostIndex}
@@ -301,8 +385,8 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">주소:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">주소:</label>
+              <div className="col-sm-7">
                 <input
                   readOnly
                   type="text"
@@ -318,9 +402,24 @@ const OrderPage: FC = () => {
                 <div className="invalid-feedback">{orderAddressError}</div>
               </div>
             </div>
+            {isPopupOpen && (
+              <div className="form-group row">
+                <label className="col-sm-3 col-form-label"></label>
+                <div className="col-sm-7">
+                  <DaumPostcode
+                    className="form-control"
+                    style={{
+                      border: "1px solid black",
+                      padding: 0,
+                    }}
+                    onComplete={onCompletePostIndex}
+                  />
+                </div>
+              </div>
+            )}
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">상세주소:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">상세주소:</label>
+              <div className="col-sm-7">
                 <input
                   type="text"
                   className={
@@ -340,8 +439,8 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">연락처:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">연락처:</label>
+              <div className="col-sm-7">
                 <input
                   type="text"
                   className={
@@ -359,8 +458,8 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">요청사항:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">요청사항:</label>
+              <div className="col-sm-7">
                 <textarea
                   ref={textAreaRef}
                   style={{
@@ -380,8 +479,8 @@ const OrderPage: FC = () => {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-2 col-form-label">파일첨부:</label>
-              <div className="col-sm-8">
+              <label className="col-sm-3 col-form-label">파일첨부:</label>
+              <div className="col-sm-7">
                 <input
                   type="file"
                   className={"form-control"}
@@ -392,27 +491,193 @@ const OrderPage: FC = () => {
                 />
               </div>
             </div>
-            {isPopupOpen && (
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label"></label>
-                <div className="col-sm-8">
-                  <DaumPostcode
-                    className="form-control"
-                    style={{
-                      border: "1px solid black",
-                      padding: 0,
-                    }}
-                    onComplete={onCompletePostIndex}
-                  />
-                </div>
-              </div>
-            )}
             <hr
               style={{
                 margin: "0 0 10px 0",
                 maxWidth: "82.5%",
               }}
             />
+            <div className="form-group row">
+              <label className="col-sm-3 col-form-label">세금계산서:</label>
+              <div className="col-sm-7 d-flex align-items-center">
+                <Switch
+                  isChecked={isTaxBill}
+                  handleToggle={() => {
+                    setIsTaxBill(!isTaxBill);
+                  }}
+                />
+              </div>
+            </div>
+            {isTaxBill && (
+              <>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">
+                    대표자 이름:
+                  </label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={
+                        taxBillError.representativeNameError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="CompanyRegistrationNumber"
+                      value={representativeName}
+                      placeholder=""
+                      onChange={(event) =>
+                        setRepresentativeName(event.target.value)
+                      }
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.representativeNameError}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">
+                    사업자 등록번호:
+                  </label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={
+                        taxBillError.companyRegistrationNumberError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="CompanyRegistrationNumber"
+                      value={companyRegistrationNumber}
+                      placeholder="숫자만 입력해주세요."
+                      onChange={(event) =>
+                        setCompanyRegistrationNumber(event.target.value)
+                      }
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.companyRegistrationNumberError}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">
+                    사업장 소재지:
+                  </label>
+                  <div className="col-sm-7">
+                    <input
+                      readOnly
+                      type="text"
+                      onClick={onClickPostIndexTaxBill}
+                      className={
+                        taxBillError.companyLocationError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="address"
+                      value={companyLocation}
+                      onChange={(event) =>
+                        setCompanyLocation(event.target.value)
+                      }
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.companyLocationError}
+                    </div>
+                  </div>
+                </div>
+                {isPopupOpenTaxBill && (
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label"></label>
+                    <div className="col-sm-7">
+                      <DaumPostcode
+                        className="form-control"
+                        style={{
+                          border: "1px solid black",
+                          padding: 0,
+                        }}
+                        onComplete={onCompletePostIndexTaxBill}
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">
+                    사업장 상세주소:
+                  </label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={
+                        taxBillError.companyLocationDetailError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="address"
+                      value={companyLocationDetail}
+                      onChange={(event) =>
+                        setCompanyLocationDetail(event.target.value)
+                      }
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.companyLocationDetailError}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">업태:</label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={
+                        taxBillError.businessCategoryError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="CompanyRegistrationNumber"
+                      value={businessCategory}
+                      placeholder=""
+                      onChange={(event) =>
+                        setBusinessCategory(event.target.value)
+                      }
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.businessCategoryError}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">종목:</label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={
+                        taxBillError.businessTypeError
+                          ? "form-control is-invalid"
+                          : "form-control"
+                      }
+                      name="CompanyRegistrationNumber"
+                      value={businessType}
+                      placeholder=""
+                      onChange={(event) => setBusinessType(event.target.value)}
+                    />
+                    <div className="invalid-feedback">
+                      {taxBillError.businessTypeError}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label className="col-sm-3 col-form-label">이메일:</label>
+                  <div className="col-sm-7">
+                    <input
+                      type="text"
+                      className={"form-control"}
+                      name="CompanyRegistrationNumber"
+                      value={email}
+                      placeholder=""
+                      onChange={(event) => setEmail(event.target.value)}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <div className="col-lg-6">
             <div className="container-fluid">
@@ -454,8 +719,8 @@ const OrderPage: FC = () => {
               }}
             />
             <div className="form-group row mb-0">
-              <label className="col-sm-2 col-form-label">결제수단:</label>
-              <div className="col-sm-8 d-flex align-items-center justify-content-between">
+              <label className="col-sm-3 col-form-label">결제수단:</label>
+              <div className="col-sm-7 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (
                   <div key={`payment-method-radio-${i}`}>
                     <input
