@@ -9,12 +9,12 @@ const sliderItems = [
     url: "https://iljo-product.s3.ap-northeast-2.amazonaws.com/a_inside_storage.jpg",
   },
   {
-    id: "0",
+    id: "1",
     name: "Photo 2",
     url: "https://iljo-product.s3.ap-northeast-2.amazonaws.com/a_inside_print_zone.jpg",
   },
   {
-    id: "0",
+    id: "2",
     name: "Photo 3",
     url: "https://iljo-product.s3.ap-northeast-2.amazonaws.com/a_inside_storage2.jpg",
   },

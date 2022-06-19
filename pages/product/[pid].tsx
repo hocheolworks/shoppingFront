@@ -517,14 +517,14 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
             </div>
           </div>
           <hr />
-          <div className="mt-5">
+          <div className="mt-5mw -100">
             <h3 className="text-center mb-5">상품 설명</h3>
             <div
               className="text-center mb-5"
               dangerouslySetInnerHTML={{
                 __html: product.productDescription.replaceAll(
                   "<img ",
-                  '<img style="max-width:100%"'
+                  '<img style="max-width:100%" alt="product_image"'
                 ),
               }}
             ></div>
