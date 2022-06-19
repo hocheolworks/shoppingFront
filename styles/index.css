@@ -65,12 +65,12 @@ footer {
   display: flex;
   flex-direction: column;
 }
-
+*/
 .copyright {
   display: flex;
   justify-content: flex-end;
 }
-*/
+
 .footer-container a {
   color: #6c757d;
 }
