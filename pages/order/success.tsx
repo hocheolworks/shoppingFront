@@ -86,6 +86,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
         ) : (
           <>
             <h2>주문이 완료되었습니다!</h2>
+            <p>주문 정보 조회를 위해 주문 번호를 꼭 기억해주세요!</p>
             <p>
               주문번호: <span>{(orderId as string).replace("order-", "")}</span>
             </p>

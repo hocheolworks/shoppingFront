@@ -92,6 +92,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
+        <meta
+          name="naver-site-verification"
+          content="79af27b7b5ccbb5d3fa948ae38d21495799b5e91"
+        />
         <title>진솔유통</title>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />

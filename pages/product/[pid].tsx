@@ -524,7 +524,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
               dangerouslySetInnerHTML={{
                 __html: product.productDescription.replaceAll(
                   "<img ",
-                  '<img style="max-width:100% "'
+                  '<img style="max-width:100%" alt="product_image"'
                 ),
               }}
             ></body>
