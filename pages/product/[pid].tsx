@@ -519,7 +519,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
           <hr />
           <div className="mt-5">
             <h3 className="text-center mb-5">상품 설명</h3>
-            <body
+            <div
               className="text-center mb-5"
               dangerouslySetInnerHTML={{
                 __html: product.productDescription.replaceAll(
@@ -527,7 +527,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                   '<img style="max-width:100%"'
                 ),
               }}
-            ></body>
+            ></div>
           </div>
           <div className="mt-5">
             <h3 className="text-center mt-5 mb-5 border-top">
@@ -544,8 +544,8 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
             {isPurchased && (
               <form onSubmit={addReview}>
                 <div className="form-group border mt-5">
-                  <div className="mx-3 my-3">
-                    <div className="row">
+                  <div className="mx-3 my-3" style={{width: '100%'}}>
+                    <div className="row" id="review-row">
                       <div className="col-md-4">
                         <label>
                           <span className="text-danger">
@@ -579,7 +579,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                           </span>{" "}
                           별점
                         </label>
-                        <div>
+                        <div id='star-rating'>
                           <StarRatingComponent
                             name="star"
                             starCount={5}
@@ -607,7 +607,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                       }
                       name="message"
                       value={message}
-                      style={{ resize: "none" }}
+                      style={{ width: "100%" }}
                       onChange={(event) => setMessage(event.target.value)}
                     />
                     <div className="invalid-feedback">{messageError}</div>

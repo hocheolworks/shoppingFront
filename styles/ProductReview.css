@@ -7,3 +7,22 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
 }
+
+#order_success {
+    height: 30vh;
+}
+
+#star-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#star-rating label{
+    display: flex;
+    width: auto;
+}
+
+#review-row {
+    margin-left: 0px;
+}

@@ -79,8 +79,8 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
   }, []);
 
   return (
-    <>
-      <div className="container text-center mt-5">
+    <div id='mid'>
+      <div className="container text-center mt-5 mb-5" id="order_success">
         {loading ? (
           <Spinner />
         ) : (
@@ -92,7 +92,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({ query }) => {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
