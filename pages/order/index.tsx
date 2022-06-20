@@ -49,7 +49,7 @@ import {
 } from "../../src/redux/actions/order-actions";
 import { FRONT_BASE_URL } from "../../src/utils/constants/url";
 import RequestService from "../../src/utils/request-service";
-const clientKey = "test_ck_LBa5PzR0ArnEp5zdmwvVvmYnNeDM";
+const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string; // 진솔유통 테스트 클라이언트 키
 
 const MySwal = withReactContent(Swal);
 
