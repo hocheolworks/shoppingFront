@@ -7,35 +7,37 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { useRouter } from 'next/router';
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 import {
   fetchProduct,
   fetchProducts,
-} from '../../../../src/redux/thunks/product-thunks';
+} from "../../../../src/redux/thunks/product-thunks";
 import {
   formReset,
   updateProduct,
-} from '../../../../src/redux/thunks/admin-thunks';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
+} from "../../../../src/redux/thunks/admin-thunks";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
 import {
   FCinLayout,
   FileInQuill,
   Product,
   ProductErrors,
-} from '../../../../src/types/types';
-import ToastShow from '../../../../src/component/Toasts/ToastShow';
-import { makeImageUrl } from '../../../../src/utils/functions';
-import Spinner from '../../../../src/component/Spinner/Spinner';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
-import TextEditor from '../../../../src/component/TextEditor/TextEditor';
+} from "../../../../src/types/types";
+import ToastShow from "../../../../src/component/Toasts/ToastShow";
+import { makeImageUrl } from "../../../../src/utils/functions";
+import Spinner from "../../../../src/component/Spinner/Spinner";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import TextEditor from "../../../../src/component/TextEditor/TextEditor";
 import {
   clearAddProductEditor,
   pushProductImage,
-} from '../../../../src/redux/actions/admin-actions';
+  setProductContent,
+} from "../../../../src/redux/actions/admin-actions";
+import requestService from "../../../../src/utils/request-service";
 
 const EditProduct: FCinLayout = () => {
   const dispatch = useDispatch();
@@ -57,6 +59,8 @@ const EditProduct: FCinLayout = () => {
   const productImages: Array<FileInQuill> = useSelector(
     (state: AppStateType) => state.admin.addProductImages
   );
+
+  const prevProductImages = useRef<string[]>([]);
 
   const [product, setProduct] = useState<Partial<Product>>(productData);
   const [loading, setLoading] = useState<boolean>(true);
@@ -82,7 +86,7 @@ const EditProduct: FCinLayout = () => {
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    customerId.current = parseInt(sessionStorage.getItem('id') as string);
+    customerId.current = parseInt(sessionStorage.getItem("id") as string);
     dispatch(clearAddProductEditor());
     dispatch(fetchProduct(parseInt(pid as string)));
   }, []);
@@ -93,18 +97,18 @@ const EditProduct: FCinLayout = () => {
 
   useEffect(() => {
     if (productData.productDescription) {
+      dispatch(setProductContent(productData.productDescription));
       const regex: RegExp = /src=[\"']?([^>\"']*)[\"']?[^>]*/g;
-      productData.productDescription
-        .match(regex)
-        ?.map((val) =>
-          dispatch(
-            pushProductImage({ base64: val.slice(5).slice(0, -1), file: '-1' })
-          )
-        );
+      productData.productDescription.match(regex)?.map((val) => {
+        const imgUrl = val.slice(5).slice(0, -1);
+        if (!prevProductImages.current.includes(imgUrl))
+          prevProductImages.current.push(imgUrl);
+        dispatch(pushProductImage({ base64: imgUrl, file: "-1" }));
+      });
     }
     setProduct(productData);
     if (isProductEdited) {
-      if (fileInput.current !== null) fileInput.current.value = '';
+      if (fileInput.current !== null) fileInput.current.value = "";
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -115,24 +119,76 @@ const EditProduct: FCinLayout = () => {
     }
   }, [productData]);
 
-  const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const bodyFormData: FormData = new FormData();
+
     if (file) {
-      bodyFormData.append('file', file as string);
+      bodyFormData.append("file", file as string);
     }
     if (productName) {
-      bodyFormData.append('productName', productName);
+      bodyFormData.append("productName", productName);
     }
     if (productMinimumEA) {
-      bodyFormData.append('productMinimumEA', productMinimumEA.toString());
+      bodyFormData.append("productMinimumEA", productMinimumEA.toString());
     }
     if (productDescription) {
-      bodyFormData.append('productDescription', productDescription);
+      bodyFormData.append("productDescription", productContent);
     }
     if (productPrice) {
-      bodyFormData.append('productPrice', productPrice.toString());
+      bodyFormData.append("productPrice", productPrice.toString());
     }
+
+    // 추가된 이미지는 서버에 저장 요청, url 받아서 img 태그의 src에 삽입
+    if (productImages.length > 0) {
+      const insertImages = productImages.filter(
+        (value) => productContent.includes(value.base64) && value.file != "-1"
+      );
+
+      if (insertImages.length > 0) {
+        const bodyFormDataFiles: FormData = new FormData();
+        insertImages.forEach((val) =>
+          bodyFormDataFiles.append("files", val.file)
+        );
+
+        const response = await requestService.post(
+          "/product/detail/images",
+          bodyFormDataFiles
+        );
+        const urls: Array<string> = response.data;
+
+        if (urls.length !== insertImages.length) {
+          console.log("서버에서 받아온 이미지 경로 개수가 일치하지 않습니다.");
+          return;
+        }
+
+        let newProductContent = productContent;
+        for (let i = 0; i < urls.length; i += 1) {
+          newProductContent = newProductContent.replace(
+            insertImages[i].base64,
+            urls[i]
+          );
+        }
+
+        bodyFormData.set("productDescription", newProductContent);
+      }
+    }
+    // 삭제된 이미지는 서버에 삭제 요청
+    if (prevProductImages.current.length > 0) {
+      const deleteImages = prevProductImages.current.filter(
+        (value) => !productContent.includes(value)
+      );
+
+      if (deleteImages.length > 0) {
+        const response = await requestService.post(
+          "/product/detail/images2delete",
+          deleteImages
+        );
+        console.log(response);
+      }
+    }
+    // return;
     dispatch(
       updateProduct(parseInt(pid as string), customerId.current, bodyFormData)
     );
@@ -167,7 +223,7 @@ const EditProduct: FCinLayout = () => {
         <>
           <ToastShow
             showToast={showToast}
-            message={'상품 수정이 완료되었습니다!'}
+            message={"상품 수정이 완료되었습니다!"}
           />
           <div className="container">
             <h4>
@@ -182,8 +238,8 @@ const EditProduct: FCinLayout = () => {
                     type="text"
                     className={
                       productNameError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
+                        ? "form-control is-invalid"
+                        : "form-control"
                     }
                     name="productName"
                     value={productName}
@@ -200,8 +256,8 @@ const EditProduct: FCinLayout = () => {
                     type="number"
                     className={
                       productMinimumEAError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
+                        ? "form-control is-invalid"
+                        : "form-control"
                     }
                     name="productMinimumEA"
                     value={productMinimumEA}
@@ -218,8 +274,8 @@ const EditProduct: FCinLayout = () => {
                     type="number"
                     className={
                       productPriceError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
+                        ? "form-control is-invalid"
+                        : "form-control"
                     }
                     name="productPrice"
                     value={productPrice}
@@ -257,10 +313,10 @@ const EditProduct: FCinLayout = () => {
                     type="file"
                     className={
                       productImageFileError
-                        ? 'form-control is-invalid'
-                        : 'form-control'
+                        ? "form-control is-invalid"
+                        : "form-control"
                     }
-                    style={{ height: '44px' }}
+                    style={{ height: "44px" }}
                     name="file"
                     ref={fileInput}
                     onChange={handleFileChange}
@@ -273,7 +329,7 @@ const EditProduct: FCinLayout = () => {
                         : makeImageUrl(productImageFilepath as string)
                     }
                     className="rounded mx-auto w-30 mb-2"
-                    style={{ width: '180px' }}
+                    style={{ width: "180px" }}
                   />
                   <div className="invalid-feedback">
                     {productImageFileError}
