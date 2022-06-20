@@ -202,7 +202,7 @@ const PersonalData: FCinLayout = () => {
         {(isEdit) && (
         <div className="col-md-7">
           <form className="edit_personal_data" onSubmit={onFormSubmit}>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">이메일: </label>
               <div className="col-sm-6">
                 <input
@@ -218,12 +218,12 @@ const PersonalData: FCinLayout = () => {
                 <div className="invalid-feedback">{emailError}</div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">이름: </label>
               <div className="col-sm-6">
                 <input
                   type="text"
-
+                  className='form-control'
                   name="newCustomerName"
                   value={newCustomerName}
                   onChange={handleInputChange}
@@ -231,7 +231,7 @@ const PersonalData: FCinLayout = () => {
                 <div className="invalid-feedback">{nameError}</div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
               <div className="col-sm-6">
                 <input
@@ -243,7 +243,7 @@ const PersonalData: FCinLayout = () => {
                 />
               </div>
             </div>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">우편번호: </label>
               <div className="col-sm-6">
                 <input
@@ -261,7 +261,7 @@ const PersonalData: FCinLayout = () => {
                 />
               </div>
             </div>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">주소: </label>
               <div className="col-sm-6">
                   <input
@@ -276,7 +276,7 @@ const PersonalData: FCinLayout = () => {
                   />
               </div>
             </div>
-            <div className="form-group row">
+            <div className="d-flex mb-2 row">
               <label className="col-sm-3 col-form-label">상세 주소: </label>
               <div className="col-sm-6">
                 <input
@@ -293,7 +293,7 @@ const PersonalData: FCinLayout = () => {
               </div>
             </div>
             {isPopupOpen && (
-                  <div className="form-group row">
+                  <div className="d-flex mb-2 row">
                     <label className="col-sm-2 col-form-label"></label>
                     <div className="col-sm-8">
                       <DaumPostcode

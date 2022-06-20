@@ -58,7 +58,7 @@ const ConfrimPassword: FCinLayout = () => {
           <h4>
             <FontAwesomeIcon className="mr-2" icon={faLock} /> 비밀번호 확인
           </h4>
-          <div className="form-group row">
+          <div className="d-flex mb-2 ml-2 row">
             <label className="password-item">기존 비밀번호 입력: </label>
             <div className="password-text">
               <input
@@ -73,7 +73,7 @@ const ConfrimPassword: FCinLayout = () => {
               <div className="invalid-feedback">{passwordError}</div>
             </div>
           </div>
-          <button type="submit" className="btn btn-dark">
+          <button type="submit" className="btn btn-dark ml-3 mb-3">
             <FontAwesomeIcon className="mr-3" icon={faSign} />
             확인
           </button>

@@ -85,58 +85,60 @@ const Orders: FC = () => {
   let fetchLink;
   if(loading) {
     fetchLink = (
-      <div className="container mt-5 mb-5">
-        <h3>비회원 주문조회</h3>
-        <hr className="mb-3"/>
-        <form onSubmit={onClickHandler}>
-          <div className="form-group row ml-1">
-            <label className="col-form-label">주문번호:&nbsp;</label>
-            <div className="form-input">
-              <input 
-                type="text"
-                name="orderNumber"
-                className="form-control"
-                value={orderId}
-                onChange={(event) => setOrderId(event.target.value)}
-              ></input>
+      <div className="row">
+        <div className="col-md-6 login-container">
+          <h3>비회원 주문조회</h3>
+          <hr className="mb-3"/>
+          <form onSubmit={onClickHandler}>
+            <div className="row ml-1">
+              <label className="col-form-label col-sm-4">주문번호:&nbsp;</label>
+              <div className="form-input col-sm-7 mb-2">
+                <input 
+                  type="text"
+                  name="orderNumber"
+                  className="form-control"
+                  value={orderId}
+                  onChange={(event) => setOrderId(event.target.value)}
+                ></input>
+              </div>
             </div>
-          </div>
-          <div className="form-group row ml-1">
-            <label className="col-form-label">이름:&nbsp;</label>
-            <div className="form-input">
-              <input
-                type="text"
-                name="customerName"
-                value={customerName}
-                className={
-                  nameError ? "form-control is-invalid" : "form-control"
-                }
-                onChange={(event) => setName(event.target.value)}
-              ></input>
-              <div className="invalid-feedback">{nameError}</div>
+            <div className="row ml-1">
+              <label className="col-form-label col-sm-4">이름:&nbsp;</label>
+              <div className="form-input col-sm-7 mb-2">
+                <input
+                  type="text"
+                  name="customerName"
+                  value={customerName}
+                  className={
+                    nameError ? "form-control is-invalid" : "form-control"
+                  }
+                  onChange={(event) => setName(event.target.value)}
+                ></input>
+                <div className="invalid-feedback">{nameError}</div>
+              </div>
             </div>
-          </div>
-          <div className="form-group row ml-1">
-            <label className=" col-form-label">휴대폰번호:&nbsp;</label>
-            <div className="form-input">
-              <input
-                type="text"
-                name="phoneNumber"
-                className={
-                  phoneNumberError ? "form-control is-invalid" : "form-control"
-                }
-                value={phoneNumber}
-                onChange={(event) => setPhoneNumber(event.target.value)}
-              />
-              <div className="invalid-feedback">{phoneNumberError}</div>
+            <div className="row ml-1">
+              <label className=" col-form-label col-sm-4">휴대폰번호:&nbsp;</label>
+              <div className="form-input col-sm-7 mb-2">
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  className={
+                    phoneNumberError ? "form-control is-invalid" : "form-control"
+                  }
+                  value={phoneNumber}
+                  onChange={(event) => setPhoneNumber(event.target.value)}
+                />
+                <div className="invalid-feedback">{phoneNumberError}</div>
+              </div>
             </div>
-          </div>
-          <div className="form-group row ml-1">
-            <button type="submit" className="btn btn-dark mx-2 mb-5">
-              확인
-            </button>
-          </div>
-        </form>
+            <div className="row ml-1">
+              <button type="submit" className="btn btn-dark mx-2 mb-5">
+                확인
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     )
   }
@@ -249,7 +251,7 @@ const Orders: FC = () => {
   }
 
   return (
-    <div id="mid">{fetchLink}</div>
+    <div className="container mt-5 mb-5" id="mid">{fetchLink}</div>
   );
 };
 

@@ -136,7 +136,7 @@ const Cart: FC = () => {
         cancelButtonText: "취소",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/order");
+          router.push("/policy/collect_info");
         } else if (result.isDenied) {
           dispatch(returnToCartPage());
           router.push("/login");
@@ -170,14 +170,14 @@ const Cart: FC = () => {
                     className="card mb-3 mx-auto"
                     style={{ maxWidth: "940px" }}
                   >
-                    <div className="row no-gutters">
+                    <div className="row no-gutters jc-center">
                       <div className="col-2 mx-3 my-3">
                         <img
                           src={`${cartItem.product.productImageFilepath}`}
                           className="img-fluid"
                         />
                       </div>
-                      <div className="col-5">
+                      <div className="col-4">
                         <div className="card-body">
                           <h4 className="card-title">
                             {cartItem.product.productName}
@@ -241,7 +241,7 @@ const Cart: FC = () => {
                   </div>
                 );
               })}
-              <div className="row">
+              <div className="row" style={{width:"100%"}}>
                 <div className="col-9">
                   <p className="h5 text-right">
                     합계: <span>{totalPrice.toLocaleString("ko-KR")} 원</span>

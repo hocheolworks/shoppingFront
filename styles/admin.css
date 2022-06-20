@@ -9,3 +9,7 @@
 .ql-container {
   min-height: 480px;
 }
+
+.jc-center {
+  justify-content: center;
+}

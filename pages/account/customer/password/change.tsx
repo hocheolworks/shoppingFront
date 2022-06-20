@@ -64,7 +64,7 @@ const ChangePassword: FCinLayout = () => {
         </div>
       ) : null}
       <form className="mt-5" onSubmit={onFormSubmit}>
-        <div className="form-group row">
+        <div className="d-flex mb-2 ml-2 row">
           <label className="col-sm-3 col-form-label">
             새로운 비밀번호 입력:{' '}
           </label>
@@ -81,7 +81,7 @@ const ChangePassword: FCinLayout = () => {
             <div className="invalid-feedback">{passwordError}</div>
           </div>
         </div>
-        <div className="form-group row">
+        <div className="d-flex mb-2 ml-2 row">
           <label className="col-sm-3 col-form-label">비밀번호 확인: </label>
           <div className="col-sm-4">
             <input
@@ -96,7 +96,7 @@ const ChangePassword: FCinLayout = () => {
             <div className="invalid-feedback">{password2Error}</div>
           </div>
         </div>
-        <button type="submit" className="btn btn-dark">
+        <button type="submit" className="btn btn-dark ml-4 mb-3 mt-3">
           <FontAwesomeIcon className="mr-3" icon={faUndo} />
           변경
         </button>

@@ -345,7 +345,7 @@ const OrderPage: FC = () => {
       <form onSubmit={onFormSubmit}>
         <div className="row">
           <div className="col-lg-6">
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">수령인:</label>
               <div className="col-sm-7">
                 <input
@@ -363,7 +363,7 @@ const OrderPage: FC = () => {
                 <div className="invalid-feedback">{orderCustomerNameError}</div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">우편번호:</label>
               <div className="col-sm-7">
                 <input
@@ -384,7 +384,7 @@ const OrderPage: FC = () => {
                 <div className="invalid-feedback">{orderPostIndexError}</div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">주소:</label>
               <div className="col-sm-7">
                 <input
@@ -403,7 +403,7 @@ const OrderPage: FC = () => {
               </div>
             </div>
             {isPopupOpen && (
-              <div className="form-group row">
+              <div className="row mb-3">
                 <label className="col-sm-3 col-form-label"></label>
                 <div className="col-sm-7">
                   <DaumPostcode
@@ -417,7 +417,7 @@ const OrderPage: FC = () => {
                 </div>
               </div>
             )}
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">상세주소:</label>
               <div className="col-sm-7">
                 <input
@@ -438,7 +438,7 @@ const OrderPage: FC = () => {
                 </div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">연락처:</label>
               <div className="col-sm-7">
                 <input
@@ -457,7 +457,7 @@ const OrderPage: FC = () => {
                 <div className="invalid-feedback">{orderPhoneNumberError}</div>
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">요청사항:</label>
               <div className="col-sm-7">
                 <textarea
@@ -478,7 +478,7 @@ const OrderPage: FC = () => {
                 />
               </div>
             </div>
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">파일첨부:</label>
               <div className="col-sm-7">
                 <input
@@ -497,7 +497,7 @@ const OrderPage: FC = () => {
                 maxWidth: "82.5%",
               }}
             />
-            <div className="form-group row">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">세금계산서:</label>
               <div className="col-sm-7 d-flex align-items-center">
                 <Switch
@@ -510,7 +510,7 @@ const OrderPage: FC = () => {
             </div>
             {isTaxBill && (
               <>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">
                     대표자 이름:
                   </label>
@@ -534,7 +534,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">
                     사업자 등록번호:
                   </label>
@@ -558,7 +558,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">
                     사업장 소재지:
                   </label>
@@ -584,7 +584,7 @@ const OrderPage: FC = () => {
                   </div>
                 </div>
                 {isPopupOpenTaxBill && (
-                  <div className="form-group row">
+                  <div className="row mb-3">
                     <label className="col-sm-3 col-form-label"></label>
                     <div className="col-sm-7">
                       <DaumPostcode
@@ -598,7 +598,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 )}
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">
                     사업장 상세주소:
                   </label>
@@ -621,7 +621,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">업태:</label>
                   <div className="col-sm-7">
                     <input
@@ -643,7 +643,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">종목:</label>
                   <div className="col-sm-7">
                     <input
@@ -663,7 +663,7 @@ const OrderPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
+                <div className="row mb-3">
                   <label className="col-sm-3 col-form-label">이메일:</label>
                   <div className="col-sm-7">
                     <input
@@ -718,7 +718,7 @@ const OrderPage: FC = () => {
                 margin: "0 0 5px 0",
               }}
             />
-            <div className="form-group row mb-0">
+            <div className="row mb-3 mb-0">
               <label className="col-sm-3 col-form-label">결제수단:</label>
               <div className="col-sm-7 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (

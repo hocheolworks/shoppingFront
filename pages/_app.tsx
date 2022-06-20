@@ -61,7 +61,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           const sum = head_h + nav_h + mid_h;
           
           if (footer && blank) {
-            const footer_h = footer.scrollHeight;
+            const footer_h = footer.clientHeight;
 
             if (body_h < sum + footer_h) {
               footer.style.top = sum + "px";
@@ -69,10 +69,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             } else {
               footer.style.top = body_h - footer_h + "px";
               blank.style.height = (body_h - sum - footer_h) + "px";
-              console.log("body : " + body_h);
-              console.log("sum : " + sum);
-              console.log("footer : " + footer_h);
-              console.log("blank : " + blank.style.height);
+
               if (mid.className == "home") {
                 blank.style.backgroundColor = "black";
                 blank.className = "d-flex";
@@ -83,7 +80,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               } 
               else {
                 blank.style.backgroundColor = "inherit";
-                // blank.className = "hide";
+                blank.className = "hide";
               }
             }
           }

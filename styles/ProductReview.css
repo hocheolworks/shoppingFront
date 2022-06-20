@@ -26,3 +26,11 @@
 #review-row {
     margin-left: 0px;
 }
+
+#search-div {
+    display: flex;
+}
+
+.nonmember-form {
+    margin-bottom: 1rem;
+}

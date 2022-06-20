@@ -111,34 +111,10 @@ const Login: FC = () => {
                   비밀번호 찾기
                 </a>
               </Link> */}
+              <KakaoLogin></KakaoLogin>
+              
             </div>
           </form>
-          <div className="mb-5">
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="mt-5">
-            {/* <a
-              className="btn btn-block social-btn google"
-              href="http://localhost:8080/oauth2/authorize/google"
-            >
-              <img src={googleLogo} alt="google" />
-              구글 계정으로 로그인
-            </a>
-            <a
-              className="btn btn-block social-btn facebook"
-              href="http://localhost:8080/oauth2/authorize/facebook"
-            >
-              <img src={facebookLogo} alt="facebook" />
-              페이스북 계정으로 로그인
-            </a> */}
-            <KakaoLogin></KakaoLogin>
-          </div>
         </div>
       </div>
     </div>
