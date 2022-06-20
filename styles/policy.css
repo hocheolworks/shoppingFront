@@ -9,7 +9,7 @@
 #wrapper {
   margin: 20px auto 100px;
   font-family: 'Noto Sans KR', sans-serif;
-  min-width: 1200px;
+  width: 100%;
 }
 
 #container_wr {
@@ -126,7 +126,7 @@ h1, h2, h3, h4, h5, h6, input, button, textarea, select {
 .btn_confirm .btn_submit {
   float: right;
   display: block;
-  width: 254px;
+  width: 47%;
   height: 55px;
   line-height: 53px;
   font-size: 16px;
@@ -148,7 +148,7 @@ h1, h2, h3, h4, h5, h6, input, button, textarea, select {
 .btn_confirm .btn_cancel {
   float: left;
   display: block;
-  width: 254px;
+  width: 47%;
   height: 55px;
   line-height: 53px;
   font-size: 16px;
