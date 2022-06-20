@@ -56,22 +56,34 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         const nav_h = nav?.clientHeight;
         const mid = document.getElementById("mid");
         const mid_h = mid?.clientHeight;
+        // debugger;
         if (head_h && nav_h && mid_h) {
           const sum = head_h + nav_h + mid_h;
-
+          
           if (footer && blank) {
-            if (body_h < sum + 300) {
+            const footer_h = footer.scrollHeight;
+
+            if (body_h < sum + footer_h) {
               footer.style.top = sum + "px";
               blank.style.height = 0 + "px";
             } else {
-              footer.style.top = body_h - 300 + "px";
-              blank.style.height = body_h - sum + "px";
+              footer.style.top = body_h - footer_h + "px";
+              blank.style.height = (body_h - sum - footer_h) + "px";
+              console.log("body : " + body_h);
+              console.log("sum : " + sum);
+              console.log("footer : " + footer_h);
+              console.log("blank : " + blank.style.height);
               if (mid.className == "home") {
                 blank.style.backgroundColor = "black";
                 blank.className = "d-flex";
-              } else {
+              } 
+              else if(mid.title == 'menu') {
                 blank.style.backgroundColor = "inherit";
-                blank.className = "hide";
+                blank.className = "d-flex";
+              } 
+              else {
+                blank.style.backgroundColor = "inherit";
+                // blank.className = "hide";
               }
             }
           }
@@ -84,7 +96,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     };
 
     router.events.on("routeChangeComplete", updatePosition);
-    router.events.on("hashChangeComplete", updatePosition);
+    // router.events.on("hashChangeComplete", updatePosition);
   }, []);
 
   const getLayout = Component.getLayout ?? ((page) => page);
@@ -92,6 +104,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
+        <meta
+          name="naver-site-verification"
+          content="79af27b7b5ccbb5d3fa948ae38d21495799b5e91"
+        />
         <title>진솔유통</title>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />

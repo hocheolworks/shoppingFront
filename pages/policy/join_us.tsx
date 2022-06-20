@@ -459,7 +459,7 @@ const JoinUs: FC = () => {
   }
 
   return (
-    <div id='mid'>
+    <div id='mid' style={{width:"100%"}}>
       <div id="wrapper" className="container">
         <div id="container_wr">
           <h2 className="regi_tt">회원가입</h2>
