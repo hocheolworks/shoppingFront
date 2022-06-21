@@ -59,7 +59,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         // debugger;
         if (head_h && nav_h && mid_h) {
           const sum = head_h + nav_h + mid_h;
-          
+
           if (footer && blank) {
             const footer_h = footer.clientHeight;
 
@@ -68,17 +68,15 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               blank.style.height = 0 + "px";
             } else {
               footer.style.top = body_h - footer_h + "px";
-              blank.style.height = (body_h - sum - footer_h) + "px";
+              blank.style.height = body_h - sum - footer_h + "px";
 
               if (mid.className == "home") {
                 blank.style.backgroundColor = "black";
                 blank.className = "d-flex";
-              } 
-              else if(mid.title == 'menu') {
+              } else if (mid.title == "menu") {
                 blank.style.backgroundColor = "inherit";
                 blank.className = "d-flex";
-              } 
-              else {
+              } else {
                 blank.style.backgroundColor = "inherit";
                 blank.className = "hide";
               }
@@ -101,10 +99,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <meta
-          name="naver-site-verification"
-          content="79af27b7b5ccbb5d3fa948ae38d21495799b5e91"
-        />
         <title>진솔유통</title>
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
@@ -113,6 +107,14 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           content="width=device-width, height=device-height, initial-scale=1"
         />
         <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+        <meta
+          name="google-site-verification"
+          content="44mhRtxhzzTjCdlitNGI0hvaXv8rciHua6VHysupZ4g"
+        />
+        <meta
+          name="naver-site-verification"
+          content="79af27b7b5ccbb5d3fa948ae38d21495799b5e91"
+        />
         <link
           rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
