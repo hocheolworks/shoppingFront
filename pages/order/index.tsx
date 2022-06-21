@@ -323,7 +323,7 @@ const OrderPage: FC = () => {
           cart.length === 1
             ? cart[0].product.productName
             : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName: customersData.customerName,
+        customerName: customerId.current === -1 ? orderCustomerName : customersData.customerName,
         successUrl: `${FRONT_BASE_URL}/order/success`,
         failUrl: `${FRONT_BASE_URL}/order/fail`,
       });
