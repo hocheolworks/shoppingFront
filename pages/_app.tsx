@@ -99,7 +99,11 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <>
       <Head>
-        <title>{"진솔유통 - 마트 가방 전문"}</title>
+        <title>진솔유통 - 타포린 마트 가방 전문 | 주문 제작</title>
+        <meta
+          name="keyword"
+          content="타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방, 최저가"
+        ></meta>{" "}
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <meta charSet="utf-8" />
         <meta

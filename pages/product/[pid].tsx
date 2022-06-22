@@ -358,10 +358,14 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   return (
     <>
       <Head>
-        <title>{product.productName}</title>
+        <title>진솔유통 - 타포린 마트 가방 전문 | 주문 제작</title>
+        <meta
+          name="keyword"
+          content={`${product.productName} ,타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방, 최저가`}
+        ></meta>{" "}
         <meta
           name="description"
-          content={`상품 상세 - 대량 구매시 전국 최저가 보장, 인쇄 가능, 소량 제작 및 주문 가능`}
+          content="상품 상세 페이지 | 대량 구매시 전국 최저가 보장 | 인쇄 가능 | 소량 제작 및 주문 가능 | 60 * 42 * 22(cm) 사이즈"
         />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
