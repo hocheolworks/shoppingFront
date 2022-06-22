@@ -9,7 +9,7 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import StarRatingComponent from "react-star-rating-component";
-
+import Head from "next/head";
 import { resetForm } from "../../src/redux/thunks/customer-thunks";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
@@ -356,273 +356,297 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
   };
 
   return (
-    <div className="container mt-5 pb-5" id="mid">
-      {loading ? (
-        <Spinner />
-      ) : (
-        <>
-          <ScrollButton />
-          <div className="row">
-            <div className="col-md-5">
-              <div>
-                <img
-                  src={`${product.productImageFilepath}`}
-                  className="rounded mx-auto w-100"
+    <>
+      <Head>
+        <title>{product.productName}</title>
+        <meta
+          name="description"
+          content={`${product.productName} 대량 구매시 전국 최저가 보장`}
+        />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta
+          property="og:title"
+          content={product.productName || "진솔유통 - 마트 가방 전문"}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://jinsoltrade.com/product/${product.id}`}
+        />
+        <meta property="og:image" content={product.productImageFilepath} />
+        <meta property="og:article:author" content="진솔유통" />
+      </Head>
+      <div className="container mt-5 pb-5" id="mid">
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <ScrollButton />
+            <div className="row">
+              <div className="col-md-5">
+                <div>
+                  <img
+                    src={`${product.productImageFilepath}`}
+                    className="rounded mx-auto w-100"
+                  />
+                </div>
+              </div>
+              <div className="col-md-7">
+                <h2>{product.productName}</h2>
+                <p>
+                  상품 번호: <span>{product.id}</span>
+                </p>
+                <div className="row">
+                  <div className="col-md-4">
+                    {renderStars(
+                      product.productRating === 0 ? 0 : product.productRating
+                    )}
+                  </div>
+                  <div className="col-md-8">
+                    <span style={{ paddingBottom: "50px" }}>
+                      {product.productRatingCount}개의 리뷰
+                    </span>
+                  </div>
+                </div>
+                <p style={{ color: "#54C0A1" }}>재고 있음</p>
+                <div className="row ml-1">
+                  <h4 className="mr-5">
+                    <span>
+                      {product.productPrice?.toLocaleString("ko-KR")}원~
+                    </span>
+                  </h4>
+                </div>
+                <div className="row ml-1" style={{ alignItems: "center" }}>
+                  <span style={{ marginRight: "5px" }}>수량: </span>
+                  <input
+                    type="number"
+                    min={product.productMinimumEA}
+                    max="1000000000"
+                    step="1"
+                    maxLength={20}
+                    style={{
+                      width: "120px",
+                      height: "30px",
+                    }}
+                    value={count}
+                    onChange={countOnChange}
+                  ></input>
+                  <button
+                    type="submit"
+                    className="btn btn-success mx-3"
+                    onClick={addToCart}
+                  >
+                    <FontAwesomeIcon className="ml-1 fa-lg" icon={faCartPlus} />{" "}
+                    장바구니 담기
+                  </button>
+                  <p
+                    className="mb-0 fw-lighter mt-2"
+                    style={{ fontSize: "9px" }}
+                  >
+                    *부가세 10% 별도, 10만원 이상 주문시 배송비 무료
+                  </p>
+                </div>
+                <br />
+                <div className="row ml-1" style={{ alignItems: "center" }}>
+                  <span>구매 수량별 가격</span>
+                </div>
+                <table className="table">
+                  <tbody>
+                    {product.productEA1 !== 0 ? (
+                      <tr>
+                        <td>1개 ~ {product.productEA1}개</td>
+                        <td>
+                          {product.productPrice1 === "문의 후 가격 협의" ? (
+                            <span>문의 후 가격 협의</span>
+                          ) : (
+                            <span>{product.productPrice1}원</span>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      <div></div>
+                    )}
+                    {product.productEA2 !== 0 ? (
+                      <tr>
+                        <td>
+                          {product.productEA1 + 1}개 ~ {product.productEA2}개
+                        </td>
+                        <td>
+                          {product.productPrice2 === "문의 후 가격 협의" ? (
+                            <span>문의 후 가격 협의</span>
+                          ) : (
+                            <span>{product.productPrice2}원</span>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      <div></div>
+                    )}
+                    {product.productEA3 !== 0 ? (
+                      <tr>
+                        <td>
+                          {product.productEA2 + 1}개 ~ {product.productEA3}개
+                        </td>
+                        <td>
+                          {product.productPrice3 === "문의 후 가격 협의" ? (
+                            <span>문의 후 가격 협의</span>
+                          ) : (
+                            <span>{product.productPrice3}원</span>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      <div></div>
+                    )}
+                    {product.productEA4 !== 0 ? (
+                      <tr>
+                        <td>
+                          {product.productEA3 + 1}개 ~ {product.productEA4}개
+                        </td>
+                        <td>
+                          {product.productPrice4 === "문의 후 가격 협의" ? (
+                            <span>문의 후 가격 협의</span>
+                          ) : (
+                            <span>{product.productPrice4}원</span>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      <div></div>
+                    )}
+                    {product.productEA5 !== 0 ? (
+                      <tr>
+                        <td>
+                          {product.productEA4 + 1}개 ~ {product.productEA5}개
+                        </td>
+                        <td>
+                          {product.productPrice5 === "문의 후 가격 협의" ? (
+                            <span>문의 후 가격 협의</span>
+                          ) : (
+                            <span>{product.productPrice5}원</span>
+                          )}
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr>
+                        <td>{product.productEA3 + 1}개~</td>
+                        <td>
+                          <span>문의 후 가격 협의</span>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <hr />
+            <div className="mt-5mw -100">
+              <h3 className="text-center mb-5">상품 설명</h3>
+              <div
+                className="text-center mb-5"
+                dangerouslySetInnerHTML={{
+                  __html: product.productDescription.replaceAll(
+                    "<img ",
+                    '<img style="max-width:100%" alt="product_image"'
+                  ),
+                }}
+              ></div>
+            </div>
+            <div className="mt-5">
+              <h3 className="text-center mt-5 mb-5 border-top">
+                <br></br>리뷰
+              </h3>
+              <div id="review-table">
+                <ProductReview
+                  data={product.reviews}
+                  itemsPerPage={5}
+                  dispatch={dispatch}
+                  product={product}
                 />
               </div>
-            </div>
-            <div className="col-md-7">
-              <h2>{product.productName}</h2>
-              <p>
-                상품 번호: <span>{product.id}</span>
-              </p>
-              <div className="row">
-                <div className="col-md-4">
-                  {renderStars(
-                    product.productRating === 0 ? 0 : product.productRating
-                  )}
-                </div>
-                <div className="col-md-8">
-                  <span style={{ paddingBottom: "50px" }}>
-                    {product.productRatingCount}개의 리뷰
-                  </span>
-                </div>
-              </div>
-              <p style={{ color: "#54C0A1" }}>재고 있음</p>
-              <div className="row ml-1">
-                <h4 className="mr-5">
-                  <span>
-                    {product.productPrice?.toLocaleString("ko-KR")}원~
-                  </span>
-                </h4>
-              </div>
-              <div className="row ml-1" style={{ alignItems: "center" }}>
-                <span style={{ marginRight: "5px" }}>수량: </span>
-                <input
-                  type="number"
-                  min={product.productMinimumEA}
-                  max="1000000000"
-                  step="1"
-                  maxLength={20}
-                  style={{
-                    width: "120px",
-                    height: "30px",
-                  }}
-                  value={count}
-                  onChange={countOnChange}
-                ></input>
-                <button
-                  type="submit"
-                  className="btn btn-success mx-3"
-                  onClick={addToCart}
-                >
-                  <FontAwesomeIcon className="ml-1 fa-lg" icon={faCartPlus} />{" "}
-                  장바구니 담기
-                </button>
-                <p className="mb-0 fw-lighter mt-2" style={{ fontSize: "9px" }}>
-                  *부가세 10% 별도, 10만원 이상 주문시 배송비 무료
-                </p>
-              </div>
-              <br />
-              <div className="row ml-1" style={{ alignItems: "center" }}>
-                <span>구매 수량별 가격</span>
-              </div>
-              <table className="table">
-                <tbody>
-                  {product.productEA1 !== 0 ? (
-                    <tr>
-                      <td>1개 ~ {product.productEA1}개</td>
-                      <td>
-                        {product.productPrice1 === "문의 후 가격 협의" ? (
-                          <span>문의 후 가격 협의</span>
-                        ) : (
-                          <span>{product.productPrice1}원</span>
-                        )}
-                      </td>
-                    </tr>
-                  ) : (
-                    <div></div>
-                  )}
-                  {product.productEA2 !== 0 ? (
-                    <tr>
-                      <td>
-                        {product.productEA1 + 1}개 ~ {product.productEA2}개
-                      </td>
-                      <td>
-                        {product.productPrice2 === "문의 후 가격 협의" ? (
-                          <span>문의 후 가격 협의</span>
-                        ) : (
-                          <span>{product.productPrice2}원</span>
-                        )}
-                      </td>
-                    </tr>
-                  ) : (
-                    <div></div>
-                  )}
-                  {product.productEA3 !== 0 ? (
-                    <tr>
-                      <td>
-                        {product.productEA2 + 1}개 ~ {product.productEA3}개
-                      </td>
-                      <td>
-                        {product.productPrice3 === "문의 후 가격 협의" ? (
-                          <span>문의 후 가격 협의</span>
-                        ) : (
-                          <span>{product.productPrice3}원</span>
-                        )}
-                      </td>
-                    </tr>
-                  ) : (
-                    <div></div>
-                  )}
-                  {product.productEA4 !== 0 ? (
-                    <tr>
-                      <td>
-                        {product.productEA3 + 1}개 ~ {product.productEA4}개
-                      </td>
-                      <td>
-                        {product.productPrice4 === "문의 후 가격 협의" ? (
-                          <span>문의 후 가격 협의</span>
-                        ) : (
-                          <span>{product.productPrice4}원</span>
-                        )}
-                      </td>
-                    </tr>
-                  ) : (
-                    <div></div>
-                  )}
-                  {product.productEA5 !== 0 ? (
-                    <tr>
-                      <td>
-                        {product.productEA4 + 1}개 ~ {product.productEA5}개
-                      </td>
-                      <td>
-                        {product.productPrice5 === "문의 후 가격 협의" ? (
-                          <span>문의 후 가격 협의</span>
-                        ) : (
-                          <span>{product.productPrice5}원</span>
-                        )}
-                      </td>
-                    </tr>
-                  ) : (
-                    <tr>
-                      <td>{product.productEA3 + 1}개~</td>
-                      <td>
-                        <span>문의 후 가격 협의</span>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <hr />
-          <div className="mt-5mw -100">
-            <h3 className="text-center mb-5">상품 설명</h3>
-            <div
-              className="text-center mb-5"
-              dangerouslySetInnerHTML={{
-                __html: product.productDescription.replaceAll(
-                  "<img ",
-                  '<img style="max-width:100%" alt="product_image"'
-                ),
-              }}
-            ></div>
-          </div>
-          <div className="mt-5">
-            <h3 className="text-center mt-5 mb-5 border-top">
-              <br></br>리뷰
-            </h3>
-            <div id="review-table">
-              <ProductReview
-                data={product.reviews}
-                itemsPerPage={5}
-                dispatch={dispatch}
-                product={product}
-              />
-            </div>
-            {isPurchased && (
-              <form onSubmit={addReview}>
-                <div className="form-group border mt-5">
-                  <div className="mx-3 my-3" style={{width: '100%'}}>
-                    <div className="row" id="review-row">
-                      <div className="col-md-4">
-                        <label>
-                          <span className="text-danger">
-                            <b>*</b>
-                          </span>{" "}
-                          작성자
-                        </label>
-                        <input
-                          type="text"
-                          className={
-                            authorError
-                              ? "form-control is-invalid"
-                              : "form-control"
-                          }
-                          name="author"
-                          value={author}
-                          readOnly={true}
-                        />
-                        <div className="invalid-feedback">{authorError}</div>
-                        <label>
-                          <span className="text-danger">
-                            <b>*</b>
-                          </span>{" "}
-                          내용
-                        </label>
-                      </div>
-                      <div className="col-md-8">
-                        <label>
-                          <span className="text-danger">
-                            <b>*</b>
-                          </span>{" "}
-                          별점
-                        </label>
-                        <div id='star-rating'>
-                          <StarRatingComponent
-                            name="star"
-                            starCount={5}
-                            value={rating}
-                            onStarClick={(value) => setRating(value)}
-                            renderStarIcon={() => (
-                              <FontAwesomeIcon
-                                className="fa-sm"
-                                icon={faStar}
-                              />
-                            )}
+              {isPurchased && (
+                <form onSubmit={addReview}>
+                  <div className="form-group border mt-5">
+                    <div className="mx-3 my-3" style={{ width: "100%" }}>
+                      <div className="row" id="review-row">
+                        <div className="col-md-4">
+                          <label>
+                            <span className="text-danger">
+                              <b>*</b>
+                            </span>{" "}
+                            작성자
+                          </label>
+                          <input
+                            type="text"
+                            className={
+                              authorError
+                                ? "form-control is-invalid"
+                                : "form-control"
+                            }
+                            name="author"
+                            value={author}
+                            readOnly={true}
                           />
-                          <div className="invalid-feedback d-block">
-                            {ratingError}
+                          <div className="invalid-feedback">{authorError}</div>
+                          <label>
+                            <span className="text-danger">
+                              <b>*</b>
+                            </span>{" "}
+                            내용
+                          </label>
+                        </div>
+                        <div className="col-md-8">
+                          <label>
+                            <span className="text-danger">
+                              <b>*</b>
+                            </span>{" "}
+                            별점
+                          </label>
+                          <div id="star-rating">
+                            <StarRatingComponent
+                              name="star"
+                              starCount={5}
+                              value={rating}
+                              onStarClick={(value) => setRating(value)}
+                              renderStarIcon={() => (
+                                <FontAwesomeIcon
+                                  className="fa-sm"
+                                  icon={faStar}
+                                />
+                              )}
+                            />
+                            <div className="invalid-feedback d-block">
+                              {ratingError}
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <textarea
+                        rows={4}
+                        className={
+                          messageError
+                            ? "form-control is-invalid"
+                            : "form-control"
+                        }
+                        name="message"
+                        value={message}
+                        style={{ width: "100%" }}
+                        onChange={(event) => setMessage(event.target.value)}
+                      />
+                      <div className="invalid-feedback">{messageError}</div>
+                      <button type="submit" className="btn btn-dark mt-3">
+                        <FontAwesomeIcon className="mr-2" icon={faPaperPlane} />
+                        리뷰 남기기
+                      </button>
                     </div>
-                    <textarea
-                      rows={4}
-                      className={
-                        messageError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="message"
-                      value={message}
-                      style={{ width: "100%" }}
-                      onChange={(event) => setMessage(event.target.value)}
-                    />
-                    <div className="invalid-feedback">{messageError}</div>
-                    <button type="submit" className="btn btn-dark mt-3">
-                      <FontAwesomeIcon className="mr-2" icon={faPaperPlane} />
-                      리뷰 남기기
-                    </button>
                   </div>
-                </div>
-              </form>
-            )}
-          </div>
-        </>
-      )}
-    </div>
+                </form>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
