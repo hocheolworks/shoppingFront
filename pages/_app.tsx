@@ -212,22 +212,6 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           content="/image/favi/ms-icon-144x144.png"
         />
         <meta name="theme-color" content="#ffffff" />
-
-        <meta
-          name="description"
-          content={
-            "타포린 마트 가방을 전문으로 하는 진솔유통입니다. 소량 제작및 소량 인쇄, 주문 제작 무료 견적, 대량 주문 시 전국 최저가 보장합니다!"
-          }
-        />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta property="og:title" content={"진솔유통 - 마트 가방 전문"} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={"https://jinsoltrade.com"} />
-        <meta
-          property="og:image"
-          content={"/image/favi/android-icon-192x192.png"}
-        />
-        <meta property="og:article:author" content="진솔유통" />
       </Head>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

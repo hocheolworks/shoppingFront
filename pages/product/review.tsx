@@ -1,4 +1,10 @@
-import React, { Dispatch, FC, FormEvent, MouseEventHandler, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  FormEvent,
+  MouseEventHandler,
+  useState,
+} from "react";
 import StarRatingComponent from "react-star-rating-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faStar } from "@fortawesome/free-solid-svg-icons";
@@ -13,44 +19,51 @@ type PropType = {
   data: Array<Review>;
   itemsPerPage: number;
   startFrom?: number;
-  dispatch : Dispatch<any>
-  product : Partial<Product>
+  dispatch: Dispatch<any>;
+  product: Partial<Product>;
 };
 
-const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, product }) => {
-
+const ProductReview: FC<PropType> = ({
+  data,
+  itemsPerPage,
+  startFrom,
+  dispatch,
+  product,
+}) => {
   const { slicedData, pagination, prevPage, nextPage, changePage } =
     usePagination({ itemsPerPage, data, startFrom });
 
   const onClickHandler = (review: Review): void => {
     dispatch(removeReviewToProduct(review, product.id));
-  }
+  };
 
   const authorSlice = (author: string | undefined) => {
-    if (author != undefined && author.length > 4){
-      let star = "*".repeat((author.length-4));
-      return author.slice(0, 2) + star + author.slice(author.length-2)
-    } else{
-      return '*****'
+    if (author != undefined && author.length > 4) {
+      let star = "*".repeat(author.length - 4);
+      return author.slice(0, 2) + star + author.slice(author.length - 2);
+    } else {
+      return "*****";
     }
-  }
+  };
 
   const createDeleteButton = (review: Review) => {
-    if (typeof window !== 'undefined') {
-      const author = String(window.sessionStorage.getItem('customerEmail')).split('@')[0]
-      if (window.sessionStorage.getItem('customerRole') != 'ADMIN'){
-        if(author != review.author) {
-          return ""
+    if (typeof window !== "undefined") {
+      const author = String(
+        window.sessionStorage.getItem("customerEmail")
+      ).split("@")[0];
+      if (window.sessionStorage.getItem("customerRole") != "ADMIN") {
+        if (author != review.author) {
+          return "";
         }
       }
-      
+
       return (
         <button className="btn btn-dark" onClick={() => onClickHandler(review)}>
-          <FontAwesomeIcon className="mr-2" icon={faEraser}/> 삭제
+          <FontAwesomeIcon className="mr-2" icon={faEraser} /> 삭제
         </button>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -73,13 +86,11 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, 
                   <div className="form row mt-5">
                     <div className="col-md-3">
                       <p>
-                        <b>
-                          {authorSlice(review.author)}
-                        </b>
+                        <b>{authorSlice(review.author)}</b>
                       </p>
                       <p>
                         {new Date(review.createdAt).toLocaleDateString() +
-                          ' ' +
+                          " " +
                           new Date(review.createdAt).toLocaleTimeString()}
                       </p>
                       <StarRatingComponent
@@ -97,15 +108,12 @@ const ProductReview: FC<PropType> = ({ data, itemsPerPage, startFrom, dispatch, 
                         <p>{review.reviewMessage}</p>
                       </div>
                       <div className="items_btn">
-                        <div>
-                        </div>
-                        <div>
-                          {createDeleteButton(review)}
-                        </div>
+                        <div></div>
+                        <div>{createDeleteButton(review)}</div>
                       </div>
                     </div>
                   </div>
-                  <hr/>
+                  <hr />
                 </div>
               );
             })

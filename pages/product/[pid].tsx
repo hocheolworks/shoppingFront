@@ -361,7 +361,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         <title>{product.productName}</title>
         <meta
           name="description"
-          content={`${product.productName} 대량 구매시 전국 최저가 보장`}
+          content={`${product.productName} 대량 구매시 전국 최저가 보장, 인쇄 가능, 소량 제작 및 주문 가능`}
         />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
