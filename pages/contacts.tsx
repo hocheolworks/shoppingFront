@@ -72,7 +72,7 @@ const Contacts: FC = () => {
           <br />
         </p>
         <h6 style={{ fontWeight: "bold" }}>상담 가능 시간 : </h6>
-        (연중무휴) 24시간 상담 가능
+        (평일) 9:00 - 18:00
         <br />
         <span className="mb-3">
           제휴, 상품 스펙, 배송 등 언제든지 문의주세요!
