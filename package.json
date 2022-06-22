@@ -26,10 +26,12 @@
     "bcrypt": "^5.0.1",
     "bootstrap": "^4.5.3",
     "docker-machine": "^3.0.1",
+    "globby": "^13.1.2",
     "next": "^12.1.5",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "prettier": "^2.7.1",
     "prop-types": "^15.7.2",
     "quill-image-resize": "^3.0.9",
     "react": "^17.0.1",
@@ -62,8 +64,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "next-sitemap --config next-sitemap.config.js",
+    "build": "rimraf public/robots.txt public/sitemap*.xml & next build"
   },
   "eslintConfig": {
     "extends": [
@@ -92,6 +95,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/redux-persist": "^4.3.1",
     "@types/redux-promise": "^0.5.29",
-    "eslint": "^8.15.0"
+    "eslint": "^8.15.0",
+    "next-sitemap": "^3.1.3"
   }
 }
