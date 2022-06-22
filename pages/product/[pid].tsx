@@ -361,13 +361,17 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
         <title>{product.productName}</title>
         <meta
           name="description"
-          content={`${product.productName} 대량 구매시 전국 최저가 보장, 인쇄 가능, 소량 제작 및 주문 가능`}
+          content={`${product.productName}상품 설명 - 대량 구매시 전국 최저가 보장, 인쇄 가능, 소량 제작 및 주문 가능`}
         />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           property="og:title"
           content={product.productName || "진솔유통 - 마트 가방 전문"}
         />
+        <meta
+          property="og:description"
+          content={`${product.productName} 상품 상세`}
+        ></meta>
         <meta property="og:type" content="website" />
         <meta
           property="og:url"

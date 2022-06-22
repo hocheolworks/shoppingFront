@@ -32,7 +32,7 @@ const Menu: FC<MenuProps> = ({ products }) => {
   return (
     <>
       <Head>
-        <title>진솔유통 - 마트 가방 전문</title>
+        <title>진솔유통 - 상품 목록</title>
         <meta
           name="description"
           content="타포린 마트 가방 전문, 인쇄 가능 마트 사은품, 소량 및 대량 주문제작, 대량 구매시 전국 최저가 보장"
