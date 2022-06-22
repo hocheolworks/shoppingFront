@@ -32,6 +32,7 @@ const HomePage: FC = () => {
         <meta property="og:title" content={"진솔유통 - 마트 가방 전문"} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://jinsoltrade.com/`} />
+        <meta property="og:description" content={`메인 페이지`}></meta>
         <meta
           property="og:image"
           content="https://iljo-product.s3.ap-northeast-2.amazonaws.com/A_inside.jpg"
