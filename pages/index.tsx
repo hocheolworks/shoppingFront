@@ -26,7 +26,7 @@ const HomePage: FC = () => {
         <title>진솔유통 - 타포린 마트 가방 전문 | 주문 제작</title>
         <meta
           name="keyword"
-          content="타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방"
+          content="타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방, 최저가"
         ></meta>
         <meta
           name="description"

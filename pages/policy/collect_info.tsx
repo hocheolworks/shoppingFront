@@ -1,11 +1,11 @@
 import { FC, FormEvent, useEffect, useState } from "react";
-import Link from 'next/link';
+import Link from "next/link";
 import { useRouter } from "next/router";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 
-
-const text = '비회원정보수집 동의\n \
+const text =
+  "비회원정보수집 동의\n \
 비회원 개인정보보호정책은 비회원으로 주문하는 고객님의 개인정보 보호를 위하여 진솔유통이 실시하는 개인정보 수집의 목적과 그 정보의 정책에 관한 규정입니다.\n \
 \n \
 제1조 개인정보 수집 범위\n \
@@ -34,69 +34,89 @@ const text = '비회원정보수집 동의\n \
 제4조\n \
 동의 거부시 불이익 귀하는 개인정보 수집 및 이용 등에 관해 동의하지 않을 권리가 있습니다. 다만, 필수수집 동의를 하지 않을 경우 구매가 제한될 수 있습니다.\n \
 \n \
-고객의 동의를 받아 보유하고 있는 거래정보 등을 고객께서 열람을 요구하는 경우 진솔유통은 지체 없이 그 정보를 열람·확인 할 수 있도록 조치합니다.'
+고객의 동의를 받아 보유하고 있는 거래정보 등을 고객께서 열람을 요구하는 경우 진솔유통은 지체 없이 그 정보를 열람·확인 할 수 있도록 조치합니다.";
 
 const CollectInfo: FC = () => {
   const router = useRouter();
   const MySwal = withReactContent(Swal);
 
-  const [check1,setCheck1] = useState(false);
+  const [check1, setCheck1] = useState(false);
 
-  const handleCheck1 = ():void => {
-    if(check1) {
+  const handleCheck1 = (): void => {
+    if (check1) {
       setCheck1(false);
-    }
-    else {
+    } else {
       setCheck1(true);
     }
-  }
+  };
 
   const fregister_submit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    let error_html = "<i>error의 내용에 동의하셔야 회원가입 하실 수 있습니다.</i>";
-    let error_text = '';
+    let error_html =
+      "<i>error의 내용에 동의하셔야 회원가입 하실 수 있습니다.</i>";
+    let error_text = "";
 
-    if(!check1) {
-      error_text += '필수 약관'
+    if (!check1) {
+      error_text += "필수 약관";
     }
 
-    if(check1) {
-      router.push('/order');
-    }
-    else {
-      error_html = error_html.replace('error', error_text);
+    if (check1) {
+      router.push("/order");
+    } else {
+      error_html = error_html.replace("error", error_text);
       MySwal.fire({
         html: error_html,
-        icon: 'error',
+        icon: "error",
         showConfirmButton: true,
-        confirmButtonText: '확인',
+        confirmButtonText: "확인",
       });
     }
-  }
+  };
 
   return (
-    <div id='mid'>
+    <div id="mid">
       <div id="wrapper" className="container">
         <div id="container_wr">
           <h2 className="regi_tt">비회원 개인정보수집 동의</h2>
 
           <div id="register_agree">
             <h3>약관 동의</h3>
-            <form name="fregister" id="fregister" autoComplete="off" onSubmit={fregister_submit}>
+            <form
+              name="fregister"
+              id="fregister"
+              autoComplete="off"
+              onSubmit={fregister_submit}
+            >
               <section id="fregister_term">
-                <div className='fregister_agree2 checks2'>
-                  <input type='checkbox' name='agree' value='1' id='agree11' checked={check1} onChange={handleCheck1}/>
-                  <label htmlFor='agree11'>이용약관 동의<span>(필수)</span></label>
+                <div className="fregister_agree2 checks2">
+                  <input
+                    type="checkbox"
+                    name="agree"
+                    value="1"
+                    id="agree11"
+                    checked={check1}
+                    onChange={handleCheck1}
+                  />
+                  <label htmlFor="agree11">
+                    이용약관 동의<span>(필수)</span>
+                  </label>
                 </div>
                 <textarea readOnly id="area1">
-                {text}
+                  {text}
                 </textarea>
               </section>
 
               <div className="btn_confirm">
-                <Link href={'/cart'}><a className='btn_cancel'>취소</a></Link>
-                <input type="submit" className="btn_submit" value="확인" id="btn_submit"/>
+                <Link href={"/cart"}>
+                  <a className="btn_cancel">취소</a>
+                </Link>
+                <input
+                  type="submit"
+                  className="btn_submit"
+                  value="확인"
+                  id="btn_submit"
+                />
               </div>
             </form>
           </div>
