@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   faChevronDown,
   faChevronUp,
+  faClipboardList,
   faMinusSquare,
   faShoppingBag,
   faShoppingCart,
@@ -147,6 +148,10 @@ const Cart: FC = () => {
     }
   };
 
+  const onClickSheet = (): void => {
+    router.push('/sheet/request')
+  }
+
   return (
     <div className="container mt-5 pb-5" style={{ minHeight: "350px" }} id="mid">
       {loading ? (
@@ -170,14 +175,14 @@ const Cart: FC = () => {
                     className="card mb-3 mx-auto"
                     style={{ maxWidth: "940px" }}
                   >
-                    <div className="row no-gutters jc-center">
-                      <div className="col-2 mx-3 my-3">
+                    <div className="row no-gutters">
+                      <div className="col-3 mx-3 my-3">
                         <img
                           src={`${cartItem.product.productImageFilepath}`}
                           className="img-fluid"
                         />
                       </div>
-                      <div className="col-4">
+                      <div className="col-5 text-left">
                         <div className="card-body">
                           <h4 className="card-title">
                             {cartItem.product.productName}
@@ -188,7 +193,7 @@ const Cart: FC = () => {
                           <p className="card-text"></p>
                         </div>
                       </div>
-                      <div className="col-1 mt-5 text-center">
+                      <div className="col-2 mt-5 text-center">
                         {/* <button
                           className="btn btn-default"
                           disabled={cartItem.productCount === 1000}
@@ -215,7 +220,7 @@ const Cart: FC = () => {
                           <FontAwesomeIcon size="lg" icon={faChevronDown} />
                         </button> */}
                       </div>
-                      <div className="col-3">
+                      <div className="w-100">
                         <div className="card-body text-right">
                           <h5 className="card-title">
                             <span>
@@ -238,23 +243,35 @@ const Cart: FC = () => {
                         </div>
                       </div>
                     </div>
+                    <br/>
                   </div>
                 );
               })}
-              <div className="row" style={{width:"100%"}}>
-                <div className="col-9">
+              <div className="row d-flext" style={{width:"100%"}}>
+                <div className="col-8">
                   <p className="h5 text-right">
                     합계: <span>{totalPrice.toLocaleString("ko-KR")} 원</span>
                   </p>
                 </div>
-                <div className="col-3">
-                  <div className="form-row">
+                <div className="pl-3">
+                  <div className="">
                     <button
                       className="btn btn-success"
                       onClick={onClickHandler}
                     >
-                      <FontAwesomeIcon className="mr-2" icon={faShoppingBag} />{" "}
+                      <FontAwesomeIcon className="" icon={faShoppingBag} />{" "}
                       주문하기
+                    </button>
+                  </div>
+                </div>
+                <div className="pl-3">
+                  <div className="">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={onClickSheet}
+                    >
+                      <FontAwesomeIcon className="" icon={faClipboardList} />{" "}
+                      견적요청
                     </button>
                   </div>
                 </div>

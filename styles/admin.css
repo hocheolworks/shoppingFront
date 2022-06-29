@@ -13,3 +13,28 @@
 .jc-center {
   justify-content: center;
 }
+
+.w-100{
+  width: 100%;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.from-sheet .form-input {
+  height: 44px;
+}
+
+.btn-div {
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn-sheet {
+  margin-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+  font-size: 2rem;
+}

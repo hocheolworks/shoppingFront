@@ -14,7 +14,7 @@ const Account: FC = ({ children }) => {
   }, []);
 
   return (
-    <div className="account-container container">
+    <div className="account-container container" id="mid">
       <div className="row mt-5">
         <div className="col-md-2 mb-4">
           <h4>

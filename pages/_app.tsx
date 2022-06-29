@@ -62,23 +62,21 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
           if (footer && blank) {
             const footer_h = footer.clientHeight;
+            const blank_h = blank.clientHeight;
 
-            if (body_h < sum + footer_h) {
-              footer.style.top = sum + "px";
-              blank.style.height = 0 + "px";
-            } else {
+            if (body_h - blank_h < sum + footer_h) {
+              footer.style.top = sum + (body_h - sum - footer_h) + "px";
+              blank.style.height = (body_h - sum - footer_h) + "px";
+            } else {  
               footer.style.top = body_h - footer_h + "px";
-              blank.style.height = body_h - sum - footer_h + "px";
+              blank.style.height = (body_h - sum - footer_h - blank_h) + "px";
 
               if (mid.className == "home") {
                 blank.style.backgroundColor = "black";
                 blank.className = "d-flex";
-              } else if (mid.title == "menu") {
-                blank.style.backgroundColor = "inherit";
-                blank.className = "d-flex";
               } else {
                 blank.style.backgroundColor = "inherit";
-                blank.className = "hide";
+                blank.className = "d-flex";
               }
             }
           }
