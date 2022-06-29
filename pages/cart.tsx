@@ -247,7 +247,7 @@ const Cart: FC = () => {
                   </div>
                 );
               })}
-              <div className="row d-flext" style={{width:"100%"}}>
+              <div className="row d-flex" style={{width:"100%", justifyContent:"flex-end"}}>
                 <div className="col-8">
                   <p className="h5 text-right">
                     합계: <span>{totalPrice.toLocaleString("ko-KR")} 원</span>
