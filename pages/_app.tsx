@@ -64,7 +64,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             const footer_h = footer.clientHeight;
             const blank_h = blank.clientHeight;
 
-            if (body_h - blank_h < sum + footer_h) {
+            if (body_h - blank_h <= sum + footer_h) {
               footer.style.top = sum + (body_h - sum - footer_h) + "px";
               blank.style.height = (body_h - sum - footer_h) + "px";
             } else {  

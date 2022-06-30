@@ -201,6 +201,17 @@ export type CustomerEdit = {
   // customerRole: string | undefined;
 };
 
+export type EstimateSheetData = {  
+  printingDraft : string | Blob;
+  
+  newCustomerEmail: string | undefined;
+  newCustomerName: string | undefined;
+  newCustomerPhoneNumber: string | undefined;
+  newCustomerPostIndex: string | undefined;
+  newCustomerAddress: string | undefined;
+  newCustomerAddressDetail: string | undefined;
+};
+
 export type CustomerEditErrors = {
   emailError: string;
   nameError: string;

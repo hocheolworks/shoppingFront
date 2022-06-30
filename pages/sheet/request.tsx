@@ -2,10 +2,12 @@ import { ChangeEvent, FC, RefObject, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import { useSelector } from "react-redux";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
-import { Customer, CustomerEdit, CustomerEditErrors, PostCodeObject } from "../../src/types/types";
+import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject } from "../../src/types/types";
 
 
 const SheetRequest: FC = () => {
+
+  // 파일첨부
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
   const [orderDesignFile, SetOrderDesignFile] = useState<string | Blob>("");
   
@@ -13,6 +15,9 @@ const SheetRequest: FC = () => {
     SetOrderDesignFile(event.target.files[0]);
   };
 
+
+  // 주소 및 데이터 저장
+  // TODO : CustomerEdit말고 sheet전용으로 새로 만들것
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
@@ -115,11 +120,57 @@ const SheetRequest: FC = () => {
     }
   })
 
+  // 카트에 담긴 상품목록
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const items = (
+    <>
+      {cart.map((cartItem: CartItem | CartItemNonMember) => {
+          return (
+            <div
+              key={cartItem.product.id}
+              className="card mb-3 mx-auto"
+              style={{ maxWidth: "940px" }}
+            >
+              <div className="row no-gutters">
+                <div className="col-3 mx-3 my-3">
+                  <img
+                    src={`${cartItem.product.productImageFilepath}`}
+                    className="img-fluid"
+                  />
+                </div>
+                <div className="col-5 text-left">
+                  <div className="card-body">
+                    <h4 className="card-title">
+                      {cartItem.product.productName}
+                    </h4>
+                    <p className="card-text">
+                      {cartItem.productPrice.toLocaleString("ko-KR")} 원
+                    </p>
+                    <p className="card-text">
+                      {cartItem.productCount} 개
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );        
+        }
+      )}
+    </>
+  );
+
   return (
     <div id="mid" className="w-100">
       <div id="wrapper" className="container">
         <div id="container_wr">
           <form className="form-sheet">
+            <ul className="d-flex">
+              <li className="col-3 text-left">장바구니 상품 목록</li>             
+            </ul>
+            {items}
             <ul className="d-flex">
               <li className="col-3 text-left">인쇄 시안</li>
               <div className="col-sm-7 form-input">
@@ -127,7 +178,7 @@ const SheetRequest: FC = () => {
                   type="file"
                   className={"form-control"}
                   style={{ height: "44px" }}
-                  name="file"
+                  name="printingDraft"
                   ref={fileInput}
                   onChange={handleFileChange}
                 />
@@ -138,6 +189,7 @@ const SheetRequest: FC = () => {
               <div className="col-sm-7 form-input">              
                 <input
                  className="form-control"
+                 name="size"
                  type="textarea" placeholder="(인쇄 색깔 수 / 사이즈 입력해주세요)"
                 />
               </div>
@@ -148,6 +200,7 @@ const SheetRequest: FC = () => {
                 <input
                  className="form-control"
                  type="number"
+                 name="count"
                 />
               </div>
             </ul>
@@ -157,6 +210,7 @@ const SheetRequest: FC = () => {
                 <input
                  className="form-control"
                  type="date"
+                 name='hopeDate'
                 />
               </div>
             </ul>
@@ -166,6 +220,7 @@ const SheetRequest: FC = () => {
                 <input
                  className="form-control"
                  type="text"
+                 name='businessName'
                 />              
               </div>
             </ul>
@@ -175,6 +230,7 @@ const SheetRequest: FC = () => {
                 <input
                  className="form-control"
                  type="text"
+                 name="businessNumber"
                 />
               </div>
             </ul>
