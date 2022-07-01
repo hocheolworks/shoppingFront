@@ -12,6 +12,7 @@ import {
   UPDATE_CART_ITEM,
   RETURN_TO_CART_PAGE,
   RETURN_TO_CART_PAGE_DONE,
+  SET_CART_ITEM_IS_PRINT,
 } from "../action-types/cart-action-types";
 
 export type InitialStateType = {
@@ -84,6 +85,20 @@ const reducer = (
         }),
       };
 
+    case SET_CART_ITEM_IS_PRINT:
+      const targetIndex = state.cartItems.findIndex(
+        (val) => val.productId === action.payload.productId
+      );
+      if (targetIndex !== -1) {
+        const cartItem = state.cartItems[targetIndex];
+        cartItem.isPrint = action.payload.isPrint;
+        const newCart = [...state.cartItems];
+        newCart[targetIndex] = cartItem;
+
+        return { ...state, cartItems: newCart };
+      } else {
+        return { ...state };
+      }
     default:
       return state;
   }

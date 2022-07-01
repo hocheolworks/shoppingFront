@@ -81,11 +81,15 @@ export type ReviewError = {
 export type Order = {
   id: number;
   orderTotalPrice: number;
+  orderTotalProductsPrice: number;
+  orderTax: number;
+  orderPrintFee: number;
+  orderDeliveryFee: number;
   orderCustomerName: string;
   orderAddress: string;
   orderAddressDetail: string;
   orderMemo: string;
-  orderDesignFile: string;
+  // orderDesignFile: string;
   orderPhoneNumber: string;
   orderPostIndex: string;
   orderStatus: string;
@@ -103,6 +107,7 @@ export type OrderItem = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
+  isPrint: boolean;
 };
 
 export type InsertOrder = {
@@ -114,7 +119,11 @@ export type InsertOrder = {
   orderPhoneNumber: string | undefined;
   orderMemo: string | undefined;
   orderTotalPrice: number;
-  orderDesignFile: string;
+  orderTotalProductsPrice: number;
+  orderTax: number;
+  orderPrintFee: number;
+  orderDeliveryFee: number;
+  orderDesignFile: Array<string>;
   isTaxBill: boolean;
   cart: Array<CartItem | CartItemNonMember>;
 };
@@ -222,6 +231,7 @@ export type CartItem = {
   product: Product;
   productCount: number;
   productPrice: number;
+  isPrint: boolean;
 };
 
 export type CartItemNonMember = {
@@ -229,6 +239,7 @@ export type CartItemNonMember = {
   product: Product;
   productCount: number;
   productPrice: number;
+  isPrint: boolean;
 };
 
 export type FCinLayout<P = {}> = FC<P> & {
