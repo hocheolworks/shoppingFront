@@ -14,7 +14,20 @@
   justify-content: center;
 }
 
-.w-100{
+@media (min-width: 1000px) {
+  #price-remove {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+  }
+}
+
+@media (max-width: 999px) {
+  #price-remove {
+    width: 100%;
+  }
+}
+
+.w-100 {
   width: 100%;
 }
 
@@ -22,7 +35,12 @@
   text-align: left;
 }
 
-.from-sheet .form-input {
+.form-sheet {
+  margin-left: auto;
+  max-width: 940px;
+}
+
+.form-sheet .form-input {
   height: 44px;
 }
 
@@ -37,4 +55,11 @@
   padding-left: 5%;
   padding-right: 5%;
   font-size: 2rem;
+}
+
+.cart-end {
+  width:"100%";
+  justify-content: flex-end;
+  max-width: 940px;
+  flex-wrap: nowrap;
 }

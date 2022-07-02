@@ -210,15 +210,19 @@ export type CustomerEdit = {
   // customerRole: string | undefined;
 };
 
-export type EstimateSheetData = {  
+export type SheetRequestData = {  
+  newCustomerName: string;
+  newCustomerEmail: string;
+  newCustomerPhoneNumber: string;
+  businessName : string;
+  businessType : string;
+  businessNumber : string;
+  newCustomerPostIndex: string;
+  newCustomerAddress: string;
+  newCustomerAddressDetail: string;
   printingDraft : string | Blob;
-  
-  newCustomerEmail: string | undefined;
-  newCustomerName: string | undefined;
-  newCustomerPhoneNumber: string | undefined;
-  newCustomerPostIndex: string | undefined;
-  newCustomerAddress: string | undefined;
-  newCustomerAddressDetail: string | undefined;
+  desiredDate : string;
+  requestMemo : string;
 };
 
 export type CustomerEditErrors = {

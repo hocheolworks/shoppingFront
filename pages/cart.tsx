@@ -182,7 +182,7 @@ const Cart: FC = () => {
                           className="img-fluid"
                         />
                       </div>
-                      <div className="col-5 text-left">
+                      <div className="col-4 text-left">
                         <div className="card-body">
                           <h4 className="card-title">
                             {cartItem.product.productName}
@@ -220,7 +220,7 @@ const Cart: FC = () => {
                           <FontAwesomeIcon size="lg" icon={faChevronDown} />
                         </button> */}
                       </div>
-                      <div className="w-100">
+                      <div id="price-remove">
                         <div className="card-body text-right">
                           <h5 className="card-title">
                             <span>
@@ -247,7 +247,7 @@ const Cart: FC = () => {
                   </div>
                 );
               })}
-              <div className="row d-flex" style={{width:"100%", justifyContent:"flex-end"}}>
+              <div className="row d-flex mx-auto cart-end">
                 <div className="col-8">
                   <p className="h5 text-right">
                     합계: <span>{totalPrice.toLocaleString("ko-KR")} 원</span>

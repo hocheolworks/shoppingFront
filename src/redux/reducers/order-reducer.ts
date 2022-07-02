@@ -4,6 +4,7 @@ import {
   InsertOrder,
   TaxBillInfo,
   TaxBillError,
+  SheetRequestData,
 } from "../../types/types";
 import { SHOW_LOADER } from "../action-types/auth-action-types";
 import {
@@ -30,6 +31,7 @@ export type InitialStateType = {
   insertOrder: Partial<InsertOrder>;
   taxBillInfo: Partial<TaxBillInfo>;
   taxBillError: Partial<TaxBillError>;
+  sheetRequestData : Partial<SheetRequestData>;
 };
 
 const initialState: InitialStateType = {
@@ -41,6 +43,7 @@ const initialState: InitialStateType = {
   insertOrder: {},
   taxBillInfo: {},
   taxBillError: {},
+  sheetRequestData: {},
 };
 
 const reducer = (

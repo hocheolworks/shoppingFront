@@ -13,6 +13,7 @@ import RequestService from '../../utils/request-service';
 import { NextRouter } from 'next/router';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { CartItem, CartItemNonMember, SheetRequestData } from '../../types/types';
 
 export const fetchOrder = () => async (dispatch: Dispatch) => {
   dispatch(fetchOrderSuccess());
@@ -65,4 +66,19 @@ export const fetchNonMemberOrders = (
   } else {
     dispatch(fetchNonMemberOrdersSuccess(response.data));
   }
+}
+
+export const addSheetRequest = (
+  sheetRequest : Partial<SheetRequestData>,
+  customerId : number,
+  orderItems : Array<CartItem | CartItemNonMember>
+) => async (dispatch:Dispatch) => {
+  const response = await RequestService.post(
+    '/order/sheetRequest',
+    {
+      sheetRequest,
+      customerId,
+      orderItems,
+    }
+  );
 }

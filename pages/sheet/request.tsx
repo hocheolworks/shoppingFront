@@ -1,11 +1,14 @@
-import { ChangeEvent, FC, RefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
-import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject } from "../../src/types/types";
+import { addSheetRequest } from "../../src/redux/thunks/order-thunks";
+import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject, SheetRequestData } from "../../src/types/types";
 
 
 const SheetRequest: FC = () => {
+
+  const dispatch = useDispatch();
 
   // 파일첨부
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -15,20 +18,20 @@ const SheetRequest: FC = () => {
     SetOrderDesignFile(event.target.files[0]);
   };
 
-
   // 주소 및 데이터 저장
-  // TODO : CustomerEdit말고 sheet전용으로 새로 만들것
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
 
-  const customersEditData: Partial<CustomerEdit> = useSelector(
-    (state: AppStateType) => state.customer.customerEdit
+  const sheetRequestData: Partial<SheetRequestData> = useSelector(
+    (state: AppStateType) => state.order.sheetRequestData
   );
-
+  
   const errors: Partial<CustomerEditErrors> = useSelector(
     (state: AppStateType) => state.customer.customerEditErrors
   );
+
+  const { emailError, nameError, phoneNumberError, postIndexError, addressError} = errors;
 
   const {
     id,
@@ -41,28 +44,43 @@ const SheetRequest: FC = () => {
     customerRole,
   } = customersData;
 
-  const [customerEdit, setCustomerEdit] = useState<Partial<CustomerEdit>>(customersEditData);
+  const [sheetRequest, setSheetRequest] = useState<Partial<SheetRequestData>>(sheetRequestData);
+  
+  const [newCustomerName, setNewCustomerName] = useState<string>(
+    customerName || ""
+  );
+  const [newCustomerEmail, setNewCustomerEmail] = useState<string>(
+    customerEmail || ""
+  );
+  const [newCustomerPhoneNumber, setNewCustomerPhoneNumber] = useState<string>(
+    customerPhoneNumber || ""
+  );
+  const [businessName, setBusineesName] = useState<string>("");
+  const [businessType, setBusineesType] = useState<string>("");
+  const [businessNumber, setBusineesNumber] = useState<string>("");
+  const [newCustomerPostIndex, setNewCustomerPostIndex] = useState<string>(
+    customerPostIndex || ""
+  );
+  const [newCustomerAddress, setNewCustomerAddress] = useState<string>(
+    customerAddress || ""
+  );
+  const [newCustomerAddressDetail, setNewCustomerAddressDetail] = useState<string>(
+    customerAddressDetail || ""
+  );
+  const [printingDraft, setPrintingDraft] = useState<string>("");
+  const [desiredDate, setDesiredDate] = useState<string>("");
+  const [requestMemo, setRequestMemo] = useState<string>(
+    
+`가방의 경우, 아래 양식에 맞게 정확한 내용을 입력해주시면 빠른 상담이 가능합니다.
+- 인쇄 시안은 파일첨부 이용
+- 총 주문수량 100개당 1개 시안 업로드 가능
 
-  const [newCustomerEmail, setNewCustomerEmail] = useState<string | undefined>(
-    customerEmail
-  );
+인쇄 사이즈     : 
+인쇄 컬러수    : 
+제작 수량       : 
 
-  const [newCustomerName, setNewCustomerName] = useState<string | undefined>(
-    customerName
-  );
-
-  const [newCustomerPhoneNumber, setNewCustomerPhoneNumber] = useState<string | undefined>(
-    customerPhoneNumber
-  );
-
-  const [newCustomerPostIndex, setNewCustomerPostIndex] = useState<string | undefined>(
-    customerPostIndex
-  );
-  const [newCustomerAddress, setNewCustomerAddress] = useState<string | undefined>(
-    customerAddress
-  );
-  const [newCustomerAddressDetail, setNewCustomerAddressDetail] = useState<string | undefined>(
-    customerAddressDetail
+추가 요청사항 :
+`
   );
  
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
@@ -81,49 +99,46 @@ const SheetRequest: FC = () => {
 
   const postIndexRef = useRef(null);
 
-  const { emailError, nameError, phoneNumberError, postIndexError, addressError} = errors;
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = event.target;
-    setCustomerEdit({ ...customerEdit, [name]: value });
-  };
-
-  useEffect(() => {
-    if(customerEdit != undefined){
-      const {
-        newCustomerEmail,
-        newCustomerName,
-        newCustomerPhoneNumber,
-        newCustomerPostIndex,
-        newCustomerAddress,
-        newCustomerAddressDetail,
-      } = customerEdit;
-
-      if (newCustomerEmail != undefined) {
-        setNewCustomerEmail(newCustomerEmail);
-      }
-      if (newCustomerName != undefined) {
-        setNewCustomerName(newCustomerName);
-      }
-      if (newCustomerPhoneNumber != undefined) {
-        setNewCustomerPhoneNumber(newCustomerPhoneNumber);
-      }
-      if (newCustomerPostIndex != undefined) {
-        setNewCustomerPostIndex(newCustomerPostIndex);
-      }
-      if (newCustomerAddress != undefined) {
-        setNewCustomerAddress(newCustomerAddress);
-      }
-      if (newCustomerAddressDetail != undefined) {
-        setNewCustomerAddressDetail(newCustomerAddressDetail);
-      }
-    }
-  })
-
   // 카트에 담긴 상품목록
   const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
+  
+  // 견적 요청 버튼
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    if(id != undefined) dispatch(addSheetRequest(sheetRequest, id, cart));
+    else dispatch(addSheetRequest(sheetRequest, -1, cart));
+  }
+
+  useEffect(() => {
+    setSheetRequest({
+      newCustomerName,
+      newCustomerEmail,
+      newCustomerPhoneNumber,
+      businessName,
+      businessType,
+      businessNumber,
+      newCustomerPostIndex,
+      newCustomerAddress,
+      newCustomerAddressDetail,
+      printingDraft,
+      desiredDate,
+      requestMemo
+    });
+  },[      
+    newCustomerName,
+    newCustomerEmail,
+    newCustomerPhoneNumber,
+    businessName,
+    businessType,
+    businessNumber,
+    newCustomerPostIndex,
+    newCustomerAddress,
+    newCustomerAddressDetail,
+    printingDraft,
+    desiredDate,
+    requestMemo])
 
   const items = (
     <>
@@ -131,8 +146,7 @@ const SheetRequest: FC = () => {
           return (
             <div
               key={cartItem.product.id}
-              className="card mb-3 mx-auto"
-              style={{ maxWidth: "940px" }}
+              className="card mb-3 col-10"
             >
               <div className="row no-gutters">
                 <div className="col-3 mx-3 my-3">
@@ -161,57 +175,50 @@ const SheetRequest: FC = () => {
       )}
     </>
   );
-
+  
   return (
     <div id="mid" className="w-100">
       <div id="wrapper" className="container">
         <div id="container_wr">
-          <form className="form-sheet">
+          <form className="form-sheet" onSubmit={handleSubmit}>
             <ul className="d-flex">
               <li className="col-3 text-left">장바구니 상품 목록</li>             
             </ul>
             {items}
             <ul className="d-flex">
-              <li className="col-3 text-left">인쇄 시안</li>
-              <div className="col-sm-7 form-input">
-                <input
-                  type="file"
-                  className={"form-control"}
-                  style={{ height: "44px" }}
-                  name="printingDraft"
-                  ref={fileInput}
-                  onChange={handleFileChange}
-                />
-              </div>              
-            </ul>
-            <ul className="d-flex">
-              <li className="col-3 text-left">색깔/사이즈</li>
+              <li className="col-3 text-left">대표자</li>
               <div className="col-sm-7 form-input">              
                 <input
                  className="form-control"
-                 name="size"
-                 type="textarea" placeholder="(인쇄 색깔 수 / 사이즈 입력해주세요)"
+                 type="text"
+                 name="newCustomerName"
+                 value={newCustomerName}
+                 onChange={(event) => {setNewCustomerName(event.target.value);}}
                 />
               </div>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">제작 수량</li>
+              <li className="col-3 text-left">이메일</li>
               <div className="col-sm-7 form-input">              
                 <input
                  className="form-control"
-                 type="number"
-                 name="count"
+                 type="text"
+                 name="newCustomerEmail"
+                 value={newCustomerEmail}
+                 onChange={(event) => {setNewCustomerEmail(event.target.value);}}
                 />
               </div>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">납기 희망일</li>
+              <li className="col-3 text-left">연락처</li>
               <div className="col-sm-7 form-input">              
                 <input
                  className="form-control"
-                 type="date"
-                 name='hopeDate'
-                />
+                 type="text"
+                 name="newCustomerPhoneNumber"
+                 value={newCustomerPhoneNumber}
+                 onChange={(event) => {setNewCustomerPhoneNumber(event.target.value);}}
+                 />
               </div>
             </ul>
             <ul className="d-flex">
@@ -221,7 +228,21 @@ const SheetRequest: FC = () => {
                  className="form-control"
                  type="text"
                  name='businessName'
-                />              
+                 value={businessName}
+                 onChange={(event) => {setBusineesName(event.target.value);}}                 
+                 />              
+              </div>
+            </ul>
+            <ul className="d-flex">
+              <li className="col-3 text-left">업태 및 종목</li>
+              <div className="col-sm-7 form-input">              
+                <input
+                 className="form-control"
+                 type="text"
+                 name="businessType"
+                 value={businessType}
+                 onChange={(event) => {setBusineesType(event.target.value);}}                 
+                 />
               </div>
             </ul>
             <ul className="d-flex">
@@ -231,33 +252,26 @@ const SheetRequest: FC = () => {
                  className="form-control"
                  type="text"
                  name="businessNumber"
-                />
+                 value={businessNumber}
+                 onChange={(event) => {setBusineesNumber(event.target.value);}}                 
+                 />
               </div>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">대표자:</li>
-              <div className="col-sm-7 form-input">              
-                <input
-                 className="form-control"
-                 type="text"
-                 name="newCustomerName"
-                 value={newCustomerName}
-                 onChange={handleInputChange}
-                />
-              </div>
+              <li className="col-3 text-left">배송주소</li>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">우편번호: </li>
+              <li className="col-3 text-left" style={{listStyle:"none"}}>우편번호</li>
               <div className="col-sm-7 form-input">
                 <input
                   ref={postIndexRef}
                   onClick={onClickPostIndex}
                   readOnly
                   type="text"
+                  name="newCustomerPostIndex"
                   className={
                     postIndexError ? 'form-control is-invalid' : 'form-control'
                   }
-                  name="newCustomerPostIndex"
                   value={newCustomerPostIndex}
                   placeholder="우편번호"
                   onChange={(event) => setNewCustomerPostIndex(event.target.value)}
@@ -282,22 +296,22 @@ const SheetRequest: FC = () => {
                 </ul>
               )}
             <ul className="d-flex">
-              <li className="col-3 text-left">주소: </li>
+              <li className="col-3 text-left" style={{listStyle:"none"}}>주소</li>
               <div className="col-sm-7 form-input">
                   <input
                     readOnly
                     type="text"
+                    name="newCustomerAddress"
                     className={
                       addressError ? 'form-control is-invalid' : 'form-control'
                     }
-                    name="newCustomerAddress"
                     value={newCustomerAddress}
                     onChange={(event) => setNewCustomerAddress(event.target.value)}
                   />
               </div>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">상세 주소: </li>
+              <li className="col-3 text-left" style={{listStyle:"none"}}>상세 주소</li>
               <div className="col-sm-7 form-input">
                 <input
                   type="text"
@@ -313,36 +327,40 @@ const SheetRequest: FC = () => {
               </div>
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">업태 및 종목</li>
-              <div className="col-sm-7 form-input">              
+              <li className="col-3 text-left">인쇄 시안</li>
+              <div className="col-sm-7 form-input">
                 <input
-                 className="form-control"
-                 type="text"
+                  type="file"
+                  className={"form-control"}
+                  style={{ height: "44px" }}
+                  name="printingDraft"
+                  ref={fileInput}
+                  onChange={handleFileChange}
                 />
-              </div>
+              </div>              
             </ul>
             <ul className="d-flex">
-              <li className="col-3 text-left">이메일</li>
+              <li className="col-3 text-left">납기 희망일</li>
               <div className="col-sm-7 form-input">              
                 <input
                  className="form-control"
-                 type="text"
-                 name="newCustomerEmail"
-                 value={newCustomerEmail}
-                 onChange={handleInputChange}
-                />
-              </div>
-            </ul>
-            <ul className="d-flex">
-              <li className="col-3 text-left">연락처</li>
-              <div className="col-sm-7 form-input">              
-                <input
-                 className="form-control"
-                 type="text"
-                 name="newCustomerPhoneNumber"
-                 value={newCustomerPhoneNumber}
-                 onChange={handleInputChange}
+                 type="date"
+                 name='desiredDate'
+                 value={desiredDate}
+                 onChange={(event) => {setDesiredDate(event.target.value);}}                 
                  />
+              </div>
+            </ul>
+            <ul className="d-flex">
+              <li className="col-3 text-left">요청사항</li>
+              <div className="col-sm-7 form-input" style={{height:"300px", wordBreak:"break-all"}}>
+                <textarea
+                 className="form-control"
+                 style={{height:"100%", wordBreak:"break-all"}}
+                 name="requestMemo"
+                 value={requestMemo}
+                 onChange={(event) => {setRequestMemo(event.target.value);}}
+                />
               </div>
             </ul>
             <ul className="d-flex">
