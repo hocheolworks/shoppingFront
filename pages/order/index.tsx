@@ -2,7 +2,6 @@ import React, {
   FC,
   FormEvent,
   RefObject,
-  TextareaHTMLAttributes,
   useCallback,
   useEffect,
   useRef,
@@ -15,20 +14,15 @@ import {
   faShoppingBag,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { addOrder, fetchOrder } from "../../src/redux/thunks/order-thunks";
 import PageLoader from "../../src/component/PageLoader/PageLoader";
 import Switch from "../../src/component/Switch/Switch";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import {
   OrderError,
-  OrderItem,
-  Product,
   PostCodeObject,
   Customer,
   CartItem,
-  Order,
   CartItemNonMember,
-  InsertOrder,
   TaxBillInfo,
   TaxBillError,
 } from "../../src/types/types";
@@ -38,8 +32,6 @@ import withReactContent from "sweetalert2-react-content";
 
 import DaumPostcode from "react-daum-postcode";
 import { loadTossPayments } from "@tosspayments/payment-sdk";
-import { API_BASE_URL } from "../../src/utils/constants/url";
-import { useRouter } from "next/router";
 import { fetchCart } from "../../src/redux/thunks/cart-thunks";
 import {
   orderAddedFailure,
@@ -49,6 +41,7 @@ import {
 } from "../../src/redux/actions/order-actions";
 import { FRONT_BASE_URL } from "../../src/utils/constants/url";
 import RequestService from "../../src/utils/request-service";
+import { SetCartItemIsPrint } from "../../src/redux/actions/cart-actions";
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string; // 진솔유통 테스트 클라이언트 키
 
 const MySwal = withReactContent(Swal);
@@ -57,7 +50,6 @@ type PaymentMethodType = "카드" | "계좌이체" | "가상계좌";
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const customerId = useRef<number>(-1);
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -83,6 +75,36 @@ const OrderPage: FC = () => {
   const cart: Array<CartItem | CartItemNonMember> = useSelector(
     (state: AppStateType) => state.cart.cartItems
   );
+
+  const cartTotalCount = useRef<number>(0);
+  const maxDesignFileCount = useRef<number>(1);
+  useEffect(() => {
+    let tempPrintFee = 0;
+    cartTotalCount.current = 0;
+    cart.forEach((val) => {
+      val.isPrint = val.isPrint ? val.isPrint : false;
+      if (val.isPrint) {
+        cartTotalCount.current += val.productCount;
+        if (val.productCount < 100) {
+          tempPrintFee += val.productCount * 100;
+        }
+      }
+    });
+    setPrintFee(tempPrintFee);
+    setOrderTotalPrice(cartTotalPrice + tax + tempPrintFee + deliveryFee);
+    maxDesignFileCount.current = Math.floor(cartTotalCount.current / 100);
+    if (maxDesignFileCount.current === 0) maxDesignFileCount.current = 1;
+
+    if (orderDesignFile.length > maxDesignFileCount.current) {
+      MySwal.fire({
+        title: `<strong>파일 첨부</strong>`,
+        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
+        icon: "warning",
+      });
+      SetOrderDesignFile([]);
+      if (fileInput.current !== null) fileInput.current.value = "";
+    }
+  }, [cart]);
 
   const cartTotalPrice: number = useSelector(
     (state: AppStateType) => state.cart.totalPrice
@@ -123,12 +145,31 @@ const OrderPage: FC = () => {
     string | undefined
   >(customersData.customerAddressDetail);
 
-  const [orderMemo, setOrderMemo] = useState<string | undefined>("");
+  const [orderMemo, setOrderMemo] = useState<string | undefined>(
+    `가방의 경우, 아래 양식에 맞게 정확한 내용을
+입력해주시면 빠른 상담이 가능합니다.
+- 인쇄 시안은 아래 파일첨부 이용
+- 총 주문수량 100개당 1개 시안 업로드 가능
+
+인쇄 사이즈: 
+인쇄 컬러수: 
+제작 수량: 
+납기 희망일: 
+업체 상호: 
+사업자등록번호: 
+대표자: 
+주소: 
+업태 및 종목: 
+E-MAIL: 
+연락처: `
+  );
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isPopupOpenTaxBill, setIsPopupOpenTaxBill] = useState<boolean>(false);
 
-  const [orderDesignFile, SetOrderDesignFile] = useState<string | Blob>("");
+  const [orderDesignFile, SetOrderDesignFile] = useState<Array<string | Blob>>(
+    []
+  );
 
   const postIndexRef = useRef(null);
 
@@ -150,6 +191,9 @@ const OrderPage: FC = () => {
   const taxBillError: Partial<TaxBillError> = useSelector(
     (state: AppStateType) => state.order.taxBillError
   );
+
+  // 인쇄비 state
+  const [printFee, setPrintFee] = useState<number>(0);
 
   const handleResizeHeight = useCallback(() => {
     if (textAreaRef === null || textAreaRef.current === null) return;
@@ -178,6 +222,11 @@ const OrderPage: FC = () => {
     setIsPopupOpenTaxBill(false);
   };
 
+  const switchHandleToggleForCart =
+    (productId: number, isPrint: boolean) => () => {
+      dispatch(SetCartItemIsPrint(productId, isPrint));
+    };
+
   const {
     orderCustomerNameError,
     orderPostIndexError,
@@ -187,11 +236,26 @@ const OrderPage: FC = () => {
   } = errors;
 
   const handleFileChange = (event: any): void => {
-    SetOrderDesignFile(event.target.files[0]);
+    // let maxDesignFileCount: number = Math.floor(cartTotalCount.current / 100);
+    // if (maxDesignFileCount === 0) maxDesignFileCount = 1; //100개 미만이라도 1개까지는 업로드 가능
+    if (Array.from(event.target.files).length > maxDesignFileCount.current) {
+      event.preventDefault();
+      MySwal.fire({
+        title: `<strong>파일 첨부</strong>`,
+        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
+        icon: "warning",
+      });
+      if (fileInput.current !== null) fileInput.current.value = "";
+    } else {
+      SetOrderDesignFile([...event.target.files]);
+    }
   };
 
   const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(cartTotalCount.current);
+    console.log(printFee);
+    // return;
     if (
       !Boolean(orderCustomerName) ||
       !Boolean(orderPostIndex) ||
@@ -275,19 +339,25 @@ const OrderPage: FC = () => {
       orderPhoneNumber,
       orderMemo,
       orderTotalPrice,
-      orderDesignFile: "",
+      orderTotalProductsPrice: cartTotalPrice,
+      orderTax: tax,
+      orderPrintFee: printFee,
+      orderDeliveryFee: deliveryFee,
+      orderDesignFile: [],
       isTaxBill,
       cart,
     };
 
     if (orderDesignFile) {
       const formData: FormData = new FormData();
-      formData.append("file", orderDesignFile);
+      orderDesignFile.forEach((val) => formData.append("files", val));
+
+      // formData.append("file", orderDesignFile);
       const response = await RequestService.post(
         "/order/design",
-        formData,
-        false,
-        "multipart/form-data"
+        formData
+        // false,
+        // "multipart/form-data"
       );
 
       insertOrder.orderDesignFile = response.data;
@@ -323,7 +393,10 @@ const OrderPage: FC = () => {
           cart.length === 1
             ? cart[0].product.productName
             : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName: customerId.current === -1 ? orderCustomerName : customersData.customerName,
+        customerName:
+          customerId.current === -1
+            ? orderCustomerName
+            : customersData.customerName,
         successUrl: `${FRONT_BASE_URL}/order/success`,
         failUrl: `${FRONT_BASE_URL}/order/fail`,
       });
@@ -344,7 +417,7 @@ const OrderPage: FC = () => {
       <br />
       <form onSubmit={onFormSubmit}>
         <div className="row">
-          <div className="col-lg-6">
+          <div className="col-lg-7">
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">수령인:</label>
               <div className="col-sm-7">
@@ -463,12 +536,11 @@ const OrderPage: FC = () => {
                 <textarea
                   ref={textAreaRef}
                   style={{
-                    minHeight: "37px",
+                    minHeight: "400px",
                   }}
                   className="form-control"
                   name="orderMemo"
                   value={orderMemo}
-                  placeholder="인쇄 등 요청사항을 적어주세요. 프린트 하고 싶은 디자인이 있으시다면 아래 파일 첨부를 이용해주세요"
                   rows={3}
                   maxLength={200}
                   onChange={(event) => {
@@ -488,6 +560,7 @@ const OrderPage: FC = () => {
                   name="file"
                   ref={fileInput}
                   onChange={handleFileChange}
+                  multiple
                 />
               </div>
             </div>
@@ -501,6 +574,7 @@ const OrderPage: FC = () => {
               <label className="col-sm-3 col-form-label">세금계산서:</label>
               <div className="col-sm-7 d-flex align-items-center">
                 <Switch
+                  name="isTaxBillSwitch"
                   isChecked={isTaxBill}
                   handleToggle={() => {
                     setIsTaxBill(!isTaxBill);
@@ -679,7 +753,7 @@ const OrderPage: FC = () => {
               </>
             )}
           </div>
-          <div className="col-lg-6">
+          <div className="col-lg-5">
             <div className="container-fluid">
               <div className="row">
                 {cart.map((cartItem) => {
@@ -707,6 +781,22 @@ const OrderPage: FC = () => {
                             <span>수량 : {cartItem.productCount}</span>
                           </h6>
                         </div>
+                        {cartItem.product.productName.includes("가방") && (
+                          <div className="card-footer">
+                            <h6 className="d-flex justify-content-between align-items-end mt-0 mb-0">
+                              <span>인쇄</span>
+                              <Switch
+                                key={`toggle-switch-cart-${cartItem.productId}`}
+                                name={`cartIsPrintSwitch#${cartItem.productId}`}
+                                isChecked={cartItem.isPrint}
+                                handleToggle={switchHandleToggleForCart(
+                                  cartItem.productId,
+                                  !cartItem.isPrint
+                                )}
+                              />
+                            </h6>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -757,6 +847,12 @@ const OrderPage: FC = () => {
                 <div className="d-flex justify-content-between">
                   <p className="mb-0">부가세</p>
                   <p className="mb-0">{`+${tax.toLocaleString("ko-KR")} 원`}</p>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <p className="mb-0">인쇄비</p>
+                  <p className="mb-0">{`+${printFee.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
                 </div>
                 <div className="d-flex justify-content-between">
                   <p className="mb-1">배송비</p>

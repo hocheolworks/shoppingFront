@@ -2,10 +2,11 @@ import React from "react";
 
 type SwitchProp = {
   isChecked: boolean;
+  name: string;
   handleToggle: () => void;
 };
 
-const Switch = ({ isChecked, handleToggle }: SwitchProp) => {
+const Switch = ({ isChecked, name, handleToggle }: SwitchProp) => {
   return (
     <div className="d-flex">
       <input
@@ -13,7 +14,7 @@ const Switch = ({ isChecked, handleToggle }: SwitchProp) => {
         className={`switch-checkbox`}
         checked={isChecked}
         onChange={handleToggle}
-        id={`switch-input`}
+        id={`switch-input-${name}`}
       />
       <label
         className={`switch-label`}
@@ -22,7 +23,7 @@ const Switch = ({ isChecked, handleToggle }: SwitchProp) => {
           width: "48px",
           borderRadius: "50px",
         }}
-        htmlFor={`switch-input`}
+        htmlFor={`switch-input-${name}`}
       >
         <div className="ball" />
       </label>

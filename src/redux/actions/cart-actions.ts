@@ -22,6 +22,8 @@ import {
   RETURN_TO_CART_PAGE,
   RETURN_TO_CART_PAGE_DONE,
   ReturnToCartPageDoneActionType,
+  SetCartItemIsPrintActionType,
+  SET_CART_ITEM_IS_PRINT,
 } from "../action-types/cart-action-types";
 
 export const returnToCartPage = (): ReturnToCartPageActionType => ({
@@ -60,6 +62,14 @@ export const stopLoadingCart = (): StopLoadingCartActionType => ({
 
 export const updateCartSuccess = (): UpdateCartSuccessActionType => ({
   type: UPDATE_CART_SUCCESS,
+});
+
+export const SetCartItemIsPrint = (
+  productId: number,
+  isPrint: boolean
+): SetCartItemIsPrintActionType => ({
+  type: SET_CART_ITEM_IS_PRINT,
+  payload: { productId: productId, isPrint: isPrint },
 });
 
 // 비회원 장바구니 관련
