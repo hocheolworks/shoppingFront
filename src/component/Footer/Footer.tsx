@@ -13,7 +13,7 @@ const Footer: FC = () => {
           <div className="justify-content-between">
             <div className="footer-container">
               <div className="footer-item">
-                <h4 className="mb-3">진솔유통 - 마트가방</h4>
+                <h4 className="mb-3">진솔유통 – 전국 마트 유통 및 행사 전문</h4>
                 <p className="mb-0">
                   <small>
                     사업자번호 206-34-61779 | 통신판매신고

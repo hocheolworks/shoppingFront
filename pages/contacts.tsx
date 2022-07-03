@@ -7,7 +7,7 @@ const Contacts: FC = () => {
   return (
     <>
       <Head>
-        <title>진솔유통 - 타포린 마트 가방 전문 | 회사 소개</title>
+        <title>전국 마트 유통 및 행사 전문 | 기업소개 진솔유통</title>
         <meta
           name="keyword"
           content="타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방, 최저가"

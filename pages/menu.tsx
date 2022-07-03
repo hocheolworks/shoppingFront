@@ -32,7 +32,9 @@ const Menu: FC<MenuProps> = ({ products }) => {
   return (
     <>
       <Head>
-        <title>진솔유통 - 타포린 마트 가방 전문 | 상품 목록 페이지</title>
+        <title>
+          전국 마트 타포린 가방 및 사은품 행사 전문점 진솔유통 | 상품 목록
+        </title>
         <meta
           name="keyword"
           content="타포린, 마트 가방, 사은품, 인쇄 가능, 타포린 가방, 최저가"
