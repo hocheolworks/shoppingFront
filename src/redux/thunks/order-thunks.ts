@@ -81,4 +81,11 @@ export const addSheetRequest = (
       orderItems,
     }
   );
+
+  if(response.data == 1) {
+    alert("견적요청 완료");
+  }
+  else {
+    alert('에러');
+  }
 }

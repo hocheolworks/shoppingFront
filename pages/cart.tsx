@@ -268,7 +268,7 @@ const Cart: FC = () => {
                     </button>
                   </div>
                 </div>
-                {/* <div className="pl-3">
+                <div className="pl-3">
                   <div className="">
                     <button
                       className="btn btn-secondary"
@@ -278,7 +278,7 @@ const Cart: FC = () => {
                       견적요청
                     </button>
                   </div>
-                </div> */}
+                </div>
               </div>
             </div>
           )}
