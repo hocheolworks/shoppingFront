@@ -66,10 +66,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
             if (body_h <= sum + footer_h) {
               footer.style.top = sum + (body_h - sum - footer_h) + "px";
-              blank.style.height = (body_h - sum - footer_h) + "px";
-            } else {  
+              blank.style.height = body_h - sum - footer_h + "px";
+            } else {
               footer.style.top = body_h - footer_h + "px";
-              blank.style.height = (body_h - sum - footer_h - blank_h) + "px";
+              blank.style.height = body_h - sum - footer_h - blank_h + "px";
 
               if (mid.className == "home") {
                 blank.style.backgroundColor = "black";
