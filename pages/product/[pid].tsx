@@ -245,6 +245,7 @@ const ProductDetail: FC<ProductDetailProps> = ({ product }) => {
                 product: product,
                 productCount: count,
                 productPrice: finalPrice,
+                isPrint: false,
               })
             );
             router.push("/cart");

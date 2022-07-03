@@ -33,13 +33,23 @@ const NavBar: FC = () => {
   let orderListLink;
   if (typeof window !== "undefined") {
     if (window.sessionStorage.getItem("isLoggedIn") === "true") {
-      links = <Link href={"/account"}>마이페이지</Link>;
-      signOut = (
-        <Link href={"/"}>
-          <a onClick={handleLogout}>로그아웃</a>
+      links = (
+        <Link href={"/account"}>
+          <a style={{ fontWeight: "bold" }}>마이페이지</a>
         </Link>
       );
-      orderListLink = <Link href={"/account/customer/orders"}>주문내역</Link>;
+      signOut = (
+        <Link href={"/"}>
+          <a style={{ fontWeight: "bold" }} onClick={handleLogout}>
+            로그아웃
+          </a>
+        </Link>
+      );
+      orderListLink = (
+        <Link href={"/account/customer/orders"}>
+          <a style={{ fontWeight: "bold" }}>주문내역</a>
+        </Link>
+      );
     } else {
       links = (
         <>

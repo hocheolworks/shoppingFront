@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
@@ -7,6 +7,7 @@ import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import RequestService from "../../../../src/utils/request-service";
 import { GetServerSideProps } from "next";
 import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { API_BASE_URL } from "../../../../src/utils/constants/url";
 
 type ManageUserOrderProp = {
   order: Order;
@@ -17,10 +18,21 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
   order,
   taxBillInfo,
 }) => {
+  const [designFiles, setDesignFiles] = useState<string[]>([]);
+  useEffect(() => {
+    RequestService.get(`/order/design/${order.id}`).then((res) =>
+      setDesignFiles(res.data)
+    );
+  }, []);
+
   const {
     id,
     orderCustomerName,
+    orderTotalProductsPrice,
     orderTotalPrice,
+    orderTax,
+    orderPrintFee,
+    orderDeliveryFee,
     orderPostIndex,
     orderPhoneNumber,
     createdAt,
@@ -30,7 +42,6 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
     orderStatus,
     orderIsPaid,
     orderMemo,
-    orderDesignFile,
     isTaxBill,
   } = order;
 
@@ -66,18 +77,21 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
           </p>
           <p className="personal_data_item">
             배송메모:
+            <br />
             <span className="personal_data_text">{orderMemo}</span>
           </p>
-          {orderDesignFile && (
+          {designFiles.length > 0 && (
             <p className="personal_data_item">
               파일첨부:
-              <a
-                id="design_file_download"
-                className="personal_data_text"
-                href={orderDesignFile}
-              >
-                다운로드
-              </a>
+              {designFiles.map((val, idx) => (
+                <a
+                  id="design_file_download"
+                  className="personal_data_text"
+                  href={val}
+                >
+                  다운로드#{idx + 1}
+                </a>
+              ))}
             </p>
           )}
         </div>
@@ -105,13 +119,46 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
               {orderIsPaid ? "O" : "X"}
             </span>
           </p>
-          <h4 style={{ marginBottom: "30px", marginTop: "30px" }}>
-            주문금액:
-            <span style={{ color: "green" }}>
-              {" "}
-              {orderTotalPrice.toLocaleString("ko-KR")} 원
-            </span>
-          </h4>
+          <hr style={{ width: "70%" }} />
+          <div
+            style={{
+              marginBottom: "30px",
+              marginTop: "15px",
+              paddingRight: "30%",
+            }}
+          >
+            <div className="d-flex  justify-content-between">
+              <p className="personal_data_item">상품금액:</p>
+              <span className="personal_data_text">
+                {orderTotalProductsPrice.toLocaleString("ko-KR")} 원
+              </span>
+            </div>
+            <div className="d-flex  justify-content-between">
+              <p className="personal_data_item">부가세:</p>
+              <span className="personal_data_text">
+                {orderTax.toLocaleString("ko-KR")} 원
+              </span>
+            </div>
+            <div className="d-flex  justify-content-between">
+              <p className="personal_data_item">인쇄비:</p>
+              <span className="personal_data_text">
+                {orderPrintFee.toLocaleString("ko-KR")} 원
+              </span>
+            </div>
+            <div className="d-flex  justify-content-between">
+              <p className="personal_data_item">배송비:</p>
+              <span className="personal_data_text">
+                {orderDeliveryFee.toLocaleString("ko-KR")} 원
+              </span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <h4>주문금액:</h4>
+              <h4 style={{ color: "green" }}>
+                {" "}
+                {orderTotalPrice.toLocaleString("ko-KR")} 원
+              </h4>
+            </div>
+          </div>
         </div>
         {isTaxBill && (
           <div className="col-md-4">
@@ -169,6 +216,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
             <th>수량</th>
             <th>가격</th>
             <th>합계</th>
+            <th>인쇄여부</th>
           </tr>
         </thead>
         <tbody>
@@ -188,6 +236,7 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
                 <th>
                   {orderItem.orderItemTotalPrice.toLocaleString("ko-KR")}원
                 </th>
+                <th>{orderItem.isPrint ? "O" : "X"}</th>
               </tr>
             );
           })}

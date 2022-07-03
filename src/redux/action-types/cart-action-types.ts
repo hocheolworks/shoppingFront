@@ -8,6 +8,7 @@ export const STOP_LOADING_CART = "STOP_LOADING_CART";
 export const UPDATE_CART_SUCCESS = "UPDATE_CART_SUCCESS";
 export const RETURN_TO_CART_PAGE = "RETURN_TO_CART_PAGE";
 export const RETURN_TO_CART_PAGE_DONE = "RETURN_TO_CART_PAGE_DONE";
+export const SET_CART_ITEM_IS_PRINT = "SET_CART_ITEM_IS_PRINT";
 
 export type ReturnToCartPageActionType = { type: typeof RETURN_TO_CART_PAGE };
 export type ReturnToCartPageDoneActionType = {
@@ -44,6 +45,11 @@ export type UpdateCartItemActionType = {
   payload: { productId: number; productCount: number };
 };
 
+export type SetCartItemIsPrintActionType = {
+  type: typeof SET_CART_ITEM_IS_PRINT;
+  payload: { productId: number; isPrint: boolean };
+};
+
 export type CartActionTypes =
   | ReturnToCartPageActionType
   | ReturnToCartPageDoneActionType
@@ -55,4 +61,5 @@ export type CartActionTypes =
   | UpdateCartSuccessActionType
   | AddCartItemActionType
   | RemoveCartItemActionType
-  | UpdateCartItemActionType;
+  | UpdateCartItemActionType
+  | SetCartItemIsPrintActionType;
