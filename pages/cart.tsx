@@ -149,11 +149,15 @@ const Cart: FC = () => {
   };
 
   const onClickSheet = (): void => {
-    router.push('/sheet/request')
-  }
+    router.push("/sheet/request");
+  };
 
   return (
-    <div className="container mt-5 pb-5" style={{ minHeight: "350px" }} id="mid">
+    <div
+      className="container mt-5 pb-5"
+      style={{ minHeight: "350px" }}
+      id="mid"
+    >
       {loading ? (
         <Spinner />
       ) : (
@@ -243,7 +247,7 @@ const Cart: FC = () => {
                         </div>
                       </div>
                     </div>
-                    <br/>
+                    <br />
                   </div>
                 );
               })}
@@ -264,7 +268,7 @@ const Cart: FC = () => {
                     </button>
                   </div>
                 </div>
-                <div className="pl-3">
+                {/* <div className="pl-3">
                   <div className="">
                     <button
                       className="btn btn-secondary"
@@ -274,7 +278,7 @@ const Cart: FC = () => {
                       견적요청
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
