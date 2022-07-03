@@ -1,6 +1,8 @@
 import { ChangeEvent, FC, FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import { addSheetRequest } from "../../src/redux/thunks/order-thunks";
 import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject, SheetRequestData } from "../../src/types/types";
@@ -9,6 +11,7 @@ import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors
 const SheetRequest: FC = () => {
 
   const dispatch = useDispatch();
+  const MySwal = withReactContent(Swal);
 
   // 파일첨부
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -104,14 +107,39 @@ const SheetRequest: FC = () => {
     (state: AppStateType) => state.cart.cartItems
   );
   
+  const isBusinessNumber = (str : string) : boolean  => {
+    
+    if(str == "") return true;
+
+    /* 사업자등록번호 */
+    if(str.match(/([0-9]{3})-?([0-9]{2})-?([0-9]{5})/)) return true;
+
+    /* 법인등록번호 */
+    if(str.match(/^([0-9]{6})\-([0-9]{7})$/)) return true;
+    
+    return false
+  }
   // 견적 요청 버튼
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    
+    if(!isBusinessNumber(businessNumber)) {
+      MySwal.fire({
+        title: `<strong>사업자 번호 에러</strong>`,
+        html: `<i>사업자 번호 형식에 맞지 않습니다.</i>`,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: '확인',
+      })
+      return;
+    }
+
     if(id != undefined) dispatch(addSheetRequest(sheetRequest, id, cart));
     else dispatch(addSheetRequest(sheetRequest, -1, cart));
   }
-
+  
   useEffect(() => {
+
     setSheetRequest({
       newCustomerName,
       newCustomerEmail,
@@ -253,6 +281,7 @@ const SheetRequest: FC = () => {
                  type="text"
                  name="businessNumber"
                  value={businessNumber}
+                 placeholder="'-'을 포함하여 입력해주세요"
                  onChange={(event) => {setBusineesNumber(event.target.value);}}                 
                  />
               </div>
