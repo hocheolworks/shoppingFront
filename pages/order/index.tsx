@@ -146,22 +146,9 @@ const OrderPage: FC = () => {
   >(customersData.customerAddressDetail);
 
   const [orderMemo, setOrderMemo] = useState<string | undefined>(
-    `가방의 경우, 아래 양식에 맞게 정확한 내용을
-입력해주시면 빠른 상담이 가능합니다.
+    `- 인쇄 요청시 우측 상품 이미지 아래 인쇄 버튼 클릭
 - 인쇄 시안은 아래 파일첨부 이용
-- 총 주문수량 100개당 1개 시안 업로드 가능
-
-인쇄 사이즈: 
-인쇄 컬러수: 
-제작 수량: 
-납기 희망일: 
-업체 상호: 
-사업자등록번호: 
-대표자: 
-주소: 
-업태 및 종목: 
-E-MAIL: 
-연락처: `
+- 총 주문수량 100개당 1개 시안 업로드 가능`
   );
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
@@ -536,7 +523,7 @@ E-MAIL:
                 <textarea
                   ref={textAreaRef}
                   style={{
-                    minHeight: "400px",
+                    minHeight: "200px",
                   }}
                   className="form-control"
                   name="orderMemo"
