@@ -2,8 +2,10 @@ import { Dispatch } from 'redux';
 
 import { showLoader } from '../actions/auth-actions';
 import {
+  esimtateSheetAddSucess,
   fetchNonMemberOrdersSuccess,
   fetchOrderSuccess,
+  fetchUserEstimatesSuccess,
   fetchUserOrdersByQuerySuccess,
   fetchUserOrdersSuccess,
   orderAddedFailure,
@@ -84,8 +86,19 @@ export const addSheetRequest = (
 
   if(response.data == 1) {
     alert("견적요청 완료");
+    dispatch(esimtateSheetAddSucess());
   }
   else {
     alert('에러');
   }
+}
+
+export const fetchUserEstimates =
+  (customerId: number | undefined) => async (dispatch: Dispatch) => {
+    dispatch(showLoader());
+    const response = await RequestService.get(
+      `/order/customer/estimate/${customerId}`,
+      false
+    );
+    dispatch(fetchUserEstimatesSuccess(response.data));
 }

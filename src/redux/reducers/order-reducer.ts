@@ -5,6 +5,7 @@ import {
   TaxBillInfo,
   TaxBillError,
   SheetRequestData,
+  Estimate,
 } from "../../types/types";
 import { SHOW_LOADER } from "../action-types/auth-action-types";
 import {
@@ -20,6 +21,8 @@ import {
   FETCH_NONMEMBER_ORDERS_SUCCESS,
   SAVE_TAX_BILL_INFO_FAILURE,
   SAVE_TAX_BILL_INFO_SUCCESS,
+  FETCH_USER_ESTIMATES_SUCCESS,
+  ESTIMATE_SHEET_ADDED_SUCCESS,
 } from "../action-types/order-action-types";
 
 export type InitialStateType = {
@@ -32,6 +35,8 @@ export type InitialStateType = {
   taxBillInfo: Partial<TaxBillInfo>;
   taxBillError: Partial<TaxBillError>;
   sheetRequestData : Partial<SheetRequestData>;
+  estimates: Array<Estimate>;
+  isEstimateAdded: boolean;
 };
 
 const initialState: InitialStateType = {
@@ -44,6 +49,8 @@ const initialState: InitialStateType = {
   taxBillInfo: {},
   taxBillError: {},
   sheetRequestData: {},
+  estimates: [],
+  isEstimateAdded: false,
 };
 
 const reducer = (
@@ -99,7 +106,16 @@ const reducer = (
 
     case SAVE_TAX_BILL_INFO_SUCCESS:
       return { ...state, taxBillInfo: action.payload };
+    
+    case FETCH_USER_ESTIMATES_SUCCESS:
+      return { ...state, estimates: action.payload, loading: false };
 
+    case ESTIMATE_SHEET_ADDED_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        isEstimateAdded: true,
+      };
     default:
       return state;
   }

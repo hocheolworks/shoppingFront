@@ -1,4 +1,5 @@
 import {
+  Estimate,
   InsertOrder,
   Order,
   OrderError,
@@ -34,6 +35,10 @@ import {
   SAVE_TAX_BILL_INFO_FAILURE,
   SaveTaxBillInfoSuccessActionType,
   SAVE_TAX_BILL_INFO_SUCCESS,
+  FetchUserEstimatesActionType,
+  FETCH_USER_ESTIMATES_SUCCESS,
+  EstimateSheetAddedSuccessActionType,
+  ESTIMATE_SHEET_ADDED_SUCCESS,
 } from "../action-types/order-action-types";
 
 export const showLoader = (): ShowLoaderActionType => ({
@@ -114,4 +119,16 @@ export const saveTaxBillInfoSuccess = (
 ): SaveTaxBillInfoSuccessActionType => ({
   type: SAVE_TAX_BILL_INFO_SUCCESS,
   payload: taxBillInfo,
+});
+
+export const fetchUserEstimatesSuccess = (
+  estimates: Array<Estimate>
+): FetchUserEstimatesActionType => ({
+  type: FETCH_USER_ESTIMATES_SUCCESS,
+  payload: estimates,
+});
+
+export const esimtateSheetAddSucess = (
+): EstimateSheetAddedSuccessActionType => ({
+  type: ESTIMATE_SHEET_ADDED_SUCCESS,
 });

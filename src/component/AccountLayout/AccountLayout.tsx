@@ -72,7 +72,13 @@ const Account: FC = ({ children }) => {
                 activeClassName="is-active"
                 href="/account/customer/orders"
               >
-                <a className="account-sidebar-link nav-link">주문 목록</a>
+                <a className="account-sidebar-link nav-link mb-4">주문 목록</a>
+              </ActiveLink>
+              <ActiveLink
+                activeClassName="is-active"
+                href="/account/customer/estimate"
+              >
+                <a className="account-sidebar-link nav-link">견적 요청 목록</a>
               </ActiveLink>
             </>
           )}

@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { ChangeEvent, FC, FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +13,7 @@ const SheetRequest: FC = () => {
 
   const dispatch = useDispatch();
   const MySwal = withReactContent(Swal);
+  const router = useRouter();
 
   // 파일첨부
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -32,6 +34,10 @@ const SheetRequest: FC = () => {
   
   const errors: Partial<CustomerEditErrors> = useSelector(
     (state: AppStateType) => state.customer.customerEditErrors
+  );
+
+  const isEstimateAdded: boolean = useSelector(
+    (state: AppStateType) => state.order.isEstimateAdded
   );
 
   const { emailError, nameError, phoneNumberError, postIndexError, addressError} = errors;
@@ -136,8 +142,16 @@ const SheetRequest: FC = () => {
 
     if(id != undefined) dispatch(addSheetRequest(sheetRequest, id, cart));
     else dispatch(addSheetRequest(sheetRequest, -1, cart));
+
   }
   
+  useEffect(() => {
+    if(isEstimateAdded) {
+      router.push("/account/customer/estimate");
+    }
+  },[isEstimateAdded])
+
+
   useEffect(() => {
 
     setSheetRequest({

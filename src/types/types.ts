@@ -225,6 +225,39 @@ export type SheetRequestData = {
   requestMemo : string;
 };
 
+export type Estimate = {
+  id: number;
+  estimateName:string;
+  estimateEmail:string;
+  estimatePhoneNumber:string;
+  estimateBusinessName:string;
+  estimateBusinessType:string;
+  estimateBusinessNumber:string;
+  estimatePostIndex:string;
+  estimateAddress:string;
+  estimateAddressDetail:string;
+  estimatePrintingDraft:string;
+  estimateDesiredDate:string;
+  estimateRequestMemo:string;
+  customerId:number;
+  requestStatus:string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type EstimateItem = {
+  id: number;
+  customerId: number;
+  productId: number;
+  estimateItemEA: number;
+  orderItemTotalPrice: number;
+  isPrint: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
 export type CustomerEditErrors = {
   emailError: string;
   nameError: string;
