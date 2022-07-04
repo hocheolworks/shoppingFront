@@ -33,6 +33,8 @@ import withReactContent from "sweetalert2-react-content";
 import AccountLayout from "../../../src/component/AccountLayout/AccountLayout";
 import TextEditor from "../../../src/component/TextEditor/TextEditor";
 import requestService from "../../../src/utils/request-service";
+import { useCheckAdmin } from "../../../src/hook/useCheckAdmin";
+import Spinner from "../../../src/component/Spinner/Spinner";
 
 const MySwal = withReactContent(Swal);
 
@@ -56,6 +58,7 @@ type InitialStateType = {
 
 const AddProduct: FCinLayout = () => {
   const dispatch = useDispatch();
+  const isAdmin = useCheckAdmin();
 
   const addProductContent: string = useSelector(
     (state: AppStateType) => state.admin.addProductContent
@@ -278,7 +281,7 @@ const AddProduct: FCinLayout = () => {
     setState((prevState) => ({ ...prevState, file: event.target.files[0] }));
   };
 
-  return (
+  return isAdmin ? (
     <>
       <ToastShow
         showToast={showToast}
@@ -537,6 +540,8 @@ const AddProduct: FCinLayout = () => {
         </form>
       </div>
     </>
+  ) : (
+    <Spinner />
   );
 };
 

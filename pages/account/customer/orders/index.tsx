@@ -1,18 +1,20 @@
-import React, { FC, ReactElement, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, ReactElement, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Order, Customer, FCinLayout } from '../../../../src/types/types';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
-import { fetchUserOrders } from '../../../../src/redux/thunks/order-thunks';
-import OrdersTable from '../../../../src/component/OrdersTable/OrdersTable';
-import Spinner from '../../../../src/component/Spinner/Spinner';
-import { compareOrderByCreatedAt } from '../../../../src/utils/functions';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+import { Order, Customer, FCinLayout } from "../../../../src/types/types";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
+import { fetchUserOrders } from "../../../../src/redux/thunks/order-thunks";
+import OrdersTable from "../../../../src/component/OrdersTable/OrdersTable";
+import Spinner from "../../../../src/component/Spinner/Spinner";
+import { compareOrderByCreatedAt } from "../../../../src/utils/functions";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
 
 const PersonalOrdersList: FCinLayout = () => {
   const dispatch = useDispatch();
+  const isLoggedIn = useCheckLogin();
   const orders: Array<Order> = useSelector(
     (state: AppStateType) => state.order.orders
   ).sort(compareOrderByCreatedAt);
@@ -24,7 +26,7 @@ const PersonalOrdersList: FCinLayout = () => {
   const customerId = useRef<number>(0);
 
   useEffect(() => {
-    const id = sessionStorage.getItem('id');
+    const id = sessionStorage.getItem("id");
     if (id) {
       customerId.current = parseInt(id);
       dispatch(fetchUserOrders(customerId.current));
@@ -35,13 +37,13 @@ const PersonalOrdersList: FCinLayout = () => {
     <>
       {loading ? (
         <Spinner />
-      ) : (
+      ) : isLoggedIn ? (
         <>
           {orders.length === 0 ? (
             <h4
               style={{
-                display: 'flex',
-                justifyContent: 'center',
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               <FontAwesomeIcon className="ml-2 mr-2" icon={faShoppingBag} />
@@ -51,6 +53,8 @@ const PersonalOrdersList: FCinLayout = () => {
             <OrdersTable loading={loading} orders={orders} />
           )}
         </>
+      ) : (
+        <Spinner />
       )}
     </>
   );

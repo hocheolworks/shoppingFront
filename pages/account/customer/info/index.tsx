@@ -1,24 +1,44 @@
-import React, { ChangeEvent, FC, FormEvent, ReactElement, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAddressCard,
   faCheck,
   faEdit,
   faEyeSlash,
-} from '@fortawesome/free-solid-svg-icons';
+} from "@fortawesome/free-solid-svg-icons";
 
-import { Customer, CustomerEdit, CustomerEditErrors, FCinLayout, PostCodeObject } from '../../../../src/types/types';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
-import { resetForm, updateCustomerInfo } from '../../../../src/redux/thunks/customer-thunks';
-import DaumPostcode from 'react-daum-postcode';
+import {
+  Customer,
+  CustomerEdit,
+  CustomerEditErrors,
+  FCinLayout,
+  PostCodeObject,
+} from "../../../../src/types/types";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import {
+  resetForm,
+  updateCustomerInfo,
+} from "../../../../src/redux/thunks/customer-thunks";
+import DaumPostcode from "react-daum-postcode";
+import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
+import Spinner from "../../../../src/component/Spinner/Spinner";
 
 const PersonalData: FCinLayout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const isLoggedIn = useCheckLogin();
 
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
@@ -48,7 +68,8 @@ const PersonalData: FCinLayout = () => {
   } = customersData;
 
   // ======= Edit 부분 =====
-  const [customerEdit, setCustomerEdit] = useState<Partial<CustomerEdit>>(customersEditData);
+  const [customerEdit, setCustomerEdit] =
+    useState<Partial<CustomerEdit>>(customersEditData);
 
   const [newCustomerEmail, setNewCustomerEmail] = useState<string | undefined>(
     customerEmail
@@ -58,25 +79,25 @@ const PersonalData: FCinLayout = () => {
     customerName
   );
 
-  const [newCustomerPhoneNumber, setNewCustomerPhoneNumber] = useState<string | undefined>(
-    customerPhoneNumber
-  );
+  const [newCustomerPhoneNumber, setNewCustomerPhoneNumber] = useState<
+    string | undefined
+  >(customerPhoneNumber);
 
-  const [newCustomerPostIndex, setNewCustomerPostIndex] = useState<string | undefined>(
-    customerPostIndex
-  );
-  const [newCustomerAddress, setNewCustomerAddress] = useState<string | undefined>(
-    customerAddress
-  );
-  const [newCustomerAddressDetail, setNewCustomerAddressDetail] = useState<string | undefined>(
-    customerAddressDetail
-  );
+  const [newCustomerPostIndex, setNewCustomerPostIndex] = useState<
+    string | undefined
+  >(customerPostIndex);
+  const [newCustomerAddress, setNewCustomerAddress] = useState<
+    string | undefined
+  >(customerAddress);
+  const [newCustomerAddressDetail, setNewCustomerAddressDetail] = useState<
+    string | undefined
+  >(customerAddressDetail);
 
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   const onCompletePostIndex = (data: PostCodeObject): void => {
     setNewCustomerAddress(
-      data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress
+      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
     );
     setNewCustomerPostIndex(data.zonecode);
     setIsPopupOpen(false);
@@ -88,14 +109,20 @@ const PersonalData: FCinLayout = () => {
 
   const postIndexRef = useRef(null);
 
-  const { emailError, nameError, phoneNumberError, postIndexError, addressError} = errors;
+  const {
+    emailError,
+    nameError,
+    phoneNumberError,
+    postIndexError,
+    addressError,
+  } = errors;
 
   useEffect(() => {
     dispatch(resetForm());
   }, []);
 
   useEffect(() => {
-    if(customerEdit != undefined){
+    if (customerEdit != undefined) {
       const {
         newCustomerEmail,
         newCustomerName,
@@ -124,11 +151,11 @@ const PersonalData: FCinLayout = () => {
         setNewCustomerAddressDetail(newCustomerAddressDetail);
       }
     }
-  })
+  });
 
   useEffect(() => {
     setIsEdit(false);
-  }, [customersData])
+  }, [customersData]);
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -144,7 +171,6 @@ const PersonalData: FCinLayout = () => {
       // customerRole,
     };
     dispatch(updateCustomerInfo(customerEdit, router));
-
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -152,7 +178,7 @@ const PersonalData: FCinLayout = () => {
     setCustomerEdit({ ...customerEdit, [name]: value });
   };
 
-  return (
+  return isLoggedIn ? (
     <div id="mid">
       <div className="row">
         <div className="personal_data col-md-5">
@@ -182,141 +208,146 @@ const PersonalData: FCinLayout = () => {
               {customerAddress} {customerAddressDetail}
             </span>
           </p>
-          {(!isEdit) && (
-            <button
-            className="btn btn-dark personal_data_btn"
-            onClick={onEdit}
-            >
+          {!isEdit && (
+            <button className="btn btn-dark personal_data_btn" onClick={onEdit}>
               <FontAwesomeIcon className="mr-2" icon={faEdit} /> 변경
             </button>
           )}
-          {(isEdit) && (
+          {isEdit && (
             <button
-            className="btn btn-dark personal_data_btn"
-            onClick={offEdit}
+              className="btn btn-dark personal_data_btn"
+              onClick={offEdit}
             >
               <FontAwesomeIcon className="mr-2" icon={faEdit} /> 취소
             </button>
           )}
         </div>
-        {(isEdit) && (
-        <div className="col-md-7">
-          <form className="edit_personal_data" onSubmit={onFormSubmit}>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">이메일: </label>
-              <div className="col-sm-6">
-                <input
-                  type="text"
-                  className={
-                    emailError ? "form-control is-invalid" : "form-control"
-                  }
-                  name="newCustomerEmail"
-                  value={newCustomerEmail}
-                  onChange={handleInputChange}
-                  readOnly
-                />
-                <div className="invalid-feedback">{emailError}</div>
-              </div>
-            </div>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">이름: </label>
-              <div className="col-sm-6">
-                <input
-                  type="text"
-                  className='form-control'
-                  name="newCustomerName"
-                  value={newCustomerName}
-                  onChange={handleInputChange}
-                />
-                <div className="invalid-feedback">{nameError}</div>
-              </div>
-            </div>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
-              <div className="col-sm-6">
-                <input
-                  type="text"
-                  className={"form-control"}
-                  name="newCustomerPhoneNumber"
-                  value={newCustomerPhoneNumber}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">우편번호: </label>
-              <div className="col-sm-6">
-                <input
-                  ref={postIndexRef}
-                  onClick={onClickPostIndex}
-                  readOnly
-                  type="text"
-                  className={
-                    postIndexError ? 'form-control is-invalid' : 'form-control'
-                  }
-                  name="newCustomerPostIndex"
-                  value={newCustomerPostIndex}
-                  placeholder="우편번호"
-                  onChange={(event) => setNewCustomerPostIndex(event.target.value)}
-                />
-              </div>
-            </div>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">주소: </label>
-              <div className="col-sm-6">
+        {isEdit && (
+          <div className="col-md-7">
+            <form className="edit_personal_data" onSubmit={onFormSubmit}>
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">이메일: </label>
+                <div className="col-sm-6">
                   <input
-                      readOnly
-                      type="text"
-                      className={
-                        addressError ? 'form-control is-invalid' : 'form-control'
-                      }
-                      name="newCustomerAddress"
-                      value={newCustomerAddress}
-                      onChange={(event) => setNewCustomerAddress(event.target.value)}
+                    type="text"
+                    className={
+                      emailError ? "form-control is-invalid" : "form-control"
+                    }
+                    name="newCustomerEmail"
+                    value={newCustomerEmail}
+                    onChange={handleInputChange}
+                    readOnly
                   />
+                  <div className="invalid-feedback">{emailError}</div>
+                </div>
               </div>
-            </div>
-            <div className="d-flex mb-2 row">
-              <label className="col-sm-3 col-form-label">상세 주소: </label>
-              <div className="col-sm-6">
-                <input
-                      type="text"
-                      className={
-                        addressError ? 'form-control is-invalid' : 'form-control'
-                      }
-                      name="newCustomerAddressDetail"
-                      value={newCustomerAddressDetail}
-                      onChange={(event) =>
-                        setNewCustomerAddressDetail(event.target.value)
-                      }
-                  />  
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">이름: </label>
+                <div className="col-sm-6">
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="newCustomerName"
+                    value={newCustomerName}
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{nameError}</div>
+                </div>
               </div>
-            </div>
-            {isPopupOpen && (
-                  <div className="d-flex mb-2 row">
-                    <label className="col-sm-2 col-form-label"></label>
-                    <div className="col-sm-8">
-                      <DaumPostcode
-                        className="form-control"
-                        style={{
-                          border: '1px solid black',
-                          padding: 0,
-                        }}
-                        onComplete={onCompletePostIndex}
-                      />
-                    </div>
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">휴대폰 번호: </label>
+                <div className="col-sm-6">
+                  <input
+                    type="text"
+                    className={"form-control"}
+                    name="newCustomerPhoneNumber"
+                    value={newCustomerPhoneNumber}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">우편번호: </label>
+                <div className="col-sm-6">
+                  <input
+                    ref={postIndexRef}
+                    onClick={onClickPostIndex}
+                    readOnly
+                    type="text"
+                    className={
+                      postIndexError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="newCustomerPostIndex"
+                    value={newCustomerPostIndex}
+                    placeholder="우편번호"
+                    onChange={(event) =>
+                      setNewCustomerPostIndex(event.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">주소: </label>
+                <div className="col-sm-6">
+                  <input
+                    readOnly
+                    type="text"
+                    className={
+                      addressError ? "form-control is-invalid" : "form-control"
+                    }
+                    name="newCustomerAddress"
+                    value={newCustomerAddress}
+                    onChange={(event) =>
+                      setNewCustomerAddress(event.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="d-flex mb-2 row">
+                <label className="col-sm-3 col-form-label">상세 주소: </label>
+                <div className="col-sm-6">
+                  <input
+                    type="text"
+                    className={
+                      addressError ? "form-control is-invalid" : "form-control"
+                    }
+                    name="newCustomerAddressDetail"
+                    value={newCustomerAddressDetail}
+                    onChange={(event) =>
+                      setNewCustomerAddressDetail(event.target.value)
+                    }
+                  />
+                </div>
+              </div>
+              {isPopupOpen && (
+                <div className="d-flex mb-2 row">
+                  <label className="col-sm-2 col-form-label"></label>
+                  <div className="col-sm-8">
+                    <DaumPostcode
+                      className="form-control"
+                      style={{
+                        border: "1px solid black",
+                        padding: 0,
+                      }}
+                      onComplete={onCompletePostIndex}
+                    />
                   </div>
-            )}
-            <button type="submit" className="btn btn-dark">
-              <FontAwesomeIcon className="mr-2" icon={faCheck} />
-              저장
-            </button>
-          </form>
-        </div>
+                </div>
+              )}
+              <button type="submit" className="btn btn-dark">
+                <FontAwesomeIcon className="mr-2" icon={faCheck} />
+                저장
+              </button>
+            </form>
+          </div>
         )}
       </div>
-      <div style={{height:'8rem'}}>&nbsp;</div>
+      <div style={{ height: "8rem" }}>&nbsp;</div>
     </div>
+  ) : (
+    <Spinner />
   );
 };
 

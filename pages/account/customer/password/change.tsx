@@ -1,23 +1,26 @@
-import React, { FC, FormEvent, ReactElement, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faLock, faUndo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, ReactElement, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faLock, faUndo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   AuthErrors,
   Customer,
   CustomerResetPasswordData,
   FCinLayout,
-} from '../../../../src/types/types';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
+} from "../../../../src/types/types";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
 import {
   resetForm,
   updateCustomerPassword,
-} from '../../../../src/redux/thunks/customer-thunks';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+} from "../../../../src/redux/thunks/customer-thunks";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
+import Spinner from "../../../../src/component/Spinner/Spinner";
 
 const ChangePassword: FCinLayout = () => {
   const dispatch = useDispatch();
+  const isLoggedIn = useCheckLogin();
   const errors: Partial<AuthErrors> = useSelector(
     (state: AppStateType) => state.customer.customerResetPasswordErrors
   );
@@ -30,8 +33,8 @@ const ChangePassword: FCinLayout = () => {
     (state: AppStateType) => state.customer.customer
   );
   const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-  const [password, setPassword] = useState<string>('');
-  const [password2, setPassword2] = useState<string>('');
+  const [password, setPassword] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
   const { passwordError, password2Error } = errors;
 
   useEffect(() => {
@@ -39,8 +42,8 @@ const ChangePassword: FCinLayout = () => {
   }, []);
 
   useEffect(() => {
-    setPassword('');
-    setPassword2('');
+    setPassword("");
+    setPassword2("");
   }, [success]);
 
   const onFormSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -53,7 +56,7 @@ const ChangePassword: FCinLayout = () => {
     dispatch(updateCustomerPassword(data));
   };
 
-  return (
+  return isLoggedIn ? (
     <div className="">
       <h4>
         <FontAwesomeIcon className="mr-2" icon={faLock} /> 비밀번호 변경
@@ -66,14 +69,14 @@ const ChangePassword: FCinLayout = () => {
       <form className="mt-5" onSubmit={onFormSubmit}>
         <div className="d-flex mb-2 ml-2 row">
           <label className="col-sm-3 col-form-label">
-            새로운 비밀번호 입력:{' '}
+            새로운 비밀번호 입력:{" "}
           </label>
           <div className="col-sm-4">
             <input
               type="password"
               name="password"
               className={
-                passwordError ? 'form-control is-invalid' : 'form-control'
+                passwordError ? "form-control is-invalid" : "form-control"
               }
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -88,7 +91,7 @@ const ChangePassword: FCinLayout = () => {
               type="password"
               name="password2"
               className={
-                password2Error ? 'form-control is-invalid' : 'form-control'
+                password2Error ? "form-control is-invalid" : "form-control"
               }
               value={password2}
               onChange={(event) => setPassword2(event.target.value)}
@@ -102,6 +105,8 @@ const ChangePassword: FCinLayout = () => {
         </button>
       </form>
     </div>
+  ) : (
+    <Spinner />
   );
 };
 

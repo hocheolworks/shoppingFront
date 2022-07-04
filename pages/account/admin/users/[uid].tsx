@@ -1,24 +1,25 @@
-import React, { FC, ReactElement, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faUserEdit } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faUserEdit } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   fetchUserInfo,
   fetchUserOrders,
-} from '../../../../src/redux/thunks/admin-thunks';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
-import { Customer, Order } from '../../../../src/types/types';
-import Spinner from '../../../../src/component/Spinner/Spinner';
-import { FCinLayout } from '../../../../src/../src/types/types';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+} from "../../../../src/redux/thunks/admin-thunks";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
+import { Customer, Order } from "../../../../src/types/types";
+import Spinner from "../../../../src/component/Spinner/Spinner";
+import { FCinLayout } from "../../../../src/../src/types/types";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 const ManageUser: FCinLayout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const isAdmin = useCheckAdmin();
   const { uid } = router.query;
 
   const customerData: Partial<Customer> = useSelector(
@@ -51,7 +52,7 @@ const ManageUser: FCinLayout = () => {
     dispatch(fetchUserOrders(uid as string));
   }, [customerData]);
 
-  return (
+  return isAdmin ? (
     <>
       <div className="container">
         {loading ? (
@@ -59,7 +60,7 @@ const ManageUser: FCinLayout = () => {
         ) : (
           <>
             <h4>
-              <FontAwesomeIcon className="mr-2" icon={faUserEdit} />{' '}
+              <FontAwesomeIcon className="mr-2" icon={faUserEdit} />{" "}
               {customerName}
             </h4>
             <div className="row mt-5 mb-4 border px-3 py-3">
@@ -97,10 +98,10 @@ const ManageUser: FCinLayout = () => {
               </div>
             </div>
             {customerOrders.length === 0 ? (
-              <h5 style={{ textAlign: 'center' }}>주문이 없습니다.</h5>
+              <h5 style={{ textAlign: "center" }}>주문이 없습니다.</h5>
             ) : (
               <>
-                <h5 style={{ textAlign: 'center' }}>주문 목록</h5>
+                <h5 style={{ textAlign: "center" }}>주문 목록</h5>
                 <table className="table border text-center">
                   <thead className="table-active">
                     <tr>
@@ -121,7 +122,7 @@ const ManageUser: FCinLayout = () => {
                           <th>{order.orderAddress}</th>
                           <th>{order.orderPostIndex}</th>
                           <th>
-                            {order.orderTotalPrice.toLocaleString('ko-kr')}원
+                            {order.orderTotalPrice.toLocaleString("ko-kr")}원
                           </th>
                           <th>
                             <Link href={`/account/customer/orders/${order.id}`}>
@@ -139,6 +140,8 @@ const ManageUser: FCinLayout = () => {
         )}
       </div>
     </>
+  ) : (
+    <Spinner />
   );
 };
 
