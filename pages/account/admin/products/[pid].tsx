@@ -38,10 +38,12 @@ import {
   setProductContent,
 } from "../../../../src/redux/actions/admin-actions";
 import requestService from "../../../../src/utils/request-service";
+import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 const EditProduct: FCinLayout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const isAdmin = useCheckAdmin();
   const { pid } = router.query;
   const customerId = useRef<number>(-1);
   const productData: Partial<Product> = useSelector(
@@ -215,7 +217,7 @@ const EditProduct: FCinLayout = () => {
     setProduct({ ...product, [name]: value });
   };
 
-  return (
+  return isAdmin ? (
     <>
       {loading ? (
         <Spinner />
@@ -346,6 +348,8 @@ const EditProduct: FCinLayout = () => {
         </>
       )}
     </>
+  ) : (
+    <Spinner />
   );
 };
 

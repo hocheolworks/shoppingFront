@@ -1,17 +1,19 @@
-import React, { FC, ReactElement, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
+import React, { FC, ReactElement, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
-import { fetchAllUsers } from '../../../../src/redux/thunks/admin-thunks';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
-import { Customer, FCinLayout } from '../../../../src/types/types';
-import Spinner from '../../../../src/component/Spinner/Spinner';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+import { fetchAllUsers } from "../../../../src/redux/thunks/admin-thunks";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
+import { Customer, FCinLayout } from "../../../../src/types/types";
+import Spinner from "../../../../src/component/Spinner/Spinner";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 const UsersList: FCinLayout = () => {
   const dispatch = useDispatch();
+  const isAdmin = useCheckAdmin();
   const customers: Array<Customer> = useSelector(
     (state: AppStateType) => state.admin.customers
   );
@@ -23,7 +25,7 @@ const UsersList: FCinLayout = () => {
     dispatch(fetchAllUsers());
   }, []);
 
-  return (
+  return isAdmin ? (
     <div className="container" id="mid">
       {loading ? (
         <Spinner />
@@ -65,6 +67,8 @@ const UsersList: FCinLayout = () => {
         </>
       )}
     </div>
+  ) : (
+    <Spinner />
   );
 };
 

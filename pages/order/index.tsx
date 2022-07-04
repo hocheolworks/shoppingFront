@@ -46,14 +46,14 @@ const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string; // 진솔�
 
 const MySwal = withReactContent(Swal);
 
-type PaymentMethodType = "카드" | "계좌이체" | "가상계좌";
+type PaymentMethodType = "카드" | "가상계좌";
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
 
   const customerId = useRef<number>(-1);
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-  const paymentMethodList = ["카드", "계좌이체", "가상계좌"];
+  const paymentMethodList = ["카드", "가상계좌"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
 

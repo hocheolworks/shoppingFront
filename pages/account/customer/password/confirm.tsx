@@ -1,26 +1,29 @@
-import React, { FC, FormEvent, ReactElement, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faLock, faSign, faUndo } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, FormEvent, ReactElement, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faLock, faSign, faUndo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   AuthErrors,
   CustomerPasswordConfirmData,
   FCinLayout,
-} from '../../../../src/types/types';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
+} from "../../../../src/types/types";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
 import {
   ConfirmCustomerPassword,
   resetForm,
   updateCustomerPassword,
-} from '../../../../src/redux/thunks/customer-thunks';
-import { Customer } from '../../../../src/types/types';
-import { useRouter } from 'next/router';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
+} from "../../../../src/redux/thunks/customer-thunks";
+import { Customer } from "../../../../src/types/types";
+import { useRouter } from "next/router";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
+import Spinner from "../../../../src/component/Spinner/Spinner";
 
 const ConfrimPassword: FCinLayout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const isLoggedIn = useCheckLogin();
 
   const errors: Partial<AuthErrors> = useSelector(
     (state: AppStateType) => state.customer.customerResetPasswordErrors
@@ -36,7 +39,7 @@ const ConfrimPassword: FCinLayout = () => {
     (state: AppStateType) => state.customer.customer
   );
   const [customer, setCustomer] = useState<Partial<Customer>>(customersData);
-  const [password, setPassword] = useState<string>('');
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     dispatch(resetForm());
@@ -51,7 +54,7 @@ const ConfrimPassword: FCinLayout = () => {
     dispatch(ConfirmCustomerPassword(data, router));
   };
 
-  return (
+  return isLoggedIn ? (
     <div className="row">
       <div className="col-md-5">
         <form onSubmit={onFormSubmit}>
@@ -65,7 +68,7 @@ const ConfrimPassword: FCinLayout = () => {
                 type="password"
                 name="password"
                 className={
-                  passwordError ? 'form-control is-invalid' : 'form-control'
+                  passwordError ? "form-control is-invalid" : "form-control"
                 }
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -80,6 +83,8 @@ const ConfrimPassword: FCinLayout = () => {
         </form>
       </div>
     </div>
+  ) : (
+    <Spinner />
   );
 };
 
