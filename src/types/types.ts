@@ -256,6 +256,8 @@ export type EstimateItem = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
+  productName: string;
+  productPrice: number;
 };
 
 export type CustomerEditErrors = {

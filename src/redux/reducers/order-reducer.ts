@@ -108,14 +108,10 @@ const reducer = (
       return { ...state, taxBillInfo: action.payload };
     
     case FETCH_USER_ESTIMATES_SUCCESS:
-      return { ...state, estimates: action.payload, loading: false };
+      return { ...state, estimates: action.payload, loading: false, isEstimateAdded: false };
 
     case ESTIMATE_SHEET_ADDED_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        isEstimateAdded: true,
-      };
+      return { ...state, loading: false, isEstimateAdded: true };
     default:
       return state;
   }

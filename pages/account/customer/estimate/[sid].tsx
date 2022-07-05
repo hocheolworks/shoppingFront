@@ -1,7 +1,7 @@
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { Estimate, FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
+import { Estimate, EstimateItem, FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import RequestService from "../../../../src/utils/request-service";
@@ -11,17 +11,19 @@ import { API_BASE_URL } from "../../../../src/utils/constants/url";
 
 type ManageUserEstimateProp = {
   estimate: Estimate;
+  estimateItems: EstimateItem[]
   // taxBillInfo?: TaxBillInfo;
 };
 
-const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate}) => {
+const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimateItems}) => {
+  // TODO : 세금계산서 쓸까봐 남겨둠, 안쓰면 지워야함
   // const [designFiles, setDesignFiles] = useState<string[]>([]);
   // useEffect(() => {
   //   RequestService.get(`/order/design/${estimate.id}`).then((res) =>
   //     setDesignFiles(res.data)
   //   );
   // }, []);
-
+  
   const {
     id,
     estimateName,
@@ -42,6 +44,8 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate}) => {
     updatedAt,
     deletedAt,
   } = estimate;
+
+  const memo = estimateRequestMemo;
 
   return (
     <>
@@ -76,7 +80,7 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate}) => {
           <p className="personal_data_item">
             배송메모:
             <br />
-            <span className="personal_data_text">{estimateRequestMemo}</span>
+            <span className="personal_data_text" id='requestMemo'>{memo}</span>
           </p>
           {/* {designFiles.length > 0 && (
             <p className="personal_data_item">
@@ -218,26 +222,26 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate}) => {
           </tr>
         </thead>
         <tbody>
-          {/* {orderItems.map((orderItem) => {
+          {estimateItems.map((item) => {
             return (
-              <tr key={orderItem.id}>
+              <tr key={item.id}>
                 <th>
-                  <Link href={`/product/${orderItem.product.id}`}>
-                    <a>{orderItem.product.id}</a>
+                  <Link href={`/product/${item.productId}`}>
+                    <a>{item.productId}</a>
                   </Link>
                 </th>
-                <th>{orderItem.product.productName}</th>
-                <th>{orderItem.orderItemEA}</th>
+                <th>{item.productName}</th>
+                <th>{item.estimateItemEA}</th>
                 <th>
-                  {orderItem.product.productPrice.toLocaleString("ko-KR")}원
+                  {item.productPrice}원
                 </th>
                 <th>
-                  {orderItem.orderItemTotalPrice.toLocaleString("ko-KR")}원
+                  {item.orderItemTotalPrice}원
                 </th>
-                <th>{orderItem.isPrint ? "O" : "X"}</th>
+                <th>{item.isPrint ? "O" : "X"}</th>
               </tr>
             );
-          })} */}
+          })}
         </tbody>
       </table>
     </>
@@ -245,9 +249,12 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate}) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const response = await RequestService.get(`/order/estimate/${context.params?.sid}`);
-  const estimate = response.data;
-  return { props: { estimate } };
+  const response_sheet = await RequestService.get(`/order/estimate/${context.params?.sid}`);
+  const estimate = response_sheet.data;
+
+  const response_items = await RequestService.get(`/order/estimate/items/${context.params?.sid}`)
+  const estimateItems = response_items.data;
+  return { props: { estimate, estimateItems} };
 };
 
 ManageUserOrder.getLayout = function getLayout(page: ReactElement) {
