@@ -28,6 +28,8 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { useRouter } from "next/router";
 
+import * as gtag from "../lib/gtag";
+
 config.autoAddCss = false;
 
 type NextPageWithLayout = NextPage & {
@@ -42,6 +44,16 @@ const persistor = persistStore(store);
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url: any) => {
+      gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   useEffect(() => {
     const updatePosition = (url: string): void => {
