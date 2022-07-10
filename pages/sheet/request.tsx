@@ -9,6 +9,7 @@ import { SetCartItemIsPrint } from "../../src/redux/actions/cart-actions";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import { addSheetRequest } from "../../src/redux/thunks/order-thunks";
 import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject, SheetRequestData } from "../../src/types/types";
+import requestService from "../../src/utils/request-service";
 
 
 const SheetRequest: FC = () => {
@@ -17,15 +18,54 @@ const SheetRequest: FC = () => {
   const MySwal = withReactContent(Swal);
   const router = useRouter();
 
-  // 파일첨부
+  // ===== 파일첨부 =====
+  const cart: Array<CartItem | CartItemNonMember> = useSelector(
+    (state: AppStateType) => state.cart.cartItems
+  );
+
+  const cartTotalCount = useRef<number>(0);
+  const maxDesignFileCount = useRef<number>(1);
+  const [orderDesignFile, SetOrderDesignFile] = useState<Array<string | Blob>>([]);
+
+  useEffect(() => {
+    cartTotalCount.current = 0;
+    cart.forEach((val) => {
+      val.isPrint = val.isPrint ? val.isPrint : false;
+      if (val.isPrint) {
+        cartTotalCount.current += val.productCount;
+      }
+    });
+    maxDesignFileCount.current = Math.floor(cartTotalCount.current / 100);
+    if (maxDesignFileCount.current === 0) maxDesignFileCount.current = 1;
+
+    if (orderDesignFile.length > maxDesignFileCount.current) {
+      MySwal.fire({
+        title: `<strong>파일 첨부</strong>`,
+        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
+        icon: "warning",
+      });
+      SetOrderDesignFile([]);
+      if (fileInput.current !== null) fileInput.current.value = "";
+    }
+  }, [cart]);
+
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-  const [orderDesignFile, SetOrderDesignFile] = useState<string | Blob>("");
   
   const handleFileChange = (event: any): void => {
-    SetOrderDesignFile(event.target.files[0]);
+    if (Array.from(event.target.files).length > maxDesignFileCount.current) {
+      event.preventDefault();
+      MySwal.fire({
+        title: `<strong>파일 첨부</strong>`,
+        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
+        icon: "warning",
+      });
+      if (fileInput.current !== null) fileInput.current.value = "";
+    } else {
+      SetOrderDesignFile([...event.target.files]);
+    }
   };
 
-  // 주소 및 데이터 저장
+  // ===== 주소 및 데이터 저장 =====
   const customersData: Partial<Customer> = useSelector(
     (state: AppStateType) => state.customer.customer
   );
@@ -56,7 +96,12 @@ const SheetRequest: FC = () => {
   } = customersData;
 
   const [sheetRequest, setSheetRequest] = useState<Partial<SheetRequestData>>(sheetRequestData);
-  
+
+  const switchHandleToggleForCart =
+  (productId: number, isPrint: boolean) => () => {
+    dispatch(SetCartItemIsPrint(productId, isPrint));
+  };
+
   const [newCustomerName, setNewCustomerName] = useState<string>(
     customerName || ""
   );
@@ -110,11 +155,8 @@ const SheetRequest: FC = () => {
 
   const postIndexRef = useRef(null);
 
-  // 카트에 담긴 상품목록
-  const cart: Array<CartItem | CartItemNonMember> = useSelector(
-    (state: AppStateType) => state.cart.cartItems
-  );
-  
+  // ===== 견적 요청 =====
+  // 사업자번호 확인
   const isBusinessNumber = (str : string) : boolean  => {
     
     if(str == "") return true;
@@ -128,6 +170,7 @@ const SheetRequest: FC = () => {
     return false
   }
 
+  // 휴대폰번호
   const isPhoneNumber = (str : string) : boolean  => {
     
     if(str == "") return false;
@@ -142,7 +185,7 @@ const SheetRequest: FC = () => {
   }
 
   // 견적 요청 버튼
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if(!isPhoneNumber(newCustomerPhoneNumber)) {
@@ -177,16 +220,26 @@ const SheetRequest: FC = () => {
       })
       return;
     }
+    
+    if (orderDesignFile) {
+      const formData: FormData = new FormData();
+      orderDesignFile.forEach((val) => formData.append("files", val));
+
+      // formData.append("file", orderDesignFile);
+      const response = await requestService.post(
+        "/order/design",
+        formData
+        // false,
+        // "multipart/form-data"
+      );
+
+      sheetRequest.printingDraft = response.data;
+    }
 
     if(id != undefined) dispatch(addSheetRequest(sheetRequest, id, cart));
     else dispatch(addSheetRequest(sheetRequest, -1, cart));
 
   }
-
-  const switchHandleToggleForCart =
-  (productId: number, isPrint: boolean) => () => {
-    dispatch(SetCartItemIsPrint(productId, isPrint));
-  };
 
   useEffect(() => {
     if(isEstimateAdded) {
@@ -471,6 +524,8 @@ const SheetRequest: FC = () => {
                   name="printingDraft"
                   ref={fileInput}
                   onChange={handleFileChange}
+                  multiple
+                  accept="image/gif, image/jpeg, image/png"
                 />
               </div>              
             </ul>
