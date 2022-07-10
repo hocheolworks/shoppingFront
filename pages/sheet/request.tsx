@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
-import { ChangeEvent, FC, FormEvent, RefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, FormEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import Switch from "../../src/component/Switch/Switch";
+import { SetCartItemIsPrint } from "../../src/redux/actions/cart-actions";
 import { AppStateType } from "../../src/redux/reducers/root-reducer";
 import { addSheetRequest } from "../../src/redux/thunks/order-thunks";
 import { CartItem, CartItemNonMember, Customer, CustomerEdit, CustomerEditErrors, PostCodeObject, SheetRequestData } from "../../src/types/types";
@@ -125,10 +127,35 @@ const SheetRequest: FC = () => {
     
     return false
   }
+
+  const isPhoneNumber = (str : string) : boolean  => {
+    
+    if(str == "") return false;
+
+    /* 휴대폰 번호 */
+    if(str.match(/^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/)) return true;
+
+    /* 알반 전화번호 */
+    if(str.match(/^\d{2,3}-\d{3,4}-\d{4}$/)) return true;
+    
+    return false
+  }
+
   // 견적 요청 버튼
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    
+
+    if(!isPhoneNumber(newCustomerPhoneNumber)) {
+      MySwal.fire({
+        title: `<strong>연락처 에러</strong>`,
+        html: `<i>올바른 연락처를 적어주세요.</i>`,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: '확인',
+      })
+      return;
+    }
+
     if(!isBusinessNumber(businessNumber)) {
       MySwal.fire({
         title: `<strong>사업자 번호 에러</strong>`,
@@ -140,11 +167,27 @@ const SheetRequest: FC = () => {
       return;
     }
 
+    if(desiredDate == "") {
+      MySwal.fire({
+        title: `<strong>납기 희망일 에러</strong>`,
+        html: `<i>납기 희망일을 선택해주세요.</i>`,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonText: '확인',
+      })
+      return;
+    }
+
     if(id != undefined) dispatch(addSheetRequest(sheetRequest, id, cart));
     else dispatch(addSheetRequest(sheetRequest, -1, cart));
 
   }
-  
+
+  const switchHandleToggleForCart =
+  (productId: number, isPrint: boolean) => () => {
+    dispatch(SetCartItemIsPrint(productId, isPrint));
+  };
+
   useEffect(() => {
     if(isEstimateAdded) {
       router.push("/account/customer/estimate");
@@ -185,34 +228,82 @@ const SheetRequest: FC = () => {
   const items = (
     <>
       {cart.map((cartItem: CartItem | CartItemNonMember) => {
-          return (
-            <div
-              key={cartItem.product.id}
-              className="card mb-3 col-10"
-            >
-              <div className="row no-gutters">
-                <div className="col-3 mx-3 my-3">
-                  <img
-                    src={`${cartItem.product.productImageFilepath}`}
-                    className="img-fluid"
-                  />
+          if(cartItem.product.productName.includes("가방")) {
+            return (
+              <div
+                key={cartItem.product.id}
+                className="card mb-3 col-10"
+              >
+                <div className="row no-gutters">
+                  <div className="col-3 mx-3 my-3">
+                    <img
+                      src={`${cartItem.product.productImageFilepath}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                  <div className="col-5 text-left">
+                    <div className="card-body">
+                      <h4 className="card-title">
+                        {cartItem.product.productName}
+                      </h4>
+                      <p className="card-text">
+                        {cartItem.productPrice.toLocaleString("ko-KR")} 원
+                      </p>
+                      <p className="card-text">
+                        {cartItem.productCount} 개
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-5 text-left">
-                  <div className="card-body">
-                    <h4 className="card-title">
-                      {cartItem.product.productName}
-                    </h4>
-                    <p className="card-text">
-                      {cartItem.productPrice.toLocaleString("ko-KR")} 원
-                    </p>
-                    <p className="card-text">
-                      {cartItem.productCount} 개
-                    </p>
+                <div className="row card-footer d-flex justify-content-between">
+                  <h6 className="mt-0 mb-0">
+                    <span>인쇄</span>
+                  </h6>
+                  <div>
+                    <Switch
+                      key={`toggle-switch-cart-${cartItem.productId}`}
+                      name={`cartIsPrintSwitch#${cartItem.productId}`}
+                      isChecked={cartItem.isPrint}
+                      handleToggle={switchHandleToggleForCart(
+                        cartItem.productId,
+                        !cartItem.isPrint
+                      )}
+                    />
+                  </div>
+                </div>        
+              </div>
+            )
+          }
+          else {
+            return (
+              <div
+                key={cartItem.product.id}
+                className="card mb-3 col-10"
+              >
+                <div className="row no-gutters">
+                  <div className="col-3 mx-3 my-3">
+                    <img
+                      src={`${cartItem.product.productImageFilepath}`}
+                      className="img-fluid"
+                    />
+                  </div>
+                  <div className="col-5 text-left">
+                    <div className="card-body">
+                      <h4 className="card-title">
+                        {cartItem.product.productName}
+                      </h4>
+                      <p className="card-text">
+                        {cartItem.productPrice.toLocaleString("ko-KR")} 원
+                      </p>
+                      <p className="card-text">
+                        {cartItem.productCount} 개
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );        
+            );
+          }        
         }
       )}
     </>
@@ -222,6 +313,7 @@ const SheetRequest: FC = () => {
     <div id="mid" className="w-100">
       <div id="wrapper" className="container">
         <div id="container_wr">
+          <h2 className="d-flex jc-center mb-5 mt-5"> 견적 요청서</h2>
           <form className="form-sheet" onSubmit={handleSubmit}>
             <ul className="d-flex">
               <li className="col-3 text-left">장바구니 상품 목록</li>             
@@ -396,13 +488,13 @@ const SheetRequest: FC = () => {
             </ul>
             <ul className="d-flex">
               <li className="col-3 text-left">요청사항</li>
-              <div className="col-sm-7 form-input" style={{height:"300px", wordBreak:"break-all"}}>
+              <div id="div-textarea" className="col-sm-7 form-input">
                 <textarea
-                 className="form-control"
-                 style={{height:"100%", wordBreak:"break-all"}}
-                 name="requestMemo"
-                 value={requestMemo}
-                 onChange={(event) => {setRequestMemo(event.target.value);}}
+                  id="sheet-textarea"
+                  className="form-control"
+                  name="requestMemo"
+                  value={requestMemo}
+                  onChange={(event) => {setRequestMemo(event.target.value);}}
                 />
               </div>
             </ul>

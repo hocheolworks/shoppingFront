@@ -63,3 +63,14 @@
   max-width: 940px;
   flex-wrap: nowrap;
 }
+
+#sheet-textarea {
+  height: 100%;
+  word-break: break-all;
+}
+
+#div-textarea {
+  min-height: 300px;
+  word-break: break-all;
+  height: auto;
+}

@@ -46,6 +46,10 @@ const Cart: FC = () => {
     (state: AppStateType) => state.cart.loading
   );
 
+  const isLoggedIn: boolean = useSelector(
+    (state: AppStateType) => state.customer.isLoggedIn
+  );
+
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
@@ -268,6 +272,7 @@ const Cart: FC = () => {
                     </button>
                   </div>
                 </div>
+                {(isLoggedIn) && (
                 <div className="pl-3">
                   <div className="">
                     <button
@@ -279,6 +284,7 @@ const Cart: FC = () => {
                     </button>
                   </div>
                 </div>
+                )}                
               </div>
             </div>
           )}

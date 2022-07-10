@@ -75,6 +75,8 @@ export const addSheetRequest = (
   customerId : number,
   orderItems : Array<CartItem | CartItemNonMember>
 ) => async (dispatch:Dispatch) => {
+  const MySwal = withReactContent(Swal);
+
   const response = await RequestService.post(
     '/order/sheetRequest',
     {
@@ -85,11 +87,24 @@ export const addSheetRequest = (
   );
 
   if(response.data == 1) {
-    alert("견적요청 완료");
+    MySwal.fire({
+      title: `<strong>견적요청 완료</strong>`,
+      html: `<i>요청이 완료되었습니다.</i>`,
+      icon: 'success',
+      showConfirmButton: true,
+      confirmButtonText: '확인',
+    })
     dispatch(esimtateSheetAddSucess());
   }
   else {
-    alert('에러');
+    MySwal.fire({
+      title: `<strong>견적요청 에러</strong>`,
+      html: `<i>견적 요청에 실패하였습니다.</i><br/>
+      <i>잠시후 다시 시도해주세요.</i>`,
+      icon: 'error',
+      showConfirmButton: true,
+      confirmButtonText: '확인',
+    })
   }
 }
 
