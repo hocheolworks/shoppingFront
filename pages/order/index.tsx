@@ -42,18 +42,25 @@ import {
 import { FRONT_BASE_URL } from "../../src/utils/constants/url";
 import RequestService from "../../src/utils/request-service";
 import { SetCartItemIsPrint } from "../../src/redux/actions/cart-actions";
+import requestService from "../../src/utils/request-service";
+import { useRouter } from "next/router";
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string; // 진솔유통 테스트 클라이언트 키
 
 const MySwal = withReactContent(Swal);
 
-type PaymentMethodType = "카드" | "가상계좌";
+type PaymentMethodType =
+  | "카드"
+  | "가상계좌(무통장 입금)"
+  | "계좌이체"
+  | "가상계좌";
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const customerId = useRef<number>(-1);
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
-  const paymentMethodList = ["카드", "가상계좌"];
+  const paymentMethodList = ["카드", "가상계좌(무통장 입금)", "계좌이체"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
 
@@ -242,6 +249,7 @@ const OrderPage: FC = () => {
     event.preventDefault();
     console.log(cartTotalCount.current);
     console.log(printFee);
+
     // return;
     if (
       !Boolean(orderCustomerName) ||
@@ -368,26 +376,67 @@ const OrderPage: FC = () => {
     }
 
     // 결제창 요청
-    loadTossPayments(clientKey).then((tossPayments) => {
-      tossPayments.requestPayment(paymentMethod, {
-        amount: orderTotalPrice,
-        orderId: `order-${
-          customerId.current === -1
-            ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
-            : customerId.current
-        }-${Date.now()}`,
-        orderName:
-          cart.length === 1
-            ? cart[0].product.productName
-            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName:
-          customerId.current === -1
-            ? orderCustomerName
-            : customersData.customerName,
-        successUrl: `${FRONT_BASE_URL}/order/success`,
-        failUrl: `${FRONT_BASE_URL}/order/fail`,
+    if (paymentMethod === "계좌이체") {
+      MySwal.fire({
+        title: `<strong>계좌이체 정보</strong>`,
+        html: `<span><b>결제 금액</b> : ${orderTotalPrice.toLocaleString(
+          "ko-KR"
+        )}원</span></br>
+        <span><b>은행</b> : 국민은행</span></br><span><b>계좌번호</b> : 001501-04-176307</span></br><span><b>예금주</b> : 김진솔</span></br>`,
+        icon: "info",
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        cancelButtonText: "다른 방법으로 결제하기",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const body = {
+            phoneNumber: orderPhoneNumber,
+            totalPrice: orderTotalPrice,
+          };
+          const orderId = `order-${
+            customerId.current === -1
+              ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
+              : customerId.current
+          }-${Date.now()}`;
+          requestService.post("/customer/alarm/account", body);
+          router.push(
+            `/order/success?paymentKey=notSendRequest&orderId=${orderId}&amount=${orderTotalPrice}`
+          );
+        } else if (result.isDenied) {
+          // dispatch(returnToCartPage());
+          // router.push("/login");
+        }
       });
-    });
+    } else {
+      loadTossPayments(clientKey).then((tossPayments) => {
+        tossPayments.requestPayment(
+          paymentMethod === "가상계좌(무통장 입금)"
+            ? "가상계좌"
+            : paymentMethod,
+          {
+            amount: orderTotalPrice,
+            orderId: `order-${
+              customerId.current === -1
+                ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(
+                    -4
+                  )}`
+                : customerId.current
+            }-${Date.now()}`,
+            orderName:
+              cart.length === 1
+                ? cart[0].product.productName
+                : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
+            customerName:
+              customerId.current === -1
+                ? orderCustomerName
+                : customersData.customerName,
+            successUrl: `${FRONT_BASE_URL}/order/success`,
+            failUrl: `${FRONT_BASE_URL}/order/fail`,
+          }
+        );
+      });
+    }
   };
 
   let pageLoading;
@@ -797,7 +846,7 @@ const OrderPage: FC = () => {
             />
             <div className="row mb-3 mb-0">
               <label className="col-sm-3 col-form-label">결제수단:</label>
-              <div className="col-sm-7 d-flex align-items-center justify-content-between">
+              <div className="col-sm-9 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (
                   <div key={`payment-method-radio-${i}`}>
                     <input
