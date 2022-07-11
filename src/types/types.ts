@@ -210,40 +210,57 @@ export type CustomerEdit = {
   // customerRole: string | undefined;
 };
 
-export type SheetRequestData = {  
+export type SheetRequestData = {
   newCustomerName: string;
   newCustomerEmail: string;
   newCustomerPhoneNumber: string;
-  businessName : string;
-  businessType : string;
-  businessNumber : string;
+  businessName: string;
+  businessType: string;
+  businessNumber: string;
   newCustomerPostIndex: string;
   newCustomerAddress: string;
   newCustomerAddressDetail: string;
-  printingDraft : string | Blob;
-  desiredDate : string;
-  requestMemo : string;
+  printingDraft: string | Blob;
+  desiredDate: string;
+  requestMemo: string;
 };
 
 export type Estimate = {
   id: number;
-  estimateName:string;
-  estimateEmail:string;
-  estimatePhoneNumber:string;
-  estimateBusinessName:string;
-  estimateBusinessType:string;
-  estimateBusinessNumber:string;
-  estimatePostIndex:string;
-  estimateAddress:string;
-  estimateAddressDetail:string;
-  estimatePrintingDraft:string;
-  estimateDesiredDate:string;
-  estimateRequestMemo:string;
-  customerId:number;
-  requestStatus:string;
+  estimateName: string;
+  estimateEmail: string;
+  estimatePhoneNumber: string;
+  estimateBusinessName: string;
+  estimateBusinessType: string;
+  estimateBusinessNumber: string;
+  estimatePostIndex: string;
+  estimateAddress: string;
+  estimateAddressDetail: string;
+  estimatePrintingDraft: string;
+  estimateDesiredDate: string;
+  estimateRequestMemo: string;
+  customerId: number;
+  requestStatus: string;
+  response?: EstimateResponse;
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
+};
+
+export type EstimateResponse = {
+  estimateSheetId: number;
+  totalProductsPrice: number;
+  tax: number;
+  printFee: number;
+  deliveryFee: number;
+  totalPrice: number;
+  memo: string;
+};
+
+export type EstimatePayment = {
+  estimate: Partial<Estimate>;
+  estimateResponse: EstimateResponse;
+  estimateItems: Array<Partial<EstimateItem>>;
 };
 
 export type EstimateItem = {

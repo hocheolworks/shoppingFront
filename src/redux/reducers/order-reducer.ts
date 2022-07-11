@@ -6,6 +6,7 @@ import {
   TaxBillError,
   SheetRequestData,
   Estimate,
+  EstimatePayment,
 } from "../../types/types";
 import { SHOW_LOADER } from "../action-types/auth-action-types";
 import {
@@ -23,6 +24,9 @@ import {
   SAVE_TAX_BILL_INFO_SUCCESS,
   FETCH_USER_ESTIMATES_SUCCESS,
   ESTIMATE_SHEET_ADDED_SUCCESS,
+  FETCH_ALL_ESTIMATES_SUCCESS,
+  SAVE_ESTIMATE_PAYMENT_INFO,
+  CLEAR_ESTIMATE_PAYMENT_INFO,
 } from "../action-types/order-action-types";
 
 export type InitialStateType = {
@@ -34,8 +38,9 @@ export type InitialStateType = {
   insertOrder: Partial<InsertOrder>;
   taxBillInfo: Partial<TaxBillInfo>;
   taxBillError: Partial<TaxBillError>;
-  sheetRequestData : Partial<SheetRequestData>;
+  sheetRequestData: Partial<SheetRequestData>;
   estimates: Array<Estimate>;
+  estimatePayment: Partial<EstimatePayment>;
   isEstimateAdded: boolean;
 };
 
@@ -50,6 +55,7 @@ const initialState: InitialStateType = {
   taxBillError: {},
   sheetRequestData: {},
   estimates: [],
+  estimatePayment: {},
   isEstimateAdded: false,
 };
 
@@ -106,12 +112,26 @@ const reducer = (
 
     case SAVE_TAX_BILL_INFO_SUCCESS:
       return { ...state, taxBillInfo: action.payload };
-    
+
     case FETCH_USER_ESTIMATES_SUCCESS:
-      return { ...state, estimates: action.payload, loading: false, isEstimateAdded: false };
+      return {
+        ...state,
+        estimates: action.payload,
+        loading: false,
+        isEstimateAdded: false,
+      };
+
+    case FETCH_ALL_ESTIMATES_SUCCESS:
+      return { ...state, estimates: action.payload, loading: false };
 
     case ESTIMATE_SHEET_ADDED_SUCCESS:
       return { ...state, loading: false, isEstimateAdded: true };
+
+    case SAVE_ESTIMATE_PAYMENT_INFO:
+      return { ...state, estimatePayment: action.payload };
+
+    case CLEAR_ESTIMATE_PAYMENT_INFO:
+      return { ...state, estimatePayment: {} };
     default:
       return state;
   }

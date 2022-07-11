@@ -48,7 +48,7 @@ const EstimateTable: FC<PropsType> = ({ loading, estimates }) => {
                     {/* <th>{estimate.orderIsPaid ? "O" : "X"}</th>
                     <th>{estimaterder.isTaxBill ? "O" : "X"}</th> */}
                     <th>
-                      <Link href={`/account/customer/estimate/${estimate.id}`}>
+                      <Link href={`/account/admin/estimate/${estimate.id}`}>
                         <a>더보기</a>
                       </Link>
                     </th>

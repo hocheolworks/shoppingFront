@@ -65,6 +65,14 @@ const Account: FC = ({ children }) => {
                   전체 고객 목록
                 </a>
               </ActiveLink>
+              <ActiveLink
+                activeClassName="is-active"
+                href="/account/admin/estimate"
+              >
+                <a className="account-sidebar-link nav-link mb-4">
+                  전체 견적 요청 목록
+                </a>
+              </ActiveLink>
             </>
           ) : (
             <>

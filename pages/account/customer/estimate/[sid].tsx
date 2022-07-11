@@ -1,21 +1,37 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { Estimate, EstimateItem, FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
+import {
+  Estimate,
+  EstimateItem,
+  FCinLayout,
+  Order,
+  TaxBillInfo,
+} from "../../../../src/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faInfoCircle,
+  faShoppingBag,
+} from "@fortawesome/free-solid-svg-icons";
 import RequestService from "../../../../src/utils/request-service";
 import { GetServerSideProps } from "next";
 import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
 import { API_BASE_URL } from "../../../../src/utils/constants/url";
+import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
+import { useDispatch } from "react-redux";
+import {
+  clearEstimatePaymentInfo,
+  saveEstimatePaymentInfo,
+} from "../../../../src/redux/actions/order-actions";
 
-type ManageUserEstimateProp = {
-  estimate: Estimate;
-  estimateItems: EstimateItem[]
-  // taxBillInfo?: TaxBillInfo;
-};
+// type ManageUserEstimateProp = {
+//   estimate: Estimate;
+//   estimateItems: EstimateItem[];
+//   // taxBillInfo?: TaxBillInfo;
+// };
 
-const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimateItems}) => {
+const ManageUserOrder: FCinLayout = () => {
   // TODO : 세금계산서 쓸까봐 남겨둠, 안쓰면 지워야함
   // const [designFiles, setDesignFiles] = useState<string[]>([]);
   // useEffect(() => {
@@ -23,7 +39,31 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
   //     setDesignFiles(res.data)
   //   );
   // }, []);
-  
+
+  const isLogin = useCheckLogin();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [estimate, setEstimate] = useState<Partial<Estimate>>({});
+  const [estimateItems, setEstimateItems] = useState<EstimateItem[]>([]);
+  const isMount = useRef<boolean>(false);
+  const { sid } = router.query;
+
+  useEffect(() => {
+    if (!isMount.current) {
+      RequestService.get(`/order/estimate/${sid as string}`)
+        .then((res) => setEstimate(res.data))
+        .catch((err) => console.log(err));
+
+      RequestService.get(`/order/estimate/items/${sid as string}`)
+        .then((res) => {
+          setEstimateItems(res.data);
+        })
+        .catch((err) => console.log(err));
+
+      isMount.current = true;
+      dispatch(clearEstimatePaymentInfo());
+    }
+  }, []);
   const {
     id,
     estimateName,
@@ -45,9 +85,21 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
     deletedAt,
   } = estimate;
 
-  const memo = estimateRequestMemo;
+  const onClickPayment = () => {
+    if (estimate && estimate.response) {
+      dispatch(
+        saveEstimatePaymentInfo({
+          estimate: estimate,
+          estimateResponse: estimate.response,
+          estimateItems: estimateItems,
+        })
+      );
 
-  return (
+      router.push("/account/customer/estimate/payment");
+    }
+  };
+
+  return isLogin ? (
     <>
       <h4 style={{ textAlign: "center" }}>
         <FontAwesomeIcon icon={faShoppingBag} /> 주문 #{id}
@@ -66,7 +118,7 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
             <span className="personal_data_text">{estimatePhoneNumber}</span>
           </p>
           <p className="personal_data_item">
-            우편변호:
+            우편번호:
             <span className="personal_data_text">{estimatePostIndex}</span>
           </p>
           <p className="personal_data_item">
@@ -80,7 +132,9 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
           <p className="personal_data_item">
             배송메모:
             <br />
-            <span className="personal_data_text" id='requestMemo'>{memo}</span>
+            <span className="personal_data_text" id="requestMemo">
+              {estimateRequestMemo}
+            </span>
           </p>
           {/* {designFiles.length > 0 && (
             <p className="personal_data_item">
@@ -108,7 +162,7 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
           <p className="personal_data_item">
             주문날짜:
             <span className="personal_data_text">
-              {new Date(createdAt).toLocaleString("ko-kr")}
+              {new Date(createdAt as string).toLocaleString("ko-kr")}
             </span>
           </p>
           <p className="personal_data_item">
@@ -129,37 +183,70 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
               paddingRight: "30%",
             }}
           >
-            {/* <div className="d-flex  justify-content-between">
-              <p className="personal_data_item">상품금액:</p>
-              <span className="personal_data_text">
-                {orderTotalProductsPrice.toLocaleString("ko-KR")} 원
-              </span>
-            </div>
-            <div className="d-flex  justify-content-between">
-              <p className="personal_data_item">부가세:</p>
-              <span className="personal_data_text">
-                {orderTax.toLocaleString("ko-KR")} 원
-              </span>
-            </div>
-            <div className="d-flex  justify-content-between">
-              <p className="personal_data_item">인쇄비:</p>
-              <span className="personal_data_text">
-                {orderPrintFee.toLocaleString("ko-KR")} 원
-              </span>
-            </div>
-            <div className="d-flex  justify-content-between">
-              <p className="personal_data_item">배송비:</p>
-              <span className="personal_data_text">
-                {orderDeliveryFee.toLocaleString("ko-KR")} 원
-              </span>
-            </div>
-            <div className="d-flex justify-content-between">
-              <h4>주문금액:</h4>
-              <h4 style={{ color: "green" }}>
-                {" "}
-                {orderTotalPrice.toLocaleString("ko-KR")} 원
-              </h4>
-            </div> */}
+            {estimate.requestStatus === "답변완료" && estimate.response ? (
+              <>
+                <div className="d-flex  justify-content-between">
+                  <p className="personal_data_item">상품금액:</p>
+                  <span className="personal_data_text">
+                    {estimate.response.totalProductsPrice.toLocaleString(
+                      "ko-KR"
+                    )}{" "}
+                    원
+                  </span>
+                </div>
+                <div className="d-flex  justify-content-between">
+                  <p className="personal_data_item">부가세:</p>
+                  <span className="personal_data_text">
+                    {estimate.response.tax.toLocaleString("ko-KR")} 원
+                  </span>
+                </div>
+                <div className="d-flex  justify-content-between">
+                  <p className="personal_data_item">인쇄비:</p>
+                  <span className="personal_data_text">
+                    {estimate.response.printFee.toLocaleString("ko-KR")} 원
+                  </span>
+                </div>
+                <div className="d-flex  justify-content-between">
+                  <p className="personal_data_item">배송비:</p>
+                  <span className="personal_data_text">
+                    {estimate.response.deliveryFee.toLocaleString("ko-KR")} 원
+                  </span>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <h4>주문금액:</h4>
+                  <h4 style={{ color: "green" }}>
+                    {" "}
+                    {estimate.response.totalPrice.toLocaleString("ko-KR")} 원
+                  </h4>
+                </div>
+                <hr style={{ width: "100%" }} />
+                <div className="row mt-2">
+                  <label className="col-sm-10 personal_data_item col-form-label">
+                    안내사항
+                  </label>
+                  <div className="col-sm-12">
+                    <textarea
+                      name="memo"
+                      style={{
+                        width: "100%",
+                        height: "100px",
+                        padding: "7px",
+                      }}
+                      value={estimate.response?.memo}
+                      readOnly
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={onClickPayment}
+                  className="btn btn-primary btn-lg btn-success float-right mt-2"
+                >
+                  <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
+                </button>
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         {/* {isTaxBill && (
@@ -232,12 +319,8 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
                 </th>
                 <th>{item.productName}</th>
                 <th>{item.estimateItemEA}</th>
-                <th>
-                  {item.productPrice}원
-                </th>
-                <th>
-                  {item.orderItemTotalPrice}원
-                </th>
+                <th>{item.productPrice}원</th>
+                <th>{item.orderItemTotalPrice}원</th>
                 <th>{item.isPrint ? "O" : "X"}</th>
               </tr>
             );
@@ -245,16 +328,9 @@ const ManageUserOrder: FCinLayout<ManageUserEstimateProp> = ({estimate, estimate
         </tbody>
       </table>
     </>
+  ) : (
+    <></>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const response_sheet = await RequestService.get(`/order/estimate/${context.params?.sid}`);
-  const estimate = response_sheet.data;
-
-  const response_items = await RequestService.get(`/order/estimate/items/${context.params?.sid}`)
-  const estimateItems = response_items.data;
-  return { props: { estimate, estimateItems} };
 };
 
 ManageUserOrder.getLayout = function getLayout(page: ReactElement) {

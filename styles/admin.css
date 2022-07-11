@@ -58,8 +58,20 @@
 }
 
 .cart-end {
-  width:"100%";
+  width: "100%";
   justify-content: flex-end;
   max-width: 940px;
   flex-wrap: nowrap;
+}
+
+.estimate_input {
+  width: 100%;
+  margin-left: 45%;
+}
+
+.estimate_input::-webkit-inner-spin-button,
+.estimate_input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
