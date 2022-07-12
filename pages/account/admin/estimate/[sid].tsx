@@ -37,7 +37,6 @@ import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
 
 const ManageUserOrder: FCinLayout = () => {
-  // TODO : 세금계산서 쓸까봐 남겨둠, 안쓰면 지워야함
   const isAdmin = useCheckAdmin();
   const router = useRouter();
   const { sid } = router.query;
@@ -48,7 +47,7 @@ const ManageUserOrder: FCinLayout = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!isMount.current) {
+    if (!isMount.current && sid) {
       RequestService.get(`/order/estimate/${sid as string}`)
         .then((res) => setEstimate(res.data))
         .catch((err) => console.log(err));
@@ -95,7 +94,7 @@ const ManageUserOrder: FCinLayout = () => {
 
   useEffect(() => {
     setTotalPrice(totalProductsPrice + tax + printFee + deliveryFee);
-  }, [totalProductsPrice, tax, printFee, deliveryFee]);
+  }, [totalProductsPrice, printFee, deliveryFee]);
 
   const {
     id,
@@ -341,6 +340,7 @@ const ManageUserOrder: FCinLayout = () => {
                             ? parseInt(e.target.value.replaceAll(",", ""))
                             : 0
                         );
+
                         setTax(
                           e.target.value
                             ? Math.floor(
@@ -361,6 +361,7 @@ const ManageUserOrder: FCinLayout = () => {
                       type="text"
                       name="tax"
                       defaultValue={tax.toLocaleString("ko-kr")}
+                      value={tax.toLocaleString("ko-kr")}
                       readOnly
                     />
                   </div>
@@ -392,13 +393,11 @@ const ManageUserOrder: FCinLayout = () => {
                       name="deliveryFee"
                       value={deliveryFee.toLocaleString("ko-kr")}
                       onChange={(e) => {
-                        if (e.target.value) {
-                          setDeliveryFee(
-                            parseInt(e.target.value.replaceAll(",", ""))
-                          );
-                        } else {
-                          setDeliveryFee(0);
-                        }
+                        setDeliveryFee(
+                          e.target.value
+                            ? parseInt(e.target.value.replaceAll(",", ""))
+                            : 0
+                        );
                       }}
                     />
                   </div>
@@ -411,7 +410,14 @@ const ManageUserOrder: FCinLayout = () => {
                       className="estimate_input text-right"
                       type="text"
                       name="totalPrice"
-                      defaultValue={totalPrice.toLocaleString("ko-kr")}
+                      value={totalPrice.toLocaleString("ko-kr")}
+                      onChange={(e) => {
+                        setTotalPrice(
+                          e.target.value
+                            ? parseInt(e.target.value.replaceAll(",", ""))
+                            : 0
+                        );
+                      }}
                     />
                   </div>
                 </div>
@@ -488,6 +494,12 @@ const ManageUserOrder: FCinLayout = () => {
     <Spinner />
   );
 };
+
+export async function getServerSideProps() {
+  return {
+    props: {},
+  };
+}
 
 ManageUserOrder.getLayout = function getLayout(page: ReactElement) {
   return <AccountLayout>{page}</AccountLayout>;

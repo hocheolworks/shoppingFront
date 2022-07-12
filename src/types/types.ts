@@ -275,6 +275,7 @@ export type EstimateItem = {
   deletedAt: string;
   productName: string;
   productPrice: number;
+  productImageFilepath: string;
 };
 
 export type CustomerEditErrors = {

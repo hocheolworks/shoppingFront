@@ -61,7 +61,6 @@ const OrderPage: FC = () => {
     if (sessionStorage.getItem("id") !== null) {
       // 로그인 상태 : 회원 주문
       customerId.current = parseInt(sessionStorage.getItem("id") as string);
-      dispatch(fetchCart(parseInt(sessionStorage.getItem("id") as string)));
     }
 
     dispatch(orderAddedFailure({}));
@@ -72,54 +71,13 @@ const OrderPage: FC = () => {
     (state: AppStateType) => state.customer.customer
   );
 
-  const cart: Array<CartItem | CartItemNonMember> = useSelector(
-    (state: AppStateType) => state.cart.cartItems
-  );
-
   const cartTotalCount = useRef<number>(0);
   const maxDesignFileCount = useRef<number>(1);
-  useEffect(() => {
-    let tempPrintFee = 0;
-    cartTotalCount.current = 0;
-    cart.forEach((val) => {
-      val.isPrint = val.isPrint ? val.isPrint : false;
-      if (val.isPrint) {
-        cartTotalCount.current += val.productCount;
-        if (val.productCount < 100) {
-          tempPrintFee += val.productCount * 100;
-        }
-      }
-    });
-    setPrintFee(tempPrintFee);
-    setOrderTotalPrice(cartTotalPrice + tax + tempPrintFee + deliveryFee);
-    maxDesignFileCount.current = Math.floor(cartTotalCount.current / 100);
-    if (maxDesignFileCount.current === 0) maxDesignFileCount.current = 1;
 
-    if (orderDesignFile.length > maxDesignFileCount.current) {
-      MySwal.fire({
-        title: `<strong>파일 첨부</strong>`,
-        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
-        icon: "warning",
-      });
-      SetOrderDesignFile([]);
-      if (fileInput.current !== null) fileInput.current.value = "";
-    }
-  }, [cart]);
-
-  const cartTotalPrice: number = useSelector(
-    (state: AppStateType) => state.cart.totalPrice
+  const estimatePaymentInfo = useSelector(
+    (state: AppStateType) => state.order.estimatePayment
   );
-
-  const [tax, SetTax] = useState<number>(
-    cartTotalPrice ? cartTotalPrice * 0.1 : 0
-  );
-  const [deliveryFee, SetDeliveryFee] = useState<number>(
-    cartTotalPrice ? (cartTotalPrice < 100_000 ? 5000 : 0) : 0
-  );
-
-  const [orderTotalPrice, setOrderTotalPrice] = useState<number>(
-    cartTotalPrice ? cartTotalPrice + tax + deliveryFee : 0
-  );
+  const { estimate, estimateItems, estimateResponse } = estimatePaymentInfo;
 
   const errors: Partial<OrderError> = useSelector(
     (state: AppStateType) => state.order.errors
@@ -317,77 +275,77 @@ const OrderPage: FC = () => {
       dispatch(saveTaxBillInfoFailure({}));
     }
 
-    const insertOrder = {
-      customerId: customerId.current,
-      orderCustomerName,
-      orderPostIndex,
-      orderAddress,
-      orderAddressDetail,
-      orderPhoneNumber,
-      orderMemo,
-      orderTotalPrice,
-      orderTotalProductsPrice: cartTotalPrice,
-      orderTax: tax,
-      orderPrintFee: printFee,
-      orderDeliveryFee: deliveryFee,
-      orderDesignFile: [],
-      isTaxBill,
-      cart,
-    };
+    // const insertOrder = {
+    //   customerId: customerId.current,
+    //   orderCustomerName,
+    //   orderPostIndex,
+    //   orderAddress,
+    //   orderAddressDetail,
+    //   orderPhoneNumber,
+    //   orderMemo,
+    //   orderTotalPrice,
+    //   orderTotalProductsPrice: cartTotalPrice,
+    //   orderTax: tax,
+    //   orderPrintFee: printFee,
+    //   orderDeliveryFee: deliveryFee,
+    //   orderDesignFile: [],
+    //   isTaxBill,
+    //   cart,
+    // };
 
-    if (orderDesignFile) {
-      const formData: FormData = new FormData();
-      orderDesignFile.forEach((val) => formData.append("files", val));
+    // if (orderDesignFile) {
+    //   const formData: FormData = new FormData();
+    //   orderDesignFile.forEach((val) => formData.append("files", val));
 
-      // formData.append("file", orderDesignFile);
-      const response = await RequestService.post(
-        "/order/design",
-        formData
-        // false,
-        // "multipart/form-data"
-      );
+    //   // formData.append("file", orderDesignFile);
+    //   const response = await RequestService.post(
+    //     "/order/design",
+    //     formData
+    //     // false,
+    //     // "multipart/form-data"
+    //   );
 
-      insertOrder.orderDesignFile = response.data;
-    }
+    //   insertOrder.orderDesignFile = response.data;
+    // }
 
-    dispatch(saveInsertOrderInformation(insertOrder));
+    // dispatch(saveInsertOrderInformation(insertOrder));
 
-    // 세금 계산서 정보 저장
-    if (isTaxBill) {
-      const taxBillInfo: TaxBillInfo = {
-        representativeName,
-        companyRegistrationNumber,
-        companyLocation,
-        companyLocationDetail,
-        businessCategory,
-        businessType,
-        email,
-      };
+    // // 세금 계산서 정보 저장
+    // if (isTaxBill) {
+    //   const taxBillInfo: TaxBillInfo = {
+    //     representativeName,
+    //     companyRegistrationNumber,
+    //     companyLocation,
+    //     companyLocationDetail,
+    //     businessCategory,
+    //     businessType,
+    //     email,
+    //   };
 
-      dispatch(saveTaxBillInfoSuccess(taxBillInfo));
-    }
+    //   dispatch(saveTaxBillInfoSuccess(taxBillInfo));
+    // }
 
-    // 결제창 요청
-    loadTossPayments(clientKey).then((tossPayments) => {
-      tossPayments.requestPayment(paymentMethod, {
-        amount: orderTotalPrice,
-        orderId: `order-${
-          customerId.current === -1
-            ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
-            : customerId.current
-        }-${Date.now()}`,
-        orderName:
-          cart.length === 1
-            ? cart[0].product.productName
-            : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-        customerName:
-          customerId.current === -1
-            ? orderCustomerName
-            : customersData.customerName,
-        successUrl: `${FRONT_BASE_URL}/order/success`,
-        failUrl: `${FRONT_BASE_URL}/order/fail`,
-      });
-    });
+    // // 결제창 요청
+    // loadTossPayments(clientKey).then((tossPayments) => {
+    //   tossPayments.requestPayment(paymentMethod, {
+    //     amount: orderTotalPrice,
+    //     orderId: `order-${
+    //       customerId.current === -1
+    //         ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
+    //         : customerId.current
+    //     }-${Date.now()}`,
+    //     orderName:
+    //       cart.length === 1
+    //         ? cart[0].product.productName
+    //         : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
+    //     customerName:
+    //       customerId.current === -1
+    //         ? orderCustomerName
+    //         : customersData.customerName,
+    //     successUrl: `${FRONT_BASE_URL}/order/success`,
+    //     failUrl: `${FRONT_BASE_URL}/order/fail`,
+    //   });
+    // });
   };
 
   let pageLoading;
@@ -399,7 +357,7 @@ const OrderPage: FC = () => {
     <div className="container mt-5 pb-5" id="mid">
       {pageLoading}
       <h4 className="mb-4 text-center">
-        <FontAwesomeIcon className="mr-2" icon={faShoppingBag} /> 주문하기
+        <FontAwesomeIcon className="mr-2" icon={faShoppingBag} /> 견적서 결제
       </h4>
       <br />
       <form
@@ -411,7 +369,7 @@ const OrderPage: FC = () => {
         <div className="row">
           <div className="col-lg-7">
             <div className="row mb-3">
-              <label className="col-sm-3 col-form-label">수령인:</label>
+              <label className="col-sm-3 col-form-label">대표자:</label>
               <div className="col-sm-7">
                 <input
                   type="text"
@@ -421,9 +379,9 @@ const OrderPage: FC = () => {
                       : "form-control"
                   }
                   name="lastName"
-                  value={orderCustomerName}
+                  value={estimate?.estimateName}
                   placeholder=""
-                  onChange={(event) => setOrderCustomerName(event.target.value)}
+                  readOnly
                 />
                 <div className="invalid-feedback">{orderCustomerNameError}</div>
               </div>
@@ -433,7 +391,6 @@ const OrderPage: FC = () => {
               <div className="col-sm-7">
                 <input
                   ref={postIndexRef}
-                  onClick={onClickPostIndex}
                   readOnly
                   type="text"
                   className={
@@ -442,9 +399,7 @@ const OrderPage: FC = () => {
                       : "form-control"
                   }
                   name="postIndex"
-                  value={orderPostIndex}
-                  placeholder="우편번호 검색"
-                  onChange={(event) => setOrderPostIndex(event.target.value)}
+                  value={estimate?.estimatePostIndex}
                 />
                 <div className="invalid-feedback">{orderPostIndexError}</div>
               </div>
@@ -461,13 +416,12 @@ const OrderPage: FC = () => {
                       : "form-control"
                   }
                   name="address"
-                  value={orderAddress}
-                  onChange={(event) => setOrderAddress(event.target.value)}
+                  value={estimate?.estimateAddress}
                 />
                 <div className="invalid-feedback">{orderAddressError}</div>
               </div>
             </div>
-            {isPopupOpen && (
+            {/* {isPopupOpen && (
               <div className="row mb-3">
                 <label className="col-sm-3 col-form-label"></label>
                 <div className="col-sm-7">
@@ -481,7 +435,7 @@ const OrderPage: FC = () => {
                   />
                 </div>
               </div>
-            )}
+            )} */}
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">상세주소:</label>
               <div className="col-sm-7">
@@ -493,10 +447,8 @@ const OrderPage: FC = () => {
                       : "form-control"
                   }
                   name="address"
-                  value={orderAddressDetail}
-                  onChange={(event) =>
-                    setOrderAddressDetail(event.target.value)
-                  }
+                  value={estimate?.estimateAddressDetail}
+                  readOnly
                 />
                 <div className="invalid-feedback">
                   {orderAddressDetailError}
@@ -514,14 +466,85 @@ const OrderPage: FC = () => {
                       : "form-control"
                   }
                   name="phoneNumber"
-                  value={orderPhoneNumber}
-                  placeholder="01012341234"
+                  value={estimate?.estimatePhoneNumber}
                   maxLength={11}
-                  onChange={(event) => setOrderPhoneNumber(event.target.value)}
+                  readOnly
                 />
                 <div className="invalid-feedback">{orderPhoneNumberError}</div>
               </div>
             </div>
+            {/* 견적 결제 전용 시작 */}
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">이메일:</label>
+              <div className="col-sm-7">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={estimate?.estimateEmail}
+                  readOnly
+                />
+              </div>
+            </div>
+            <hr
+              style={{
+                margin: "0 0 10px 0",
+                maxWidth: "82.5%",
+              }}
+            />
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">업체 상호:</label>
+              <div className="col-sm-7">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={estimate?.estimateBusinessName}
+                  readOnly
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">업태 및 종목:</label>
+              <div className="col-sm-7">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={estimate?.estimateBusinessType}
+                  readOnly
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">
+                사업자 등록번호:
+              </label>
+              <div className="col-sm-7">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={estimate?.estimateBusinessNumber}
+                  readOnly
+                />
+              </div>
+            </div>
+            <hr
+              style={{
+                margin: "0 0 10px 0",
+                maxWidth: "82.5%",
+              }}
+            />
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">납기 희망일:</label>
+              <div className="col-sm-7">
+                <input
+                  className="form-control"
+                  type="date"
+                  name="desiredDate"
+                  value={estimate?.estimateDesiredDate}
+                  readOnly
+                />
+              </div>
+            </div>
+            {/* 견적 결제 전용 끝 */}
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">요청사항:</label>
               <div className="col-sm-7">
@@ -532,13 +555,10 @@ const OrderPage: FC = () => {
                   }}
                   className="form-control"
                   name="orderMemo"
-                  value={orderMemo}
+                  value={estimate?.estimateRequestMemo}
                   rows={3}
                   maxLength={200}
-                  onChange={(event) => {
-                    handleResizeHeight();
-                    setOrderMemo(event.target.value);
-                  }}
+                  readOnly
                 />
               </div>
             </div>
@@ -556,13 +576,13 @@ const OrderPage: FC = () => {
                 />
               </div>
             </div>
-            <hr
+            {/* <hr
               style={{
                 margin: "0 0 10px 0",
                 maxWidth: "82.5%",
               }}
-            />
-            <div className="row mb-3">
+            /> */}
+            {/* <div className="row mb-3">
               <label className="col-sm-3 col-form-label">세금계산서:</label>
               <div className="col-sm-7 d-flex align-items-center">
                 <Switch
@@ -743,48 +763,51 @@ const OrderPage: FC = () => {
                   </div>
                 </div>
               </>
-            )}
+            )} */}
           </div>
           <div className="col-lg-5">
             <div className="container-fluid">
               <div className="row">
-                {cart.map((cartItem) => {
+                {estimateItems?.map((item) => {
                   return (
                     <div
-                      key={cartItem.product.id}
+                      key={item.productId}
                       className="col-lg-6 d-flex align-items-stretch"
                     >
                       <div className="card mb-5">
                         <img
-                          src={`${cartItem.product.productImageFilepath}`}
+                          src={`${item.productImageFilepath}`}
                           className="rounded mx-auto w-50"
                         />
                         <div className="card-body text-center">
-                          <h5>{cartItem.product.productName}</h5>
+                          <h5>{item.productName}</h5>
                           <h6>
                             <span>
                               가격 :{" "}
-                              {`${cartItem.productPrice.toLocaleString(
+                              {`${item.productPrice?.toLocaleString(
                                 "ko-KR"
                               )} 원`}
                             </span>
                           </h6>
                           <h6>
-                            <span>수량 : {cartItem.productCount}</span>
+                            <span>수량 : {item.estimateItemEA}</span>
                           </h6>
                         </div>
-                        {cartItem.product.productName.includes("가방") && (
+                        {item.productName?.includes("가방") && (
                           <div className="card-footer">
                             <h6 className="d-flex justify-content-between align-items-end mt-0 mb-0">
                               <span>인쇄</span>
                               <Switch
-                                key={`toggle-switch-cart-${cartItem.productId}`}
-                                name={`cartIsPrintSwitch#${cartItem.productId}`}
-                                isChecked={cartItem.isPrint}
-                                handleToggle={switchHandleToggleForCart(
-                                  cartItem.productId,
-                                  !cartItem.isPrint
-                                )}
+                                key={`toggle-switch-cart-${item.productId}`}
+                                name={`cartIsPrintSwitch#${item.productId}`}
+                                isChecked={item.isPrint as boolean}
+                                handleToggle={
+                                  () => {}
+                                  //   switchHandleToggleForCart(
+                                  //   item.productId as number,
+                                  //   !item.isPrint
+                                  // )
+                                }
                               />
                             </h6>
                           </div>
@@ -793,6 +816,28 @@ const OrderPage: FC = () => {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+            <hr
+              style={{
+                margin: "0 0 5px 0",
+              }}
+            />
+            <div className="row mt-2">
+              <label className="col-sm-10 personal_data_item col-form-label">
+                판매자 안내사항
+              </label>
+              <div className="col-sm-12">
+                <textarea
+                  name="memo"
+                  style={{
+                    width: "100%",
+                    height: "100px",
+                    padding: "7px",
+                  }}
+                  value={estimate?.response?.memo}
+                  readOnly
+                />
               </div>
             </div>
             <hr
@@ -832,30 +877,34 @@ const OrderPage: FC = () => {
               <div className="container">
                 <div className="d-flex justify-content-between">
                   <p className="mb-0">상품 금액</p>
-                  <p className="mb-0">{`${cartTotalPrice.toLocaleString(
+                  <p className="mb-0">{`${estimateResponse?.totalProductsPrice.toLocaleString(
                     "ko-KR"
                   )} 원`}</p>
                 </div>
                 <div className="d-flex justify-content-between">
                   <p className="mb-0">부가세</p>
-                  <p className="mb-0">{`+${tax.toLocaleString("ko-KR")} 원`}</p>
+                  <p className="mb-0">{`+${estimateResponse?.tax.toLocaleString(
+                    "ko-KR"
+                  )} 원`}</p>
                 </div>
                 <div className="d-flex justify-content-between">
                   <p className="mb-0">인쇄비</p>
-                  <p className="mb-0">{`+${printFee.toLocaleString(
+                  <p className="mb-0">{`+${estimateResponse?.printFee.toLocaleString(
                     "ko-KR"
                   )} 원`}</p>
                 </div>
                 <div className="d-flex justify-content-between">
                   <p className="mb-1">배송비</p>
-                  <p className="mb-1">{`+${deliveryFee.toLocaleString(
+                  <p className="mb-1">{`+${estimateResponse?.deliveryFee.toLocaleString(
                     "ko-KR"
                   )} 원`}</p>
                 </div>
               </div>
               <div className="container d-flex justify-content-between">
-                <h5 className="ml-0 pl-0">총 주문 금액</h5>
-                <h5>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</h5>
+                <h5 className="ml-0 pl-0">총 결제 금액</h5>
+                <h5>{`${estimateResponse?.totalPrice.toLocaleString(
+                  "ko-KR"
+                )} 원`}</h5>
               </div>
             </div>
             <button
@@ -866,8 +915,10 @@ const OrderPage: FC = () => {
             </button>
             <div className="row">
               <h4>
-                주문 금액 :{" "}
-                <span>{`${orderTotalPrice.toLocaleString("ko-KR")} 원`}</span>
+                결제 금액 :{" "}
+                <span>{`${estimateResponse?.totalPrice.toLocaleString(
+                  "ko-KR"
+                )} 원`}</span>
               </h4>
             </div>
           </div>
