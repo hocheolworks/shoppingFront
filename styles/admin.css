@@ -75,3 +75,13 @@
   -moz-appearance: none;
   appearance: none;
 }
+#sheet-textarea {
+  height: 100%;
+  word-break: break-all;
+}
+
+#div-textarea {
+  min-height: 300px;
+  word-break: break-all;
+  height: auto;
+}
