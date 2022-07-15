@@ -32,6 +32,7 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                 <th>주문상태</th>
                 <th>결제여부</th>
                 <th>세금계산서</th>
+                <th>견적서 여부</th>
                 <th></th>
               </tr>
             </thead>
@@ -46,6 +47,7 @@ const OrdersTable: FC<PropsType> = ({ loading, orders }) => {
                     <th>{order.orderStatus}</th>
                     <th>{order.orderIsPaid ? "O" : "X"}</th>
                     <th>{order.isTaxBill ? "O" : "X"}</th>
+                    <th>{order.estimateId !== -1 ? "O" : "X"}</th>
                     <th>
                       <Link href={`/account/customer/orders/${order.id}`}>
                         <a>더보기</a>

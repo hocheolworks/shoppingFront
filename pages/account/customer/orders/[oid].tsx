@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
@@ -10,6 +10,7 @@ import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout
 import { API_BASE_URL } from "../../../../src/utils/constants/url";
 import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
 import Spinner from "../../../../src/component/Spinner/Spinner";
+import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 type ManageUserOrderProp = {
   order: Order;
@@ -21,12 +22,16 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
   taxBillInfo,
 }) => {
   const isLoggedIn = useCheckLogin();
+  const isAdmin = useRef<boolean>(false);
 
   const [designFiles, setDesignFiles] = useState<string[]>([]);
   useEffect(() => {
     RequestService.get(`/order/design/${order.id}`).then((res) =>
       setDesignFiles(res.data)
     );
+
+    const customerRole = sessionStorage.getItem("customerRole");
+    isAdmin.current = customerRole === "ADMIN";
   }, []);
 
   const {
@@ -105,6 +110,20 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
               <h5 style={{ marginBottom: "30px" }}>
                 <FontAwesomeIcon icon={faInfoCircle} /> 주문 정보
               </h5>
+              {order.estimateId !== -1 ? (
+                <p className="personal_data_item">
+                  {"견적서 :" + " "}
+                  <Link
+                    href={`/account/${
+                      isAdmin.current ? "admin" : "customer"
+                    }/estimate/${order.estimateId}`}
+                  >
+                    <a>{order.estimateId}</a>
+                  </Link>
+                </p>
+              ) : (
+                <></>
+              )}
               <p className="personal_data_item">
                 주문번호:
                 <span className="personal_data_text">{id}</span>

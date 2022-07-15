@@ -267,7 +267,7 @@ const ManageUserOrder: FCinLayout = () => {
               상태:
               <span className="personal_data_text">{requestStatus}</span>
             </p>
-            {requestStatus !== "답변완료" && !isEstimateWrite ? (
+            {requestStatus === "요청중" && !isEstimateWrite ? (
               <button className="btn btn-secondary" onClick={onClickWrite}>
                 <FontAwesomeIcon icon={faClipboardList} /> 견적서 작성
               </button>
@@ -282,7 +282,9 @@ const ManageUserOrder: FCinLayout = () => {
               marginTop: "10px",
             }}
           >
-            {requestStatus === "답변완료" ? (
+            {requestStatus === "답변완료" ||
+            requestStatus === "결제대기" ||
+            requestStatus === "결제완료" ? (
               <div className="border pt-2 pb-2 pl-3 pr-3">
                 <h5
                   style={{

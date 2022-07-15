@@ -199,7 +199,10 @@ const ManageUserOrder: FCinLayout = () => {
             </p>
           </div>
           <div>
-            {estimate.requestStatus === "답변완료" && estimate.response ? (
+            {(estimate.requestStatus === "답변완료" ||
+              estimate.requestStatus === "결제대기" ||
+              estimate.requestStatus === "결제완료") &&
+            estimate.response ? (
               <div className="border p-4">
                 <h5
                   style={{
@@ -262,14 +265,16 @@ const ManageUserOrder: FCinLayout = () => {
                     />
                   </div>
                 </div>
-                <div className="d-flex justify-content-end">
-                  <button
-                    onClick={onClickPayment}
-                    className="btn btn-primary btn-lg btn-success mt-2"
-                  >
-                    <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
-                  </button>
-                </div>
+                {estimate.requestStatus === "답변완료" && (
+                  <div className="d-flex justify-content-end">
+                    <button
+                      onClick={onClickPayment}
+                      className="btn btn-primary btn-lg btn-success mt-2"
+                    >
+                      <FontAwesomeIcon icon={faCheckCircle} /> 결제하기
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <></>

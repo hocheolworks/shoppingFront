@@ -95,6 +95,7 @@ export type Order = {
   orderStatus: string;
   orderIsPaid: boolean;
   isTaxBill: boolean;
+  estimateId: number;
   orderItems: Array<OrderItem>;
   createdAt: string;
 };
@@ -125,7 +126,8 @@ export type InsertOrder = {
   orderDeliveryFee: number;
   orderDesignFile: Array<string>;
   isTaxBill: boolean;
-  cart: Array<CartItem | CartItemNonMember>;
+  estimateId?: number;
+  cart: Array<CartItem | CartItemNonMember | InsertEssentialCartItem>;
 };
 
 export type OrderError = {
@@ -242,6 +244,7 @@ export type Estimate = {
   customerId: number;
   requestStatus: string;
   response?: EstimateResponse;
+  printingDraft?: string[];
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
@@ -305,6 +308,13 @@ export type CartItem = {
 export type CartItemNonMember = {
   productId: number;
   product: Product;
+  productCount: number;
+  productPrice: number;
+  isPrint: boolean;
+};
+
+export type InsertEssentialCartItem = {
+  productId: number;
   productCount: number;
   productPrice: number;
   isPrint: boolean;

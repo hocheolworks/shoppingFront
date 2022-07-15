@@ -25,6 +25,7 @@ import {
   CartItemNonMember,
   TaxBillInfo,
   TaxBillError,
+  InsertEssentialCartItem,
 } from "../../../../../src/types/types";
 
 import Swal from "sweetalert2";
@@ -52,7 +53,6 @@ const OrderPage: FC = () => {
   const dispatch = useDispatch();
 
   const customerId = useRef<number>(-1);
-  const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
   const paymentMethodList = ["카드", "가상계좌"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
@@ -62,290 +62,86 @@ const OrderPage: FC = () => {
       // 로그인 상태 : 회원 주문
       customerId.current = parseInt(sessionStorage.getItem("id") as string);
     }
-
-    dispatch(orderAddedFailure({}));
-    dispatch(saveTaxBillInfoFailure({}));
   }, []);
-
-  const customersData: Partial<Customer> = useSelector(
-    (state: AppStateType) => state.customer.customer
-  );
-
-  const cartTotalCount = useRef<number>(0);
-  const maxDesignFileCount = useRef<number>(1);
 
   const estimatePaymentInfo = useSelector(
     (state: AppStateType) => state.order.estimatePayment
   );
   const { estimate, estimateItems, estimateResponse } = estimatePaymentInfo;
 
-  const errors: Partial<OrderError> = useSelector(
-    (state: AppStateType) => state.order.errors
-  );
+  const [designFiles, setDesignFiles] = useState<string[]>([]);
+  useEffect(() => {
+    if (estimate && estimate.id) {
+      RequestService.get(`/order/estimate/design/${estimate.id}`).then((res) =>
+        setDesignFiles(res.data)
+      );
+    }
+  }, [estimate]);
+
   const loading: boolean = useSelector(
     (state: AppStateType) => state.order.loading
   );
 
-  const [orderCustomerName, setOrderCustomerName] = useState<
-    string | undefined
-  >(customersData.customerName);
-
-  const [orderPhoneNumber, setOrderPhoneNumber] = useState<string | undefined>(
-    customersData.customerPhoneNumber
-  );
-  const [orderPostIndex, setOrderPostIndex] = useState<string | undefined>(
-    customersData.customerPostIndex
-  );
-  const [orderAddress, setOrderAddress] = useState<string | undefined>(
-    customersData.customerAddress
-  );
-  const [orderAddressDetail, setOrderAddressDetail] = useState<
-    string | undefined
-  >(customersData.customerAddressDetail);
-
-  const [orderMemo, setOrderMemo] = useState<string | undefined>(
-    `- 인쇄 요청시 우측 상품 이미지 아래 인쇄 버튼 클릭
-- 인쇄 시안은 아래 파일첨부 이용
-- 총 주문수량 100개당 1개 시안 업로드 가능`
-  );
-
-  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-  const [isPopupOpenTaxBill, setIsPopupOpenTaxBill] = useState<boolean>(false);
-
-  const [orderDesignFile, SetOrderDesignFile] = useState<Array<string | Blob>>(
-    []
-  );
-
-  const postIndexRef = useRef(null);
-
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  // 세금계산서 state
   const [isTaxBill, setIsTaxBill] = useState<boolean>(false);
-
-  const [representativeName, setRepresentativeName] = useState<string>("");
-  const [companyRegistrationNumber, setCompanyRegistrationNumber] =
-    useState<string>("");
-  const [companyLocation, setCompanyLocation] = useState<string>("");
-  const [companyLocationDetail, setCompanyLocationDetail] =
-    useState<string>("");
-  const [businessCategory, setBusinessCategory] = useState<string>("");
-  const [businessType, setBusinessType] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-
-  const taxBillError: Partial<TaxBillError> = useSelector(
-    (state: AppStateType) => state.order.taxBillError
-  );
-
-  // 인쇄비 state
-  const [printFee, setPrintFee] = useState<number>(0);
-
-  const handleResizeHeight = useCallback(() => {
-    if (textAreaRef === null || textAreaRef.current === null) return;
-    textAreaRef.current.style.height = "37px";
-    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
-  }, []);
-
-  const onClickPostIndex = (): void => {
-    setIsPopupOpen((prevState) => !prevState);
-  };
-  const onClickPostIndexTaxBill = (): void => {
-    setIsPopupOpenTaxBill((prevState) => !prevState);
-  };
-
-  const onCompletePostIndex = (data: PostCodeObject): void => {
-    setOrderAddress(
-      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
-    );
-    setOrderPostIndex(data.zonecode);
-    setIsPopupOpen(false);
-  };
-  const onCompletePostIndexTaxBill = (data: PostCodeObject): void => {
-    setCompanyLocation(
-      data.userSelectedType === "R" ? data.roadAddress : data.jibunAddress
-    );
-    setIsPopupOpenTaxBill(false);
-  };
-
-  const switchHandleToggleForCart =
-    (productId: number, isPrint: boolean) => () => {
-      dispatch(SetCartItemIsPrint(productId, isPrint));
-    };
-
-  const {
-    orderCustomerNameError,
-    orderPostIndexError,
-    orderAddressError,
-    orderAddressDetailError,
-    orderPhoneNumberError,
-  } = errors;
-
-  const handleFileChange = (event: any): void => {
-    // let maxDesignFileCount: number = Math.floor(cartTotalCount.current / 100);
-    // if (maxDesignFileCount === 0) maxDesignFileCount = 1; //100개 미만이라도 1개까지는 업로드 가능
-    if (Array.from(event.target.files).length > maxDesignFileCount.current) {
-      event.preventDefault();
-      MySwal.fire({
-        title: `<strong>파일 첨부</strong>`,
-        html: `<i>인쇄 시안은 주문수량 합계 100개당 1개씩 가능합니다.<br/>첨부가능 시안 : ${maxDesignFileCount.current}</i>`,
-        icon: "warning",
-      });
-      if (fileInput.current !== null) fileInput.current.value = "";
-    } else {
-      SetOrderDesignFile([...event.target.files]);
-    }
-  };
 
   const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(cartTotalCount.current);
-    console.log(printFee);
-    // return;
+
     if (
-      !Boolean(orderCustomerName) ||
-      !Boolean(orderPostIndex) ||
-      !Boolean(orderAddress) ||
-      !Boolean(orderAddressDetail) ||
-      !Boolean(orderPhoneNumber) ||
-      (isTaxBill &&
-        (!Boolean(representativeName) ||
-          !Boolean(companyRegistrationNumber) ||
-          !Boolean(companyLocation) ||
-          !Boolean(companyLocationDetail) ||
-          !Boolean(businessCategory) ||
-          !Boolean(businessType)))
+      estimate !== undefined &&
+      estimateItems !== undefined &&
+      estimateResponse !== undefined
     ) {
-      const orderError: OrderError = {
-        orderCustomerNameError: "",
-        orderPostIndexError: "",
-        orderAddressError: "",
-        orderAddressDetailError: "",
-        orderPhoneNumberError: "",
+      const insertCartItems: Array<InsertEssentialCartItem> | undefined =
+        estimateItems?.map(
+          (val): InsertEssentialCartItem => ({
+            productId: val.productId as number,
+            productCount: val.estimateItemEA as number,
+            productPrice: val.productPrice as number,
+            isPrint: val.isPrint as boolean,
+          })
+        );
+
+      if (insertCartItems === undefined) return;
+
+      const insertOrder = {
+        customerId: customerId.current,
+        orderCustomerName: estimate?.estimateName,
+        orderPostIndex: estimate?.estimatePostIndex,
+        orderAddress: estimate?.estimateAddress,
+        orderAddressDetail: estimate?.estimateAddressDetail,
+        orderPhoneNumber: estimate?.estimatePhoneNumber,
+        orderMemo: estimate?.estimateRequestMemo,
+        orderTotalPrice: estimateResponse?.totalPrice,
+        orderTotalProductsPrice: estimateResponse?.totalProductsPrice,
+        orderTax: estimateResponse?.tax,
+        orderPrintFee: estimateResponse?.printFee,
+        orderDeliveryFee: estimateResponse?.deliveryFee,
+        orderDesignFile: designFiles,
+        isTaxBill: isTaxBill,
+        cart: insertCartItems,
+        estimateId: estimate?.id,
       };
 
-      if (!Boolean(orderCustomerName)) {
-        orderError.orderCustomerNameError = "수령인은 필수 입니다.";
-      }
-      if (!Boolean(orderPostIndex)) {
-        orderError.orderPostIndexError = "우편번호는 필수 입니다.";
-      }
-      if (!Boolean(orderAddress)) {
-        orderError.orderAddressError = "주소는 필수 입니다.";
-      }
-      if (!Boolean(orderAddressDetail)) {
-        orderError.orderAddressDetailError = "상세주소는 필수 입니다.";
-      }
-      if (!Boolean(orderPhoneNumber)) {
-        orderError.orderPhoneNumberError = "연락처는 필수 입니다.";
-      }
-      dispatch(orderAddedFailure(orderError));
+      dispatch(saveInsertOrderInformation(insertOrder));
 
-      const taxBillError: TaxBillError = {
-        representativeNameError: "",
-        companyRegistrationNumberError: "",
-        companyLocationError: "",
-        companyLocationDetailError: "",
-        businessCategoryError: "",
-        businessTypeError: "",
-      };
+      const productName = estimateItems[0].productName as string;
 
-      if (!Boolean(representativeName)) {
-        taxBillError.representativeNameError = "수령인은 필수 입니다.";
-      }
-      if (!Boolean(companyRegistrationNumber)) {
-        taxBillError.companyRegistrationNumberError = "우편번호는 필수 입니다.";
-      }
-      if (!Boolean(companyLocation)) {
-        taxBillError.companyLocationError = "주소는 필수 입니다.";
-      }
-      if (!Boolean(companyLocationDetail)) {
-        taxBillError.companyLocationDetailError = "상세주소는 필수 입니다.";
-      }
-      if (!Boolean(businessCategory)) {
-        taxBillError.businessCategoryError = "연락처는 필수 입니다.";
-      }
-      if (!Boolean(businessType)) {
-        taxBillError.businessTypeError = "연락처는 필수 입니다.";
-      }
-
-      dispatch(saveTaxBillInfoFailure(taxBillError));
-      return;
-    } else {
-      dispatch(orderAddedFailure({}));
-      dispatch(saveTaxBillInfoFailure({}));
+      // 결제창 요청
+      loadTossPayments(clientKey).then((tossPayments) => {
+        tossPayments.requestPayment(paymentMethod, {
+          amount: estimateResponse?.totalPrice as number,
+          orderId: `order-${customerId.current}-${Date.now()}`,
+          orderName:
+            estimateItems?.length === 1
+              ? productName
+              : `${productName} 외 ${(estimateItems?.length as number) - 1}건`,
+          customerName: estimate?.estimateName,
+          successUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/success`,
+          failUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/fail`,
+        });
+      });
     }
-
-    // const insertOrder = {
-    //   customerId: customerId.current,
-    //   orderCustomerName,
-    //   orderPostIndex,
-    //   orderAddress,
-    //   orderAddressDetail,
-    //   orderPhoneNumber,
-    //   orderMemo,
-    //   orderTotalPrice,
-    //   orderTotalProductsPrice: cartTotalPrice,
-    //   orderTax: tax,
-    //   orderPrintFee: printFee,
-    //   orderDeliveryFee: deliveryFee,
-    //   orderDesignFile: [],
-    //   isTaxBill,
-    //   cart,
-    // };
-
-    // if (orderDesignFile) {
-    //   const formData: FormData = new FormData();
-    //   orderDesignFile.forEach((val) => formData.append("files", val));
-
-    //   // formData.append("file", orderDesignFile);
-    //   const response = await RequestService.post(
-    //     "/order/design",
-    //     formData
-    //     // false,
-    //     // "multipart/form-data"
-    //   );
-
-    //   insertOrder.orderDesignFile = response.data;
-    // }
-
-    // dispatch(saveInsertOrderInformation(insertOrder));
-
-    // // 세금 계산서 정보 저장
-    // if (isTaxBill) {
-    //   const taxBillInfo: TaxBillInfo = {
-    //     representativeName,
-    //     companyRegistrationNumber,
-    //     companyLocation,
-    //     companyLocationDetail,
-    //     businessCategory,
-    //     businessType,
-    //     email,
-    //   };
-
-    //   dispatch(saveTaxBillInfoSuccess(taxBillInfo));
-    // }
-
-    // // 결제창 요청
-    // loadTossPayments(clientKey).then((tossPayments) => {
-    //   tossPayments.requestPayment(paymentMethod, {
-    //     amount: orderTotalPrice,
-    //     orderId: `order-${
-    //       customerId.current === -1
-    //         ? `NM${orderPostIndex?.slice(0, 2)}${orderPhoneNumber?.slice(-4)}`
-    //         : customerId.current
-    //     }-${Date.now()}`,
-    //     orderName:
-    //       cart.length === 1
-    //         ? cart[0].product.productName
-    //         : `${cart[0].product.productName} 외 ${cart.length - 1}건`,
-    //     customerName:
-    //       customerId.current === -1
-    //         ? orderCustomerName
-    //         : customersData.customerName,
-    //     successUrl: `${FRONT_BASE_URL}/order/success`,
-    //     failUrl: `${FRONT_BASE_URL}/order/fail`,
-    //   });
-    // });
   };
 
   let pageLoading;
@@ -360,12 +156,7 @@ const OrderPage: FC = () => {
         <FontAwesomeIcon className="mr-2" icon={faShoppingBag} /> 견적서 결제
       </h4>
       <br />
-      <form
-        onSubmit={
-          () => {}
-          // onFormSubmit
-        }
-      >
+      <form onSubmit={onFormSubmit}>
         <div className="row">
           <div className="col-lg-7">
             <div className="row mb-3">
@@ -373,35 +164,24 @@ const OrderPage: FC = () => {
               <div className="col-sm-7">
                 <input
                   type="text"
-                  className={
-                    orderCustomerNameError
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
+                  className="form-control"
                   name="lastName"
                   value={estimate?.estimateName}
                   placeholder=""
                   readOnly
                 />
-                <div className="invalid-feedback">{orderCustomerNameError}</div>
               </div>
             </div>
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">우편번호:</label>
               <div className="col-sm-7">
                 <input
-                  ref={postIndexRef}
-                  readOnly
                   type="text"
-                  className={
-                    orderPostIndexError
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
+                  className="form-control"
                   name="postIndex"
                   value={estimate?.estimatePostIndex}
+                  readOnly
                 />
-                <div className="invalid-feedback">{orderPostIndexError}</div>
               </div>
             </div>
             <div className="row mb-3">
@@ -410,49 +190,22 @@ const OrderPage: FC = () => {
                 <input
                   readOnly
                   type="text"
-                  className={
-                    orderAddressError
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
+                  className="form-control"
                   name="address"
                   value={estimate?.estimateAddress}
                 />
-                <div className="invalid-feedback">{orderAddressError}</div>
               </div>
             </div>
-            {/* {isPopupOpen && (
-              <div className="row mb-3">
-                <label className="col-sm-3 col-form-label"></label>
-                <div className="col-sm-7">
-                  <DaumPostcode
-                    className="form-control"
-                    style={{
-                      border: "1px solid black",
-                      padding: 0,
-                    }}
-                    onComplete={onCompletePostIndex}
-                  />
-                </div>
-              </div>
-            )} */}
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">상세주소:</label>
               <div className="col-sm-7">
                 <input
                   type="text"
-                  className={
-                    orderAddressDetailError
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
+                  className="form-control"
                   name="address"
                   value={estimate?.estimateAddressDetail}
                   readOnly
                 />
-                <div className="invalid-feedback">
-                  {orderAddressDetailError}
-                </div>
               </div>
             </div>
             <div className="row mb-3">
@@ -460,17 +213,12 @@ const OrderPage: FC = () => {
               <div className="col-sm-7">
                 <input
                   type="text"
-                  className={
-                    orderPhoneNumberError
-                      ? "form-control is-invalid"
-                      : "form-control"
-                  }
+                  className="form-control"
                   name="phoneNumber"
                   value={estimate?.estimatePhoneNumber}
                   maxLength={11}
                   readOnly
                 />
-                <div className="invalid-feedback">{orderPhoneNumberError}</div>
               </div>
             </div>
             {/* 견적 결제 전용 시작 */}
@@ -549,7 +297,6 @@ const OrderPage: FC = () => {
               <label className="col-sm-3 col-form-label">요청사항:</label>
               <div className="col-sm-7">
                 <textarea
-                  ref={textAreaRef}
                   style={{
                     minHeight: "200px",
                   }}
@@ -565,24 +312,22 @@ const OrderPage: FC = () => {
             <div className="row mb-3">
               <label className="col-sm-3 col-form-label">파일첨부:</label>
               <div className="col-sm-7">
-                <input
-                  type="file"
-                  className={"form-control"}
-                  style={{ height: "44px" }}
-                  name="file"
-                  ref={fileInput}
-                  onChange={handleFileChange}
-                  multiple
-                />
+                {designFiles.map((val, idx) => (
+                  <div key={`download#${idx}`}>
+                    <a
+                      id={"design_file_download#" + idx}
+                      style={{ color: "blue" }}
+                      className="form-control border-0"
+                      href={val}
+                    >
+                      다운로드#{idx + 1}
+                    </a>
+                    <br />
+                  </div>
+                ))}
               </div>
             </div>
-            {/* <hr
-              style={{
-                margin: "0 0 10px 0",
-                maxWidth: "82.5%",
-              }}
-            /> */}
-            {/* <div className="row mb-3">
+            <div className="row mb-3">
               <label className="col-sm-3 col-form-label">세금계산서:</label>
               <div className="col-sm-7 d-flex align-items-center">
                 <Switch
@@ -594,176 +339,6 @@ const OrderPage: FC = () => {
                 />
               </div>
             </div>
-            {isTaxBill && (
-              <>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">
-                    대표자 이름:
-                  </label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={
-                        taxBillError.representativeNameError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="CompanyRegistrationNumber"
-                      value={representativeName}
-                      placeholder=""
-                      onChange={(event) =>
-                        setRepresentativeName(event.target.value)
-                      }
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.representativeNameError}
-                    </div>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">
-                    사업자 등록번호:
-                  </label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={
-                        taxBillError.companyRegistrationNumberError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="CompanyRegistrationNumber"
-                      value={companyRegistrationNumber}
-                      placeholder="숫자만 입력해주세요."
-                      onChange={(event) =>
-                        setCompanyRegistrationNumber(event.target.value)
-                      }
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.companyRegistrationNumberError}
-                    </div>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">
-                    사업장 소재지:
-                  </label>
-                  <div className="col-sm-7">
-                    <input
-                      readOnly
-                      type="text"
-                      onClick={onClickPostIndexTaxBill}
-                      className={
-                        taxBillError.companyLocationError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="address"
-                      value={companyLocation}
-                      onChange={(event) =>
-                        setCompanyLocation(event.target.value)
-                      }
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.companyLocationError}
-                    </div>
-                  </div>
-                </div>
-                {isPopupOpenTaxBill && (
-                  <div className="row mb-3">
-                    <label className="col-sm-3 col-form-label"></label>
-                    <div className="col-sm-7">
-                      <DaumPostcode
-                        className="form-control"
-                        style={{
-                          border: "1px solid black",
-                          padding: 0,
-                        }}
-                        onComplete={onCompletePostIndexTaxBill}
-                      />
-                    </div>
-                  </div>
-                )}
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">
-                    사업장 상세주소:
-                  </label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={
-                        taxBillError.companyLocationDetailError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="address"
-                      value={companyLocationDetail}
-                      onChange={(event) =>
-                        setCompanyLocationDetail(event.target.value)
-                      }
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.companyLocationDetailError}
-                    </div>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">업태:</label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={
-                        taxBillError.businessCategoryError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="CompanyRegistrationNumber"
-                      value={businessCategory}
-                      placeholder=""
-                      onChange={(event) =>
-                        setBusinessCategory(event.target.value)
-                      }
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.businessCategoryError}
-                    </div>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">종목:</label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={
-                        taxBillError.businessTypeError
-                          ? "form-control is-invalid"
-                          : "form-control"
-                      }
-                      name="CompanyRegistrationNumber"
-                      value={businessType}
-                      placeholder=""
-                      onChange={(event) => setBusinessType(event.target.value)}
-                    />
-                    <div className="invalid-feedback">
-                      {taxBillError.businessTypeError}
-                    </div>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-sm-3 col-form-label">이메일:</label>
-                  <div className="col-sm-7">
-                    <input
-                      type="text"
-                      className={"form-control"}
-                      name="CompanyRegistrationNumber"
-                      value={email}
-                      placeholder=""
-                      onChange={(event) => setEmail(event.target.value)}
-                    />
-                  </div>
-                </div>
-              </>
-            )} */}
           </div>
           <div className="col-lg-5">
             <div className="container-fluid">
