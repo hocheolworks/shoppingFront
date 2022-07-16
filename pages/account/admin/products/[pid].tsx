@@ -99,6 +99,7 @@ const EditProduct: FCinLayout = () => {
 
   useEffect(() => {
     if (productData.productDescription) {
+      prevProductImages.current = [];
       dispatch(setProductContent(productData.productDescription));
       const regex: RegExp = /src=[\"']?([^>\"']*)[\"']?[^>]*/g;
       productData.productDescription.match(regex)?.map((val) => {
@@ -181,7 +182,6 @@ const EditProduct: FCinLayout = () => {
       const deleteImages = prevProductImages.current.filter(
         (value) => !productContent.includes(value)
       );
-
       if (deleteImages.length > 0) {
         const response = await requestService.post(
           "/product/detail/images2delete",
