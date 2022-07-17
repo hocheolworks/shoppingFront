@@ -1,15 +1,18 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle, faShoppingBag } from "@fortawesome/free-solid-svg-icons";
 import RequestService from "../../../../src/utils/request-service";
 import { GetServerSideProps } from "next";
 import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
-import { API_BASE_URL } from "../../../../src/utils/constants/url";
 import { useCheckLogin } from "../../../../src/hook/useCheckLogin";
 import Spinner from "../../../../src/component/Spinner/Spinner";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 type ManageUserOrderProp = {
   order: Order;
@@ -21,13 +24,37 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
   taxBillInfo,
 }) => {
   const isLoggedIn = useCheckLogin();
-
+  const router = useRouter();
   const [designFiles, setDesignFiles] = useState<string[]>([]);
   useEffect(() => {
     RequestService.get(`/order/design/${order.id}`).then((res) =>
       setDesignFiles(res.data)
     );
   }, []);
+
+  const onClick = (orderId: number, paymentStatus: boolean): void => {
+    MySwal.fire({
+      title: `<strong>해당 주문의 결제 상태를 변경하시겠습니까?</strong>`,
+      html: `<i>현재 결제 상태 :<b> ${
+        paymentStatus ? "완료" : "미완료"
+      }</b><br></br>
+      변경 이후 결제 상태 :<b> ${paymentStatus ? "미완료" : "완료"}</b></i>`,
+      icon: "question",
+      showConfirmButton: true,
+      showDenyButton: true,
+      confirmButtonText: "변경",
+      denyButtonText: "취소",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        RequestService.put(`/order/payment/status/${orderId}`, {
+          paymentStatus,
+        }).then(() => {
+          router.push("/account/admin/orders");
+        });
+      } else if (result.isDenied) {
+      }
+    });
+  };
 
   const {
     id,
@@ -125,6 +152,13 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
                   {orderIsPaid ? "O" : "X"}
                 </span>
               </p>
+              <button
+                className="btn btn-dark"
+                onClick={() => onClick(id, orderIsPaid)}
+              >
+                결제 상태 변경
+              </button>
+              <br></br>
               <hr style={{ width: "70%" }} />
               <div
                 style={{
