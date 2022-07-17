@@ -77,12 +77,73 @@ const EditProduct: FCinLayout = () => {
     productImageFileError,
   } = errors;
 
+  type InitialStateType = {
+    productName: string;
+    productMinimumEA: number;
+    productDescription: string;
+    productPrice: number;
+    file: string | Blob;
+    productEA1: number;
+    productEA2: number;
+    productEA3: number;
+    productEA4: number;
+    productEA5: number;
+    productPrice1: number | string;
+    productPrice2: number | string;
+    productPrice3: number | string;
+    productPrice4: number | string;
+    productPrice5: number | string;
+  };
+
+  // const initialState: InitialStateType = {
+  //   productName: "",
+  //   productMinimumEA: 0,
+  //   productDescription: "",
+  //   productPrice: 0,
+  //   file: "",
+  //   productEA1: 0,
+  //   productEA2: 0,
+  //   productEA3: 0,
+  //   productEA4: 0,
+  //   productEA5: 0,
+  //   productPrice1: 0,
+  //   productPrice2: 0,
+  //   productPrice3: 0,
+  //   productPrice4: 0,
+  //   productPrice5: 0,
+  // };
+
+  // const [
+  //   {
+  //     productEA1,
+  //     productEA2,
+  //     productEA3,
+  //     productEA4,
+  //     productEA5,
+  //     productPrice1,
+  //     productPrice2,
+  //     productPrice3,
+  //     productPrice4,
+  //     productPrice5,
+  //   },
+  //   setState,
+  // ] = useState(initialState);
   const {
     productName,
     productDescription,
     productMinimumEA,
     productPrice,
     productImageFilepath,
+    productEA1,
+    productEA2,
+    productEA3,
+    productEA4,
+    productEA5,
+    productPrice1,
+    productPrice2,
+    productPrice3,
+    productPrice4,
+    productPrice5,
   } = product;
 
   const fileInput: RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -95,6 +156,7 @@ const EditProduct: FCinLayout = () => {
 
   useEffect(() => {
     setLoading(productData.id !== parseInt(pid as string));
+    console.log(productData);
   }, [productData]);
 
   useEffect(() => {
@@ -127,6 +189,17 @@ const EditProduct: FCinLayout = () => {
 
     const bodyFormData: FormData = new FormData();
 
+    bodyFormData.append("productEA1", productEA1.toString());
+    bodyFormData.append("productEA2", productEA2.toString());
+    bodyFormData.append("productEA3", productEA3.toString());
+    bodyFormData.append("productEA4", productEA4.toString());
+    bodyFormData.append("productEA5", productEA5.toString());
+    bodyFormData.append("productPrice1", productPrice1.toString());
+    bodyFormData.append("productPrice2", productPrice2.toString());
+    bodyFormData.append("productPrice3", productPrice3.toString());
+    bodyFormData.append("productPrice4", productPrice4.toString());
+    bodyFormData.append("productPrice5", productPrice5.toString());
+
     if (file) {
       bodyFormData.append("file", file as string);
     }
@@ -142,6 +215,9 @@ const EditProduct: FCinLayout = () => {
     if (productPrice) {
       bodyFormData.append("productPrice", productPrice.toString());
     }
+    console.log(productContent);
+    console.log(productDescription);
+    console.log(bodyFormData);
 
     // 추가된 이미지는 서버에 저장 요청, url 받아서 img 태그의 src에 삽입
     if (productImages.length > 0) {
@@ -281,6 +357,181 @@ const EditProduct: FCinLayout = () => {
                     }
                     name="productPrice"
                     value={productPrice}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 수량 범위1: </label>
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productEA1"
+                    value={productEA1}
+                    placeholder="주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    className={
+                      productPriceError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productPrice1"
+                    value={productPrice1}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 수량 범위2: </label>
+                  <input
+                    className={
+                      productMinimumEAError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productEA2"
+                    value={productEA2}
+                    placeholder="주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    className={
+                      productPriceError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productPrice2"
+                    value={productPrice2}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 수량 범위3: </label>
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productEA3"
+                    value={productEA3}
+                    placeholder="주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    className={
+                      productPriceError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productPrice3"
+                    value={productPrice3}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 수량 범위4: </label>
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productEA4"
+                    value={productEA4}
+                    placeholder="주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    className={
+                      productPriceError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productPrice4"
+                    value={productPrice4}
+                    placeholder="가격을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">{productPriceError}</div>
+                </div>
+              </div>
+              <div className="form row mt-3">
+                <div className="col">
+                  <label>주문 수량 범위5: </label>
+                  <input
+                    type="number"
+                    className={
+                      productMinimumEAError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productEA5"
+                    value={productEA5}
+                    placeholder="주문 수량을 입력하세요."
+                    onChange={handleInputChange}
+                  />
+                  <div className="invalid-feedback">
+                    {productMinimumEAError}
+                  </div>
+                </div>
+                <div className="col">
+                  <label>가격: </label>
+                  <input
+                    className={
+                      productPriceError
+                        ? "form-control is-invalid"
+                        : "form-control"
+                    }
+                    name="productPrice5"
+                    value={productPrice5}
                     placeholder="가격을 입력하세요."
                     onChange={handleInputChange}
                   />
