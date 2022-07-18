@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FCinLayout, Order, TaxBillInfo } from "../../../../src/types/types";
@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
+import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 type ManageUserOrderProp = {
   order: Order;
@@ -25,11 +26,16 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
 }) => {
   const isLoggedIn = useCheckLogin();
   const router = useRouter();
+  const isAdmin = useRef<boolean>(false);
+
   const [designFiles, setDesignFiles] = useState<string[]>([]);
   useEffect(() => {
     RequestService.get(`/order/design/${order.id}`).then((res) =>
       setDesignFiles(res.data)
     );
+
+    const customerRole = sessionStorage.getItem("customerRole");
+    isAdmin.current = customerRole === "ADMIN";
   }, []);
 
   const onClick = (orderId: number, paymentStatus: boolean): void => {
@@ -132,6 +138,20 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
               <h5 style={{ marginBottom: "30px" }}>
                 <FontAwesomeIcon icon={faInfoCircle} /> 주문 정보
               </h5>
+              {order.estimateId !== -1 ? (
+                <p className="personal_data_item">
+                  {"견적서 :" + " "}
+                  <Link
+                    href={`/account/${
+                      isAdmin.current ? "admin" : "customer"
+                    }/estimate/${order.estimateId}`}
+                  >
+                    <a>{order.estimateId}</a>
+                  </Link>
+                </p>
+              ) : (
+                <></>
+              )}
               <p className="personal_data_item">
                 주문번호:
                 <span className="personal_data_text">{id}</span>

@@ -70,3 +70,7 @@
 #design_file_download:visited {
   color: #5a5a5a;
 }
+
+#requestMemo {
+  white-space: pre-wrap
+}

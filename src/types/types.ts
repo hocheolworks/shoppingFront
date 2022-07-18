@@ -95,6 +95,7 @@ export type Order = {
   orderStatus: string;
   orderIsPaid: boolean;
   isTaxBill: boolean;
+  estimateId: number;
   orderItems: Array<OrderItem>;
   createdAt: string;
 };
@@ -125,7 +126,8 @@ export type InsertOrder = {
   orderDeliveryFee: number;
   orderDesignFile: Array<string>;
   isTaxBill: boolean;
-  cart: Array<CartItem | CartItemNonMember>;
+  estimateId?: number;
+  cart: Array<CartItem | CartItemNonMember | InsertEssentialCartItem>;
 };
 
 export type OrderError = {
@@ -210,19 +212,73 @@ export type CustomerEdit = {
   // customerRole: string | undefined;
 };
 
-export type SheetRequestData = {  
+export type SheetRequestData = {
   newCustomerName: string;
   newCustomerEmail: string;
   newCustomerPhoneNumber: string;
-  businessName : string;
-  businessType : string;
-  businessNumber : string;
+  businessName: string;
+  businessType: string;
+  businessNumber: string;
   newCustomerPostIndex: string;
   newCustomerAddress: string;
   newCustomerAddressDetail: string;
-  printingDraft : string | Blob;
-  desiredDate : string;
-  requestMemo : string;
+  printingDraft: string | Blob;
+  desiredDate: string;
+  requestMemo: string;
+};
+
+export type Estimate = {
+  id: number;
+  estimateName: string;
+  estimateEmail: string;
+  estimatePhoneNumber: string;
+  estimateBusinessName: string;
+  estimateBusinessType: string;
+  estimateBusinessNumber: string;
+  estimatePostIndex: string;
+  estimateAddress: string;
+  estimateAddressDetail: string;
+  estimatePrintingDraft: string;
+  estimateDesiredDate: string;
+  estimateRequestMemo: string;
+  customerId: number;
+  requestStatus: string;
+  response?: EstimateResponse;
+  printingDraft?: string[];
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type EstimateResponse = {
+  estimateSheetId: number;
+  totalProductsPrice: number;
+  tax: number;
+  printFee: number;
+  deliveryFee: number;
+  totalPrice: number;
+  memo: string;
+};
+
+export type EstimatePayment = {
+  estimate: Partial<Estimate>;
+  estimateResponse: EstimateResponse;
+  estimateItems: Array<Partial<EstimateItem>>;
+};
+
+export type EstimateItem = {
+  id: number;
+  customerId: number;
+  productId: number;
+  estimateItemEA: number;
+  orderItemTotalPrice: number;
+  isPrint: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  productName: string;
+  productPrice: number;
+  productImageFilepath: string;
 };
 
 export type CustomerEditErrors = {
@@ -252,6 +308,13 @@ export type CartItem = {
 export type CartItemNonMember = {
   productId: number;
   product: Product;
+  productCount: number;
+  productPrice: number;
+  isPrint: boolean;
+};
+
+export type InsertEssentialCartItem = {
+  productId: number;
   productCount: number;
   productPrice: number;
   isPrint: boolean;

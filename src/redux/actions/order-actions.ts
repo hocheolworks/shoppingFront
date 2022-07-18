@@ -1,4 +1,6 @@
 import {
+  Estimate,
+  EstimatePayment,
   InsertOrder,
   Order,
   OrderError,
@@ -34,6 +36,16 @@ import {
   SAVE_TAX_BILL_INFO_FAILURE,
   SaveTaxBillInfoSuccessActionType,
   SAVE_TAX_BILL_INFO_SUCCESS,
+  FetchUserEstimatesActionType,
+  FETCH_USER_ESTIMATES_SUCCESS,
+  EstimateSheetAddedSuccessActionType,
+  ESTIMATE_SHEET_ADDED_SUCCESS,
+  FetchAllEstimatesActionType,
+  FETCH_ALL_ESTIMATES_SUCCESS,
+  SaveEstimatePaymentInfoActionType,
+  SAVE_ESTIMATE_PAYMENT_INFO,
+  CLEAR_ESTIMATE_PAYMENT_INFO,
+  ClearEstimatePaymentInfoActionType,
 } from "../action-types/order-action-types";
 
 export const showLoader = (): ShowLoaderActionType => ({
@@ -115,3 +127,34 @@ export const saveTaxBillInfoSuccess = (
   type: SAVE_TAX_BILL_INFO_SUCCESS,
   payload: taxBillInfo,
 });
+
+export const fetchUserEstimatesSuccess = (
+  estimates: Array<Estimate>
+): FetchUserEstimatesActionType => ({
+  type: FETCH_USER_ESTIMATES_SUCCESS,
+  payload: estimates,
+});
+
+export const fetchAllEstimatesSuccess = (
+  estimates: Array<Estimate>
+): FetchAllEstimatesActionType => ({
+  type: FETCH_ALL_ESTIMATES_SUCCESS,
+  payload: estimates,
+});
+
+export const estimateSheetAddedSuccess =
+  (): EstimateSheetAddedSuccessActionType => ({
+    type: ESTIMATE_SHEET_ADDED_SUCCESS,
+  });
+
+export const saveEstimatePaymentInfo = (
+  estimatePaymentInfo: EstimatePayment
+): SaveEstimatePaymentInfoActionType => ({
+  type: SAVE_ESTIMATE_PAYMENT_INFO,
+  payload: estimatePaymentInfo,
+});
+
+export const clearEstimatePaymentInfo =
+  (): ClearEstimatePaymentInfoActionType => ({
+    type: CLEAR_ESTIMATE_PAYMENT_INFO,
+  });

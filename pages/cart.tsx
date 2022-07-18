@@ -46,6 +46,10 @@ const Cart: FC = () => {
     (state: AppStateType) => state.cart.loading
   );
 
+  const isLoggedIn: boolean = useSelector(
+    (state: AppStateType) => state.customer.isLoggedIn
+  );
+
   const customerId = useRef<number>(-1);
 
   useEffect(() => {
@@ -268,7 +272,8 @@ const Cart: FC = () => {
                     </button>
                   </div>
                 </div>
-                {/* <div className="pl-3">
+                {(isLoggedIn) && (
+                <div className="pl-3">
                   <div className="">
                     <button
                       className="btn btn-secondary"
@@ -278,7 +283,8 @@ const Cart: FC = () => {
                       견적요청
                     </button>
                   </div>
-                </div> */}
+                </div>
+                )}                
               </div>
             </div>
           )}

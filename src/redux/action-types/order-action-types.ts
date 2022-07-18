@@ -1,4 +1,6 @@
 import {
+  Estimate,
+  EstimatePayment,
   InsertOrder,
   Order,
   OrderError,
@@ -20,6 +22,11 @@ export const CLEAR_INSERT_ORDER_INFORMATION = "CLEAR_INSERT_ORDER_INFORMATION";
 export const FETCH_NONMEMBER_ORDERS_SUCCESS = "FETCH_NONMEMBER_ORDERS_SUCCESS";
 export const SAVE_TAX_BILL_INFO_FAILURE = "SAVE_TAX_BILL_INFO_FAILURE";
 export const SAVE_TAX_BILL_INFO_SUCCESS = "SAVE_TAX_BILL_INFO_SUCCESS";
+export const FETCH_USER_ESTIMATES_SUCCESS = "FETCH_USER_ESTIMATES_SUCCESS";
+export const FETCH_ALL_ESTIMATES_SUCCESS = "FETCH_ALL_ESTIMATES_SUCCESS";
+export const ESTIMATE_SHEET_ADDED_SUCCESS = "ESTIMATE_SHEET_ADDED_SUCCESS";
+export const SAVE_ESTIMATE_PAYMENT_INFO = "SAVE_ESTIMATE_PAYMENT_INFO";
+export const CLEAR_ESTIMATE_PAYMENT_INFO = "CLEAR_ESTIMATE_PAYMENT_INFO";
 
 export type HideLoaderActionType = { type: typeof HIDE_LOADER };
 export type FetchOrderSuccessActionType = { type: typeof FETCH_ORDER_SUCCESS };
@@ -66,6 +73,29 @@ export type SaveTaxBillInfoSuccessActionType = {
   payload: TaxBillInfo;
 };
 
+export type FetchUserEstimatesActionType = {
+  type: typeof FETCH_USER_ESTIMATES_SUCCESS;
+  payload: Array<Estimate>;
+};
+
+export type FetchAllEstimatesActionType = {
+  type: typeof FETCH_ALL_ESTIMATES_SUCCESS;
+  payload: Array<Estimate>;
+};
+
+export type EstimateSheetAddedSuccessActionType = {
+  type: typeof ESTIMATE_SHEET_ADDED_SUCCESS;
+};
+
+export type SaveEstimatePaymentInfoActionType = {
+  type: typeof SAVE_ESTIMATE_PAYMENT_INFO;
+  payload: Partial<EstimatePayment>;
+};
+
+export type ClearEstimatePaymentInfoActionType = {
+  type: typeof CLEAR_ESTIMATE_PAYMENT_INFO;
+};
+
 export type OrderActionTypes =
   | HideLoaderActionType
   | FetchOrderSuccessActionType
@@ -79,4 +109,9 @@ export type OrderActionTypes =
   | ClearInsertOrderInformationActionType
   | FetchNonMemberOrdersSuccessActionType
   | SaveTaxBillInfoFailureActionType
-  | SaveTaxBillInfoSuccessActionType;
+  | SaveTaxBillInfoSuccessActionType
+  | FetchUserEstimatesActionType
+  | FetchAllEstimatesActionType
+  | EstimateSheetAddedSuccessActionType
+  | SaveEstimatePaymentInfoActionType
+  | ClearEstimatePaymentInfoActionType;

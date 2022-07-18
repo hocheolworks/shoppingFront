@@ -1,4 +1,4 @@
-import { CartItem, CartItemNonMember, Order } from '../types/types';
+import { CartItem, CartItemNonMember, Estimate, Order } from '../types/types';
 import { API_BASE_URL } from './constants/url';
 
 export function isValidNumber(numb: number): Boolean {
@@ -27,4 +27,10 @@ export function sumCartItems(
       sum += cartItem.product.productPrice * cartItem.productCount;
   });
   return sum;
+}
+
+export function compareEstimateByCreatedAt(a: Estimate, b: Estimate): number {
+  if (a.createdAt > b.createdAt) return -1;
+  else if (a.createdAt === b.createdAt) return 0;
+  else return 1;
 }
