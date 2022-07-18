@@ -36,6 +36,14 @@ const ManageUserOrder: FCinLayout = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [designFiles, setDesignFiles] = useState<string[]>([]);
 
+  const [isEstimateWrite, setIsEstimateWrite] = useState<boolean>(false);
+  const [totalProductsPrice, setTotalProductsPrice] = useState<number>(0);
+  const [tax, setTax] = useState<number>(0);
+  const [printFee, setPrintFee] = useState<number>(0);
+  const [deliveryFee, setDeliveryFee] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [memo, setMemo] = useState<string>("");
+
   useEffect(() => {
     if (!isMount.current && sid) {
       RequestService.get(`/order/estimate/${sid as string}`)
@@ -82,13 +90,7 @@ const ManageUserOrder: FCinLayout = () => {
     );
   }, [estimateItems]);
 
-  const [isEstimateWrite, setIsEstimateWrite] = useState<boolean>(false);
-  const [totalProductsPrice, setTotalProductsPrice] = useState<number>(0);
-  const [tax, setTax] = useState<number>(0);
-  const [printFee, setPrintFee] = useState<number>(0);
-  const [deliveryFee, setDeliveryFee] = useState<number>(0);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [memo, setMemo] = useState<string>("");
+  const onlyNumbersRegex = /^[0-9,]+$/;
 
   useEffect(() => {
     setTotalPrice(totalProductsPrice + tax + printFee + deliveryFee);
@@ -124,6 +126,17 @@ const ManageUserOrder: FCinLayout = () => {
       return;
     }
 
+    if (
+      isOutOfRange(totalProductsPrice) ||
+      isOutOfRange(tax) ||
+      isOutOfRange(printFee) ||
+      isOutOfRange(deliveryFee) ||
+      isOutOfRange(totalPrice)
+    ) {
+      fireSwalForOutOfRange();
+      return;
+    }
+
     const estimateResponse: EstimateResponse = {
       estimateSheetId: id,
       totalProductsPrice: totalProductsPrice,
@@ -145,17 +158,25 @@ const ManageUserOrder: FCinLayout = () => {
     });
 
     if (result.isConfirmed) {
-      const response = await RequestService.post(
-        "/order/admin/estimate/response",
-        estimateResponse
-      );
+      try {
+        const response = await RequestService.post(
+          "/order/admin/estimate/response",
+          estimateResponse
+        );
 
-      if (response.data === true) {
-        isMount.current = false;
-        setRefresh(!refresh);
-        setIsEstimateWrite(false);
+        if (response.data === true) {
+          isMount.current = false;
+          setRefresh(!refresh);
+          setIsEstimateWrite(false);
+        }
+      } catch (err: any) {
+        console.log(err);
+        MySwal.fire({
+          title: `<strong>견적서 발송 실패</strong>`,
+          html: `<i>견적서 발송에 실패하였습니다.</i>`,
+          icon: "error",
+        });
       }
-    } else {
     }
   };
 
@@ -166,6 +187,22 @@ const ManageUserOrder: FCinLayout = () => {
     setTax(Math.floor(defaultTotalProductsPrice.current * 0.1));
     setPrintFee(0);
     setDeliveryFee(defaultTotalProductsPrice.current >= 100_000 ? 0 : 5000);
+  };
+
+  const isOutOfRange = (a: number): boolean => {
+    if (a > 2_147_483_647) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const fireSwalForOutOfRange = () => {
+    MySwal.fire({
+      title: `<strong>견적서 발송 실패</strong>`,
+      html: `<i>가격 입력창에는 최대 2,147,483,647까지만 입력가능 합니다.</i>`,
+      icon: "error",
+    });
   };
 
   return isAdmin ? (
@@ -371,20 +408,17 @@ const ManageUserOrder: FCinLayout = () => {
                       name="totalProductsPrice"
                       value={totalProductsPrice.toLocaleString("ko-kr")}
                       onChange={(e) => {
-                        setTotalProductsPrice(
-                          e.target.value
-                            ? parseInt(e.target.value.replaceAll(",", ""))
-                            : 0
-                        );
+                        if (!onlyNumbersRegex.test(e.target.value)) {
+                          return false;
+                        }
 
-                        setTax(
-                          e.target.value
-                            ? Math.floor(
-                                parseInt(e.target.value.replaceAll(",", "")) *
-                                  0.1
-                              )
-                            : 0
-                        );
+                        const val = e.target.value
+                          ? parseInt(e.target.value.replaceAll(",", ""))
+                          : 0;
+
+                        setTotalProductsPrice(val);
+
+                        setTax(Math.floor(val * 0.1));
                       }}
                     />
                   </div>
@@ -411,11 +445,15 @@ const ManageUserOrder: FCinLayout = () => {
                       name="printFee"
                       value={printFee.toLocaleString("ko-kr")}
                       onChange={(e) => {
-                        setPrintFee(
-                          e.target.value
-                            ? parseInt(e.target.value.replaceAll(",", ""))
-                            : 0
-                        );
+                        if (!onlyNumbersRegex.test(e.target.value)) {
+                          return false;
+                        }
+
+                        const val = e.target.value
+                          ? parseInt(e.target.value.replaceAll(",", ""))
+                          : 0;
+
+                        setPrintFee(val);
                       }}
                     />
                   </div>
@@ -429,11 +467,15 @@ const ManageUserOrder: FCinLayout = () => {
                       name="deliveryFee"
                       value={deliveryFee.toLocaleString("ko-kr")}
                       onChange={(e) => {
-                        setDeliveryFee(
-                          e.target.value
-                            ? parseInt(e.target.value.replaceAll(",", ""))
-                            : 0
-                        );
+                        if (!onlyNumbersRegex.test(e.target.value)) {
+                          return false;
+                        }
+
+                        const val = e.target.value
+                          ? parseInt(e.target.value.replaceAll(",", ""))
+                          : 0;
+
+                        setDeliveryFee(val);
                       }}
                     />
                   </div>
@@ -448,11 +490,14 @@ const ManageUserOrder: FCinLayout = () => {
                       name="totalPrice"
                       value={totalPrice.toLocaleString("ko-kr")}
                       onChange={(e) => {
-                        setTotalPrice(
-                          e.target.value
-                            ? parseInt(e.target.value.replaceAll(",", ""))
-                            : 0
-                        );
+                        if (!onlyNumbersRegex.test(e.target.value)) {
+                          return false;
+                        }
+                        const val = e.target.value
+                          ? parseInt(e.target.value.replaceAll(",", ""))
+                          : 0;
+
+                        setTotalPrice(val);
                       }}
                     />
                   </div>
