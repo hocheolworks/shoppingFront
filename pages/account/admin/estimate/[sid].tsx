@@ -168,12 +168,25 @@ const ManageUserOrder: FCinLayout = () => {
           isMount.current = false;
           setRefresh(!refresh);
           setIsEstimateWrite(false);
+
+          RequestService.post("/customer/alarm/quotation", {
+            phoneNumber: estimatePhoneNumber,
+          })
+            .then((res) => {})
+            .catch((err) => {
+              console.log(err);
+              MySwal.fire({
+                title: `<strong>알림 문자 발송 실패</strong>`,
+                html: `<i>알림 문자 발송에 실패 했습니다.</i>`,
+                icon: "error",
+              });
+            });
         }
       } catch (err: any) {
         console.log(err);
         MySwal.fire({
-          title: `<strong>견적서 발송 실패</strong>`,
-          html: `<i>견적서 발송에 실패하였습니다.</i>`,
+          title: `<strong>오류</strong>`,
+          html: `<i>오류가 발생 했습니다.</i>`,
           icon: "error",
         });
       }
