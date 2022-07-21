@@ -54,7 +54,11 @@ const PersonalEstimateList: FCinLayout = () => {
               견적서 요청이 없습니다.
             </h4>
           ) : (
-            <EstimateTable loading={loading} estimates={estimates} />
+            <EstimateTable
+              loading={loading}
+              estimates={estimates}
+              isAdmin={true}
+            />
           )}
         </>
       )}

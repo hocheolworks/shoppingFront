@@ -8,9 +8,10 @@ import { Estimate } from "../../../src/types/types";
 type PropsType = {
   estimates: Array<Estimate>;
   loading: boolean;
+  isAdmin: boolean;
 };
 
-const EstimateTable: FC<PropsType> = ({ loading, estimates }) => {
+const EstimateTable: FC<PropsType> = ({ loading, estimates, isAdmin }) => {
   return (
     <div className="container">
       {loading ? (
@@ -48,7 +49,11 @@ const EstimateTable: FC<PropsType> = ({ loading, estimates }) => {
                     {/* <th>{estimate.orderIsPaid ? "O" : "X"}</th>
                     <th>{estimaterder.isTaxBill ? "O" : "X"}</th> */}
                     <th>
-                      <Link href={`/account/admin/estimate/${estimate.id}`}>
+                      <Link
+                        href={`/account/${
+                          isAdmin ? "admin" : "customer"
+                        }/estimate/${estimate.id}`}
+                      >
                         <a>더보기</a>
                       </Link>
                     </th>
