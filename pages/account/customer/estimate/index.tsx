@@ -1,15 +1,23 @@
-import React, { FC, ReactElement, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, ReactElement, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Order, Customer, FCinLayout, Estimate } from '../../../../src/types/types';
-import { AppStateType } from '../../../../src/redux/reducers/root-reducer';
-import { fetchUserEstimates, fetchUserOrders } from '../../../../src/redux/thunks/order-thunks';
-import Spinner from '../../../../src/component/Spinner/Spinner';
-import { compareEstimateByCreatedAt } from '../../../../src/utils/functions';
-import AccountLayout from '../../../../src/component/AccountLayout/AccountLayout';
-import EstimateTable from './estimateTable';
+import {
+  Order,
+  Customer,
+  FCinLayout,
+  Estimate,
+} from "../../../../src/types/types";
+import { AppStateType } from "../../../../src/redux/reducers/root-reducer";
+import {
+  fetchUserEstimates,
+  fetchUserOrders,
+} from "../../../../src/redux/thunks/order-thunks";
+import Spinner from "../../../../src/component/Spinner/Spinner";
+import { compareEstimateByCreatedAt } from "../../../../src/utils/functions";
+import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
+import EstimateTable from "../../../../src/component/EstimateTable/estimateTable";
 
 const PersonalEstimateList: FCinLayout = () => {
   const dispatch = useDispatch();
@@ -24,7 +32,7 @@ const PersonalEstimateList: FCinLayout = () => {
   const customerId = useRef<number>(0);
 
   useEffect(() => {
-    const id = sessionStorage.getItem('id');
+    const id = sessionStorage.getItem("id");
     if (id) {
       customerId.current = parseInt(id);
       dispatch(fetchUserEstimates(customerId.current));
@@ -40,8 +48,8 @@ const PersonalEstimateList: FCinLayout = () => {
           {estimates.length === 0 ? (
             <h4
               style={{
-                display: 'flex',
-                justifyContent: 'center',
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               <FontAwesomeIcon className="ml-2 mr-2" icon={faShoppingBag} />

@@ -2,8 +2,8 @@ import React, { FC } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
-import Spinner from "../../../../src/component/Spinner/Spinner";
-import { Estimate } from "../../../../src/types/types";
+import Spinner from "../Spinner/Spinner";
+import { Estimate } from "../../../src/types/types";
 
 type PropsType = {
   estimates: Array<Estimate>;
