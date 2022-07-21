@@ -18,7 +18,7 @@ import {
 import Spinner from "../../../../src/component/Spinner/Spinner";
 import { compareEstimateByCreatedAt } from "../../../../src/utils/functions";
 import AccountLayout from "../../../../src/component/AccountLayout/AccountLayout";
-import EstimateTable from "../../../../src/component/EstimateTable/estimateTable";
+import EstimateTable from "../../../../src/component/EstimateTable/EstimateTable";
 import { useCheckAdmin } from "../../../../src/hook/useCheckAdmin";
 
 const PersonalEstimateList: FCinLayout = () => {
