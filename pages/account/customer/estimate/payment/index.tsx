@@ -43,17 +43,22 @@ import {
 import { FRONT_BASE_URL } from "../../../../../src/utils/constants/url";
 import RequestService from "../../../../../src/utils/request-service";
 import { SetCartItemIsPrint } from "../../../../../src/redux/actions/cart-actions";
+import { useRouter } from "next/router";
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY as string; // 진솔유통 테스트 클라이언트 키
 
 const MySwal = withReactContent(Swal);
 
-type PaymentMethodType = "카드" | "가상계좌";
+type PaymentMethodType =
+  | "카드"
+  | "가상계좌(무통장 입금)"
+  | "계좌이체"
+  | "가상계좌";
 
 const OrderPage: FC = () => {
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const customerId = useRef<number>(-1);
-  const paymentMethodList = ["카드", "가상계좌"];
+  const paymentMethodList = ["카드", "가상계좌(무통장 입금)", "계좌이체"];
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("카드");
 
@@ -127,20 +132,54 @@ const OrderPage: FC = () => {
 
       const productName = estimateItems[0].productName as string;
 
-      // 결제창 요청
-      loadTossPayments(clientKey).then((tossPayments) => {
-        tossPayments.requestPayment(paymentMethod, {
-          amount: estimateResponse?.totalPrice as number,
-          orderId: `order-${customerId.current}-${Date.now()}`,
-          orderName:
-            estimateItems?.length === 1
-              ? productName
-              : `${productName} 외 ${(estimateItems?.length as number) - 1}건`,
-          customerName: estimate?.estimateName,
-          successUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/success`,
-          failUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/fail`,
+      if (paymentMethod === "계좌이체") {
+        MySwal.fire({
+          title: `<strong>계좌이체 정보</strong>`,
+          html: `<span><b>결제 금액</b> : ${estimateResponse.totalPrice.toLocaleString(
+            "ko-KR"
+          )}원</span></br>
+          <span><b>은행</b> : 국민은행</span></br><span><b>계좌번호</b> : 001501-04-176307</span></br><span><b>예금주</b> : 김진솔</span></br>`,
+          icon: "info",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "확인",
+          cancelButtonText: "다른 방법으로 결제하기",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const body = {
+              phoneNumber: estimate.estimatePhoneNumber,
+              totalPrice: estimateResponse.totalPrice,
+            };
+            const orderId = `order-${customerId.current}-${Date.now()}`;
+            RequestService.post("/customer/alarm/account", body);
+            router.push(
+              `/account/customer/estimate/payment/success?paymentKey=notSendRequest&orderId=${orderId}&amount=${estimateResponse.totalPrice}`
+            );
+          } else if (result.isDenied) {
+          }
         });
-      });
+      } else {
+        loadTossPayments(clientKey).then((tossPayments) => {
+          tossPayments.requestPayment(
+            paymentMethod === "가상계좌(무통장 입금)"
+              ? "가상계좌"
+              : paymentMethod,
+            {
+              amount: estimateResponse?.totalPrice as number,
+              orderId: `order-${customerId.current}-${Date.now()}`,
+              orderName:
+                estimateItems?.length === 1
+                  ? productName
+                  : `${productName} 외 ${
+                      (estimateItems?.length as number) - 1
+                    }건`,
+              customerName: estimate?.estimateName,
+              successUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/success`,
+              failUrl: `${FRONT_BASE_URL}/account/customer/estimate/payment/fail`,
+            }
+          );
+        });
+      }
     }
   };
 
@@ -422,7 +461,7 @@ const OrderPage: FC = () => {
             />
             <div className="row mb-3 mb-0">
               <label className="col-sm-3 col-form-label">결제수단:</label>
-              <div className="col-sm-7 d-flex align-items-center justify-content-between">
+              <div className="col-sm-9 d-flex align-items-center justify-content-between">
                 {paymentMethodList.map((value, i) => (
                   <div key={`payment-method-radio-${i}`}>
                     <input

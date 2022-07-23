@@ -172,13 +172,18 @@ const ManageUserOrder: FCinLayout<ManageUserOrderProp> = ({
                   {orderIsPaid ? "O" : "X"}
                 </span>
               </p>
-              <button
-                className="btn btn-dark"
-                onClick={() => onClick(id, orderIsPaid)}
-              >
-                결제 상태 변경
-              </button>
-              <br></br>
+              {isAdmin.current && (
+                <>
+                  <button
+                    className="btn btn-dark"
+                    onClick={() => onClick(id, orderIsPaid)}
+                  >
+                    결제 상태 변경
+                  </button>
+                  <br></br>
+                </>
+              )}
+
               <hr style={{ width: "70%" }} />
               <div
                 style={{
